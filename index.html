@@ -18,13 +18,37 @@
         </div>
     </div>
 
+    <!-- TOMBOL MENU HAMBURGER (Di Pojok Kiri Atas) -->
+    <div id="hamburger-btn" class="hidden-ui">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- SIDEBAR MENU -->
+    <div id="sidebar-overlay"></div>
+    <div id="sidebar-menu">
+        <div class="sidebar-header">
+            <h3>Navigasi</h3>
+            <button id="close-sidebar">&times;</button>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="#main-page" class="nav-item">🏠 Halaman Utama</a></li>
+            <li><a href="#scrapbook" class="nav-item">📸 Album Foto Kita</a></li>
+            <li><a href="#" class="nav-item">💌 Pesan Rahasia</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>Made with 💙</p>
+        </div>
+    </div>
+
     <!-- HALAMAN UTAMA -->
     <div id="main-page" class="hidden">
         
         <!-- BAGIAN ATAS: FOTO UTAMA & TEKS -->
         <header class="hero-section">
             <div class="main-photo-frame">
-                <!-- Ganti link foto ini dengan foto berdua kalian (contoh: foto-utama.jpg) -->
+                <!-- Ganti link foto ini dengan foto berdua kalian -->
                 <img src="https://via.placeholder.com/350x450/0074D9/ffffff?text=Foto+Utama+Berdua" alt="Foto Utama">
                 <div class="glow-effect"></div>
             </div>
@@ -43,14 +67,13 @@
         </div>
 
         <!-- BAGIAN BAWAH: SCRAPBOOK (BUKU KENANGAN) -->
-        <section class="scrapbook-section">
+        <section id="scrapbook" class="scrapbook-section">
             <div class="book-container">
                 <div class="book">
                     
                     <!-- Halaman 3 (Paling Belakang) -->
                     <div class="page" id="page3">
                         <div class="front paper">
-                            <!-- Ganti dengan foto kamu -->
                             <img src="https://via.placeholder.com/250x220/0074D9/ffffff?text=Foto+Momen+3" alt="Foto 3">
                             <p class="caption">Momen paling seru bareng kamu! 🌊</p>
                         </div>
@@ -63,7 +86,6 @@
                     <!-- Halaman 2 (Tengah) -->
                     <div class="page" id="page2">
                         <div class="front paper">
-                            <!-- Ganti dengan foto kamu -->
                             <img src="https://via.placeholder.com/250x220/004b93/ffffff?text=Foto+Momen+2" alt="Foto 2">
                             <p class="caption">Jalan-jalan sore berdua ☕</p>
                         </div>
@@ -81,7 +103,6 @@
                             <p class="click-hint">Sentuh untuk membuka</p>
                         </div>
                         <div class="back paper">
-                            <!-- Ganti dengan foto kamu -->
                             <img src="https://via.placeholder.com/250x220/001f3f/ffffff?text=Foto+Momen+1" alt="Foto 1">
                             <p class="caption">Awal mula kita dekat ✨</p>
                         </div>
@@ -99,5 +120,5 @@
 
     <script src="script.js"></script>
 </body>
-</html>
-
+    </html>
+    
