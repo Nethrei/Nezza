@@ -13,8 +13,9 @@ document.getElementById('enter-btn').addEventListener('click', function() {
     setTimeout(() => {
         landingPage.style.display = 'none'; 
         
-        // Tampilkan area konten & tombol menu
+        // Tampilkan area konten, tombol menu, & tombol musik
         document.getElementById('hamburger-btn').style.display = 'flex';
+        document.getElementById('music-toggle-btn').style.display = 'flex';
         document.getElementById('content-area').style.display = 'flex';
         
         // Tampilkan halaman utama saja
@@ -93,4 +94,22 @@ pages.forEach((page, index) => {
             }, 400);
         }
     });
+});
+
+// 5. Logika Tombol Mute/Unmute Musik di Pojok Kanan Atas
+const musicToggleBtn = document.getElementById('music-toggle-btn');
+const bgMusic = document.getElementById('bg-music');
+let isMuted = false;
+
+musicToggleBtn.addEventListener('click', function() {
+    isMuted = !isMuted;
+    bgMusic.muted = isMuted;
+    
+    if (isMuted) {
+        musicToggleBtn.textContent = '🔇';
+        musicToggleBtn.classList.add('muted');
+    } else {
+        musicToggleBtn.textContent = '🎵';
+        musicToggleBtn.classList.remove('muted');
+    }
 });
