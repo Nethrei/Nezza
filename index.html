@@ -8,120 +8,155 @@
 </head>
 <body>
 
+    <!-- MUSIK LATAR -->
+    <!-- Nanti pastikan file mp3 lagunya satu folder dengan file ini dan bernama "shape-of-my-heart.mp3" -->
+    <audio id="bg-music" src="shape-of-my-heart.mp3" loop></audio>
+
     <!-- HALAMAN AWAL (LANDING PAGE) -->
     <div id="landing-page">
         <div class="landing-content">
-            <div class="pulse-ring"></div>
             <h1>Hai Kesayangan... ✨</h1>
             <p>Ada sesuatu yang spesial nih buat kamu</p>
             <button id="enter-btn">Klik untuk Masuk</button>
         </div>
     </div>
 
-    <!-- UI SETELAH MASUK (Tersembunyi di awal) -->
-    <div id="app-ui" class="hidden">
-        
-        <!-- TOMBOL MENU GARIS TIGA (Hamburger) -->
-        <button id="hamburger-btn">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
+    <!-- TOMBOL MENU GARIS TIGA (Hamburger) -->
+    <button id="hamburger-btn" style="display: none;">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 
-        <!-- SIDEBAR MENU -->
-        <div id="sidebar-overlay"></div>
-        <div id="sidebar-menu">
-            <div class="sidebar-header">
-                <h3>Menu Kita</h3>
-                <button id="close-sidebar">&times;</button>
+    <!-- SIDEBAR MENU -->
+    <div id="sidebar-overlay"></div>
+    <div id="sidebar-menu">
+        <div class="sidebar-header">
+            <h3>Menu Kita</h3>
+            <button id="close-sidebar">&times;</button>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="#" class="nav-item" data-target="home-view">🏠 Halaman Utama</a></li>
+            <li><a href="#" class="nav-item" data-target="album-view">📸 Album Foto</a></li>
+            <li><a href="#" class="nav-item" data-target="kosong1-view">✨ Kosong</a></li>
+            <li><a href="#" class="nav-item" data-target="kosong2-view">✨ Kosong</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>Made with 💙</p>
+        </div>
+    </div>
+
+    <!-- AREA KONTEN -->
+    <div id="content-area" style="display: none;">
+        
+        <!-- ============================================== -->
+        <!-- 1. HALAMAN UTAMA (Foto Utama + Teks + Scrapbook) -->
+        <!-- ============================================== -->
+        <div id="home-view" class="view-page">
+            
+            <!-- Foto Utama & Teks -->
+            <header class="hero-section">
+                <div class="main-photo-frame">
+                    <img src="https://via.placeholder.com/300x400/0074D9/ffffff?text=Foto+Utama" alt="Foto Utama">
+                </div>
+                <div class="hero-text">
+                    <h2>Teruntuk Kamu, Rumah Pulangku 💙</h2>
+                    <p>Terima kasih ya udah jadi alasan aku tersenyum setiap hari. Web ini sengaja aku buat khusus untuk ngerangkum momen-momen indah kita.</p>
+                    <div class="badge-love">Forever with you</div>
+                </div>
+            </header>
+
+            <!-- Scrapbook (Buku Kenangan) -->
+            <div class="section-title">
+                <h2>Buku Kenangan Kita 📖</h2>
+                <p>Sentuh halamannya untuk membuka ceritanya</p>
             </div>
-            <ul class="sidebar-links">
-                <!-- Tambah atribut data-target untuk fungsi pindah halaman -->
-                <li><a href="#" class="nav-item" data-target="home-view">🏠 Halaman Utama</a></li>
-                <li><a href="#" class="nav-item" data-target="album-view">📸 Album Foto (Scrapbook)</a></li>
-            </ul>
-            <div class="sidebar-footer">
-                <p>Made with 💙 by Nezuro</p>
+            
+            <section class="scrapbook-section">
+                <!-- Wrapper diset ukurannya pas untuk HP agar tidak terpotong saat buka ke kiri -->
+                <div class="book-wrapper">
+                    <div class="book">
+                        
+                        <!-- Halaman 3 -->
+                        <div class="page" id="page3">
+                            <div class="front paper">
+                                <img src="https://via.placeholder.com/200x200/0074D9/ffffff?text=Foto+3" alt="Foto 3">
+                                <p class="caption">Momen seru bareng kamu!</p>
+                            </div>
+                            <div class="back paper end-page">
+                                <h3>The End</h3>
+                                <p>I Love You Forever! 🤍</p>
+                            </div>
+                        </div>
+
+                        <!-- Halaman 2 -->
+                        <div class="page" id="page2">
+                            <div class="front paper">
+                                <img src="https://via.placeholder.com/200x200/004b93/ffffff?text=Foto+2" alt="Foto 2">
+                                <p class="caption">Jalan-jalan berdua ☕</p>
+                            </div>
+                            <div class="back paper">
+                                <h4 class="page-title">Catatan Kecil</h4>
+                                <p class="page-desc">Ngobrol sama kamu selalu jadi obat paling ampuh buat aku.</p>
+                            </div>
+                        </div>
+
+                        <!-- Halaman 1 (Cover) -->
+                        <div class="page" id="page1">
+                            <div class="front cover">
+                                <div class="cover-icon">📖</div>
+                                <h3>Album Kita</h3>
+                                <p class="click-hint">Sentuh untuk buka</p>
+                            </div>
+                            <div class="back paper">
+                                <img src="https://via.placeholder.com/200x200/001f3f/ffffff?text=Foto+1" alt="Foto 1">
+                                <p class="caption">Awal mula kita ✨</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- 2. HALAMAN ALBUM FOTO (Galeri Grid)             -->
+        <!-- ============================================== -->
+        <div id="album-view" class="view-page" style="display: none;">
+            <div class="section-title">
+                <h2>Album Foto Kita 📸</h2>
+                <p>Kumpulan kenangan manis berdua</p>
+            </div>
+            <div class="photo-grid">
+                <img src="https://via.placeholder.com/200/0074D9/ffffff?text=Foto+A" alt="Grid 1">
+                <img src="https://via.placeholder.com/200/004b93/ffffff?text=Foto+B" alt="Grid 2">
+                <img src="https://via.placeholder.com/200/001f3f/ffffff?text=Foto+C" alt="Grid 3">
+                <img src="https://via.placeholder.com/200/0074D9/ffffff?text=Foto+D" alt="Grid 4">
             </div>
         </div>
 
-        <!-- AREA KONTEN (Tempat halaman berganti-ganti) -->
-        <div class="content-area">
-            
-            <!-- 1. HALAMAN UTAMA -->
-            <div id="home-view" class="view-page active">
-                <header class="hero-section">
-                    <div class="main-photo-frame">
-                        <img src="https://via.placeholder.com/350x450/0074D9/ffffff?text=Foto+Utama+Berdua" alt="Foto Utama">
-                        <div class="glow-effect"></div>
-                    </div>
-                    <div class="hero-text">
-                        <h2>Teruntuk Kamu, Rumah Pulangku 💙</h2>
-                        <p>Terima kasih ya udah jadi alasan aku tersenyum setiap hari. Web ini sengaja aku buat khusus untuk ngerangkum momen-momen indah kita.</p>
-                        <div class="badge-love">Forever with you</div>
-                        <br><br>
-                        <p style="font-size: 12px; color: #90caf9;">(Klik tombol garis tiga di pojok kiri atas untuk buka menu ya)</p>
-                    </div>
-                </header>
+        <!-- ============================================== -->
+        <!-- 3. HALAMAN KOSONG 1                            -->
+        <!-- ============================================== -->
+        <div id="kosong1-view" class="view-page" style="display: none;">
+            <div class="section-title">
+                <h2>Halaman Kosong 1</h2>
+                <p>Nanti bisa diisi sesuatu di sini...</p>
             </div>
+        </div>
 
-            <!-- 2. HALAMAN ALBUM FOTO (SCRAPBOOK) -->
-            <div id="album-view" class="view-page hidden">
-                <div class="section-title">
-                    <h2>Buku Kenangan Kita 📖</h2>
-                    <p>Sentuh halamannya untuk membuka ceritanya</p>
-                </div>
-                
-                <section class="scrapbook-section">
-                    <div class="book-container">
-                        <div class="book">
-                            
-                            <!-- Halaman 3 -->
-                            <div class="page" id="page3">
-                                <div class="front paper">
-                                    <img src="https://via.placeholder.com/250x220/0074D9/ffffff?text=Foto+Momen+3" alt="Foto 3">
-                                    <p class="caption">Momen seru bareng kamu!</p>
-                                </div>
-                                <div class="back paper end-page">
-                                    <h3>The End</h3>
-                                    <p>I Love You Forever! 🤍</p>
-                                </div>
-                            </div>
-
-                            <!-- Halaman 2 -->
-                            <div class="page" id="page2">
-                                <div class="front paper">
-                                    <img src="https://via.placeholder.com/250x220/004b93/ffffff?text=Foto+Momen+2" alt="Foto 2">
-                                    <p class="caption">Jalan-jalan berdua ☕</p>
-                                </div>
-                                <div class="back paper">
-                                    <h4 class="page-title">Catatan Kecil</h4>
-                                    <p class="page-desc">Nggak peduli seberapa capek hariku, ngobrol sama kamu selalu jadi obat paling ampuh.</p>
-                                </div>
-                            </div>
-
-                            <!-- Halaman 1 (Cover) -->
-                            <div class="page" id="page1">
-                                <div class="front cover">
-                                    <div class="cover-icon">📖</div>
-                                    <h3>Album Cerita Kita</h3>
-                                    <p class="click-hint">Sentuh untuk membuka</p>
-                                </div>
-                                <div class="back paper">
-                                    <img src="https://via.placeholder.com/250x220/001f3f/ffffff?text=Foto+Momen+1" alt="Foto 1">
-                                    <p class="caption">Awal mula kita dekat ✨</p>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
+        <!-- ============================================== -->
+        <!-- 4. HALAMAN KOSONG 2                            -->
+        <!-- ============================================== -->
+        <div id="kosong2-view" class="view-page" style="display: none;">
+            <div class="section-title">
+                <h2>Halaman Kosong 2</h2>
+                <p>Nanti bisa diisi sesuatu di sini...</p>
             </div>
+        </div>
 
-        </div> <!-- Akhir Area Konten -->
-    </div> <!-- Akhir UI -->
+    </div>
 
     <script src="script.js"></script>
 </body>
-                                    </html>
-    
+</html>
