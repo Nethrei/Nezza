@@ -1,83 +1,92 @@
-// ELEMEN DASAR
-const enterBtn = document.getElementById('enter-btn');
-const landingPage = document.getElementById('landing-page');
-const appUI = document.getElementById('app-ui');
+// 1. Logika Masuk Web & Mainkan Musik Latar
+document.getElementById('enter-btn').addEventListener('click', function() {
+    // Jalankan musik (browser hanya mengizinkan play audio jika ada interaksi klik dari user)
+    const bgMusic = document.getElementById('bg-music');
+    bgMusic.play().catch(error => console.log("Audio play digagalkan oleh browser:", error));
 
-// ELEMEN SIDEBAR
-const hamburgerBtn = document.getElementById('hamburger-btn');
-const sidebarMenu = document.getElementById('sidebar-menu');
-const sidebarOverlay = document.getElementById('sidebar-overlay');
-const closeSidebarBtn = document.getElementById('close-sidebar');
-
-// ELEMEN PERPINDAHAN HALAMAN
-const navItems = document.querySelectorAll('.nav-item');
-const viewPages = document.querySelectorAll('.view-page');
-
-// 1. Logika Masuk Web (Menghilangkan Halaman Awal)
-enterBtn.addEventListener('click', () => {
+    // Animasi menghilangkan halaman depan
+    const landingPage = document.getElementById('landing-page');
     landingPage.style.opacity = '0';
-    landingPage.style.transform = 'scale(1.3)';
+    landingPage.style.transform = 'scale(1.2)';
     
+    // Tunggu animasi selesai lalu ganti tampilan
     setTimeout(() => {
-        landingPage.classList.add('hidden');
-        appUI.classList.remove('hidden');
-    }, 700); 
+        landingPage.style.display = 'none'; 
+        
+        // Tampilkan area konten & tombol menu
+        document.getElementById('hamburger-btn').style.display = 'flex';
+        document.getElementById('content-area').style.display = 'flex';
+        
+        // Tampilkan halaman utama saja
+        document.getElementById('home-view').style.display = 'flex';
+        document.getElementById('album-view').style.display = 'none';
+        document.getElementById('kosong1-view').style.display = 'none';
+        document.getElementById('kosong2-view').style.display = 'none';
+    }, 600); 
 });
 
 // 2. Logika Sidebar Menu
-hamburgerBtn.addEventListener('click', () => {
+const sidebarMenu = document.getElementById('sidebar-menu');
+const sidebarOverlay = document.getElementById('sidebar-overlay');
+
+function openMenu() {
     sidebarMenu.classList.add('open');
     sidebarOverlay.classList.add('open');
-});
+}
 
 function closeMenu() {
     sidebarMenu.classList.remove('open');
     sidebarOverlay.classList.remove('open');
 }
 
-closeSidebarBtn.addEventListener('click', closeMenu);
+document.getElementById('hamburger-btn').addEventListener('click', openMenu);
+document.getElementById('close-sidebar').addEventListener('click', closeMenu);
 sidebarOverlay.addEventListener('click', closeMenu);
 
-// 3. Logika Ganti Halaman (Tanpa Loading)
+// 3. Logika Pindah Halaman lewat Menu
+const navItems = document.querySelectorAll('.nav-item');
+const allViews = document.querySelectorAll('.view-page');
+
 navItems.forEach(item => {
     item.addEventListener('click', function(e) {
-        e.preventDefault(); // Mencegah web scroll ke atas tiba-tiba
+        e.preventDefault(); 
         
-        // Ambil nama halaman tujuan (contoh: 'home-view' atau 'album-view')
         const targetId = this.getAttribute('data-target');
         
-        // Sembunyikan semua halaman
-        viewPages.forEach(page => {
-            page.classList.remove('active');
+        // Sembunyikan SEMUA halaman
+        allViews.forEach(view => {
+            view.style.display = 'none';
         });
         
-        // Tampilkan halaman yang dipilih
-        const targetPage = document.getElementById(targetId);
-        targetPage.classList.add('active');
+        // Tampilkan hanya halaman yang diklik
+        document.getElementById(targetId).style.display = 'flex';
         
-        // Tutup menu otomatis setelah memilih halaman
+        // Otomatis tutup menu
         closeMenu();
+        
+        // Scroll kembali ke atas saat ganti halaman
+        window.scrollTo(0, 0);
     });
 });
 
-// 4. Logika Buku Kenangan (Flipbook)
+// 4. Logika Buku Kenangan (Scrapbook)
 const pages = document.querySelectorAll('.page');
 
 pages.forEach((page, index) => {
-    // Atur lapisan buku
+    // Atur lapisan supaya buku rapi
     page.style.zIndex = pages.length - index;
     
     page.addEventListener('click', function() {
         let isFlipped = this.classList.contains('flipped');
         
         if (isFlipped) {
-            // Tutup halaman
+            // Membalik ke Kanan (Tutup)
             this.classList.remove('flipped');
             setTimeout(() => {
                 this.style.zIndex = pages.length - index;
             }, 400);
         } else {
-            // Buka halaman
+            // Membalik ke Kiri (Buka)
             this.classList.add('flipped');
             setTimeout(() => {
                 this.style.zIndex = 1;
