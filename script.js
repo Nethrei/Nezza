@@ -1,10 +1,22 @@
 /*
  * NEZZA — Main interactions
- * Homepage-focused controller + lightweight background effects.
+ * Homepage-focused controller + lightweight mobile rendering.
  */
 
 (() => {
     'use strict';
+
+    // Cap the rendering pixel ratio on phones before Three.js is loaded.
+    // This keeps the same visual size while greatly reducing GPU workload.
+    if (window.innerWidth <= 700) {
+        try {
+            const dpr = Math.min(window.devicePixelRatio || 1, 1);
+            Object.defineProperty(window, 'devicePixelRatio', {
+                configurable: true,
+                get: () => dpr,
+            });
+        } catch {}
+    }
 
     const $ = (selector, parent = document) => parent?.querySelector(selector);
     const $$ = (selector, parent = document) => [...(parent || document).querySelectorAll(selector)];
@@ -92,8 +104,7 @@
     nextButton?.addEventListener('click', () => slider?.scrollBy({ left: sliderStep(), behavior: 'smooth' }));
     slider?.addEventListener('scroll', updateSlider, { passive: true });
 
-    // Lightweight star canvas. On phones it uses one device pixel per CSS pixel,
-    // fewer particles, and a capped 30 FPS loop. The visual design stays the same.
+    // Lightweight star canvas. Phones use fewer particles, 1x rendering and 30 FPS.
     const spaceCanvas = $('#space-canvas');
     const spaceContext = spaceCanvas?.getContext('2d', { alpha: true });
     let particles = [];
