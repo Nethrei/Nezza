@@ -7,6 +7,11 @@
 (() => {
     'use strict';
 
+    // Load the living universe layer alongside the global animation system.
+    import('./universe-bg.js').catch((error) => {
+        console.error('Unable to load the universe background:', error);
+    });
+
     const style = document.createElement('style');
     style.textContent = `
         /* Global scroll-driven animation */
