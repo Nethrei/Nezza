@@ -18,7 +18,6 @@
   const navItems = $$('.nav-item');
   const indicator = $('#liquid-indicator');
 
-  /* ---------- Liquid navigation ---------- */
   function updateIndicator(activeItem) {
     if (!indicator || !activeItem) return;
     const nav = activeItem.closest('.liquid-nav');
@@ -46,7 +45,6 @@
   navItems.forEach((item) => item.addEventListener('click', () => showView(item.dataset.target)));
   $$('[data-go]').forEach((button) => button.addEventListener('click', () => showView(button.dataset.go)));
 
-  /* ---------- Landing ---------- */
   enterButton?.addEventListener('click', async () => {
     try { await music?.play(); } catch {}
     landing?.classList.add('hide');
@@ -58,7 +56,6 @@
     }, 800);
   });
 
-  /* ---------- Music ---------- */
   let musicMuted = false;
   musicButton?.addEventListener('click', () => {
     if (!music) return;
@@ -69,7 +66,6 @@
     musicButton.setAttribute('aria-label', musicMuted ? 'Nyalakan musik' : 'Matikan musik');
   });
 
-  /* ---------- Photo tilt ---------- */
   $$('.tilt-card').forEach((card) => {
     card.addEventListener('pointermove', (event) => {
       const rect = card.getBoundingClientRect();
@@ -80,7 +76,6 @@
     card.addEventListener('pointerleave', () => { card.style.transform = ''; });
   });
 
-  /* ---------- Album slider ---------- */
   const slider = $('#card-slider');
   const cards = $$('.memory-card', slider || document);
   const previousButton = $('#prev-card');
@@ -104,7 +99,8 @@
     if (!slider || !cards.length) return;
     const step = getCardStep();
     if (!step) return;
-    currentCard = Math.max(0, Math.min(cards.length - 1, Math.round(slider.scrollLeft / step)));
+    currentCard = Math.round(slider.scrollLeft / step);
+    currentCard = Math.max(0, Math.min(cards.length - 1, currentCard));
     if (counter) counter.textContent = String(currentCard + 1).padStart(2, '0');
     if (progressBar) progressBar.style.width = `${((currentCard + 1) / cards.length) * 100}%`;
     if (previousButton) previousButton.disabled = currentCard === 0;
@@ -139,7 +135,6 @@
   slider?.addEventListener('pointercancel', stopDragging);
   slider?.addEventListener('pointerleave', stopDragging);
 
-  /* ---------- Reveal animation ---------- */
   function revealVisibleElements(root = document) {
     $$('.reveal', root).forEach((element, index) => {
       element.style.setProperty('--reveal-delay', `${Math.min(index * 70, 350)}ms`);
@@ -147,7 +142,6 @@
     });
   }
 
-  /* ---------- Interactive space background ---------- */
   const canvas = $('#space-canvas');
   const context = canvas?.getContext('2d');
   let particles = [];
@@ -194,156 +188,6 @@
     animationFrame = requestAnimationFrame(drawSpace);
   }
 
-  /* ---------- 3D Sonic hero ---------- */
-  function initSonic3D() {
-    const heroGrid = $('.hero-grid');
-    const heroCopy = $('.hero-copy', heroGrid || document);
-    if (!heroGrid || !heroCopy || document.getElementById('sonic-3d-stage')) return;
-
-    const stage = document.createElement('div');
-    stage.id = 'sonic-3d-stage';
-    stage.className = 'sonic-3d-stage reveal';
-    stage.innerHTML = `
-      <div class="sonic-3d-glow"></div>
-      <canvas id="sonic-3d-canvas" aria-label="Sonic 3D interaktif"></canvas>
-      <div class="sonic-speed-ring"></div>
-      <div class="sonic-3d-hint">MOVE YOUR CURSOR · CLICK SONIC</div>
-    `;
-    heroGrid.insertBefore(stage, heroCopy);
-
-    const style = document.createElement('style');
-    style.textContent = `
-      .hero-grid{grid-template-columns:minmax(230px,.72fr) minmax(0,1.08fr) minmax(220px,.62fr)!important;align-items:center!important}
-      .sonic-3d-stage{position:relative;width:100%;height:390px;min-width:0;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;filter:drop-shadow(0 22px 35px rgba(0,65,150,.24))}
-      #sonic-3d-canvas{width:100%;height:100%;display:block;touch-action:none}
-      .sonic-3d-glow{position:absolute;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle,rgba(34,151,255,.42),rgba(34,151,255,.12) 45%,transparent 72%);filter:blur(12px);pointer-events:none;animation:sonicGlow 3s ease-in-out infinite}
-      .sonic-speed-ring{position:absolute;width:210px;height:70px;border:1px solid rgba(93,201,255,.34);border-radius:50%;bottom:38px;transform:rotate(-7deg);box-shadow:0 0 30px rgba(31,144,255,.16);pointer-events:none;animation:sonicRing 2.2s ease-in-out infinite}
-      .sonic-3d-hint{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-size:7px;letter-spacing:.17em;font-weight:800;color:rgba(255,255,255,.58);white-space:nowrap;pointer-events:none}
-      @keyframes sonicGlow{0%,100%{transform:scale(.94);opacity:.7}50%{transform:scale(1.08);opacity:1}}
-      @keyframes sonicRing{0%,100%{transform:translateY(3px) rotate(-7deg);opacity:.35}50%{transform:translateY(-4px) rotate(-7deg);opacity:.8}}
-      .sonic-3d-stage.sonic-active .sonic-speed-ring{animation:sonicRingFast .45s ease-in-out infinite}
-      @keyframes sonicRingFast{50%{transform:translateY(-7px) rotate(-7deg) scale(1.12);opacity:1}}
-      @media(max-width:1100px){.hero-grid{grid-template-columns:minmax(190px,.58fr) minmax(0,1fr)!important}.sonic-3d-stage{grid-row:1 / span 2;height:360px}.hero-visual{grid-column:2}.hero-copy{grid-column:2}}
-      @media(max-width:900px){.hero-grid{grid-template-columns:1fr!important}.sonic-3d-stage,.hero-copy,.hero-visual{grid-column:auto}.sonic-3d-stage{grid-row:auto;height:300px;order:1}.hero-copy{order:2}.hero-visual{order:3}}
-      @media(max-width:600px){.sonic-3d-stage{height:250px;margin-top:-8px}.sonic-3d-hint{font-size:6px}.sonic-speed-ring{width:170px;height:56px;bottom:24px}}
-    `;
-    document.head.appendChild(style);
-
-    const canvas3d = $('#sonic-3d-canvas');
-    if (!canvas3d) return;
-
-    const load = () => {
-      if (!window.THREE || !window.THREE.GLTFLoader) return;
-      const THREE = window.THREE;
-      const renderer = new THREE.WebGLRenderer({canvas: canvas3d, alpha: true, antialias: true});
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
-      renderer.setSize(canvas3d.clientWidth, canvas3d.clientHeight, false);
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.shadowMap.enabled = true;
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(28, canvas3d.clientWidth / canvas3d.clientHeight, .1, 100);
-      camera.position.set(0, 1.35, 5.2);
-
-      scene.add(new THREE.HemisphereLight(0x8fd7ff, 0x06152e, 2.4));
-      const key = new THREE.DirectionalLight(0xffffff, 3.2);
-      key.position.set(2.5, 4.5, 4);
-      key.castShadow = true;
-      scene.add(key);
-      const rim = new THREE.PointLight(0x249cff, 7, 8);
-      rim.position.set(-2, 1.4, 2);
-      scene.add(rim);
-
-      const loader = new window.THREE.GLTFLoader();
-      let model = null;
-      let mixer = null;
-      let activeAction = null;
-      let pointerX = 0;
-      let pointerY = 0;
-      let targetX = 0;
-      let targetY = 0;
-      let clicked = false;
-      let clickTimer = 0;
-      const clock = new THREE.Clock();
-
-      loader.load('https://raw.githubusercontent.com/baronwatts/models/master/sonic.glb', (gltf) => {
-        model = gltf.scene;
-        model.scale.setScalar(1.22);
-        model.position.set(0, -.95, 0);
-        model.rotation.y = Math.PI;
-        model.traverse((node) => {
-          if (node.isMesh) {
-            node.castShadow = true;
-            node.receiveShadow = true;
-            if (node.material) node.material.roughness = Math.min(node.material.roughness ?? .7, .72);
-          }
-        });
-        scene.add(model);
-        if (gltf.animations?.length) {
-          mixer = new THREE.AnimationMixer(model);
-          activeAction = mixer.clipAction(gltf.animations[0]);
-          activeAction.play();
-        }
-      }, undefined, (error) => console.warn('Sonic 3D gagal dimuat:', error));
-
-      function resize3D() {
-        const w = canvas3d.clientWidth || 1;
-        const h = canvas3d.clientHeight || 1;
-        camera.aspect = w / h;
-        camera.updateProjectionMatrix();
-        renderer.setSize(w, h, false);
-      }
-
-      function animate() {
-        requestAnimationFrame(animate);
-        const dt = Math.min(clock.getDelta(), .04);
-        if (mixer) mixer.update(dt);
-        pointerX += (targetX - pointerX) * .055;
-        pointerY += (targetY - pointerY) * .055;
-        if (model) {
-          model.rotation.y = Math.PI + pointerX * .42;
-          model.rotation.x = pointerY * .12;
-          const bob = Math.sin(performance.now() * .0022) * .035;
-          model.position.y = -.95 + bob + (clicked ? Math.sin(performance.now() * .012) * .07 : 0);
-          model.position.x = pointerX * .08;
-        }
-        if (clicked && performance.now() - clickTimer > 800) {
-          clicked = false;
-          stage.classList.remove('sonic-active');
-        }
-        renderer.render(scene, camera);
-      }
-
-      stage.addEventListener('pointermove', (event) => {
-        const rect = stage.getBoundingClientRect();
-        targetX = ((event.clientX - rect.left) / rect.width - .5) * 2;
-        targetY = ((event.clientY - rect.top) / rect.height - .5) * -2;
-      });
-      stage.addEventListener('pointerleave', () => { targetX = 0; targetY = 0; });
-      stage.addEventListener('click', () => {
-        clicked = true;
-        clickTimer = performance.now();
-        stage.classList.add('sonic-active');
-        if (activeAction && mixer) activeAction.reset().play();
-      });
-      window.addEventListener('resize', resize3D);
-      resize3D();
-      animate();
-    };
-
-    if (!window.THREE) {
-      const three = document.createElement('script');
-      three.src = 'https://cdn.jsdelivr.net/npm/three@0.182.0/build/three.min.js';
-      three.onload = () => {
-        const loaderScript = document.createElement('script');
-        loaderScript.src = 'https://cdn.jsdelivr.net/npm/three@0.182.0/examples/js/loaders/GLTFLoader.js';
-        loaderScript.onload = load;
-        document.head.appendChild(loaderScript);
-      };
-      document.head.appendChild(three);
-    } else load();
-  }
-
   window.addEventListener('resize', () => {
     resizeCanvas();
     updateIndicator($('.nav-item.active'));
@@ -352,9 +196,7 @@
 
   resizeCanvas();
   drawSpace();
-  initSonic3D();
 
-  /* ---------- Initial state ---------- */
   const hash = window.location.hash.replace('#', '');
   const initialTarget = hash === 'album' ? 'album-view' : hash === 'story' ? 'story-view' : 'home-view';
   showView(initialTarget, false);
@@ -364,4 +206,19 @@
     if (document.hidden) cancelAnimationFrame(animationFrame);
     else animationFrame = requestAnimationFrame(drawSpace);
   });
+})();
+
+/* ---------- Load the real 3D Sonic hero after the base UI is ready ---------- */
+(() => {
+  const loadScript = (src) => new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.onload = resolve;
+    script.onerror = reject;
+    document.head.appendChild(script);
+  });
+
+  loadScript('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js')
+    .then(() => loadScript('sonic3d.js'))
+    .catch(() => console.warn('3D Sonic gagal dimuat. Tampilan utama tetap berjalan.'));
 })();
