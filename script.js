@@ -1,12 +1,11 @@
 /* =========================================================
    NEZZA — INTERACTIONS
-   Vanilla JavaScript / no dependencies
+   Vanilla JavaScript, no dependencies.
    ========================================================= */
 
 (() => {
   'use strict';
 
-  // ---------- DOM helpers ----------
   const $ = (selector, parent = document) => parent.querySelector(selector);
   const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
 
@@ -19,7 +18,7 @@
   const navItems = $$('.nav-item');
   const indicator = $('#liquid-indicator');
 
-  // ---------- Navigation ----------
+  /* ---------- Liquid navigation ---------- */
   function updateIndicator(activeItem) {
     if (!indicator || !activeItem) return;
 
@@ -28,33 +27,35 @@
 
     const navRect = nav.getBoundingClientRect();
     const itemRect = activeItem.getBoundingClientRect();
+    const indicatorSize = window.innerWidth <= 480 ? 52 : 56;
+    const center = itemRect.left - navRect.left + itemRect.width / 2;
 
-    indicator.style.width = `${itemRect.width}px`;
-    indicator.style.transform = `translateX(${itemRect.left - navRect.left}px)`;
-  }
-
-  function revealElements(root = document) {
-    $$('.reveal', root).forEach((element, index) => {
-      element.style.setProperty('--reveal-delay', `${Math.min(index * 70, 350)}ms`);
-      element.classList.add('revealed');
-    });
+    indicator.style.width = `${indicatorSize}px`;
+    indicator.style.height = `${indicatorSize}px`;
+    indicator.style.transform = `translateX(${center - indicatorSize / 2}px)`;
   }
 
   function showView(target, updateHash = true) {
-    const page = document.getElementById(target);
-    if (!page) return;
+    const targetPage = document.getElementById(target);
+    if (!targetPage) return;
 
-    pages.forEach((item) => item.classList.toggle('active', item === page));
-    navItems.forEach((item) => item.classList.toggle('active', item.dataset.target === target));
+    pages.forEach((page) => {
+      page.classList.toggle('active', page === targetPage);
+    });
+
+    navItems.forEach((item) => {
+      item.classList.toggle('active', item.dataset.target === target);
+    });
 
     updateIndicator(navItems.find((item) => item.dataset.target === target));
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
     if (updateHash) {
       history.replaceState(null, '', `#${target.replace('-view', '')}`);
     }
 
-    revealElements(page);
+    revealVisibleElements(targetPage);
   }
 
   navItems.forEach((item) => {
@@ -65,12 +66,12 @@
     button.addEventListener('click', () => showView(button.dataset.go));
   });
 
-  // ---------- Landing ----------
+  /* ---------- Landing ---------- */
   enterButton?.addEventListener('click', async () => {
     try {
       await music?.play();
     } catch {
-      // Browser autoplay restrictions are ignored.
+      // Browser may block playback until another interaction.
     }
 
     landing?.classList.add('hide');
@@ -79,24 +80,24 @@
       if (landing) landing.style.display = 'none';
       content?.classList.add('active');
       updateIndicator($('.nav-item.active'));
-      revealElements($('.view-page.active'));
+      revealVisibleElements($('.view-page.active'));
     }, 800);
   });
 
-  // ---------- Music ----------
-  let muted = false;
+  /* ---------- Music ---------- */
+  let musicMuted = false;
 
   musicButton?.addEventListener('click', () => {
     if (!music) return;
 
-    muted = !muted;
-    music.muted = muted;
-    musicButton.textContent = muted ? '🔇' : '♪';
-    musicButton.classList.toggle('muted', muted);
-    musicButton.setAttribute('aria-label', muted ? 'Nyalakan musik' : 'Matikan musik');
+    musicMuted = !musicMuted;
+    music.muted = musicMuted;
+    musicButton.textContent = musicMuted ? '🔇' : '♪';
+    musicButton.classList.toggle('muted', musicMuted);
+    musicButton.setAttribute('aria-label', musicMuted ? 'Nyalakan musik' : 'Matikan musik');
   });
 
-  // ---------- Photo tilt ----------
+  /* ---------- Photo tilt ---------- */
   $$('.tilt-card').forEach((card) => {
     card.addEventListener('pointermove', (event) => {
       const rect = card.getBoundingClientRect();
@@ -111,7 +112,7 @@
     });
   });
 
-  // ---------- Album slider ----------
+  /* ---------- Album slider ---------- */
   const slider = $('#card-slider');
   const cards = $$('.memory-card', slider || document);
   const previousButton = $('#prev-card');
@@ -120,19 +121,20 @@
   const progressBar = $('#slider-bar');
 
   let currentCard = 0;
-  let dragging = false;
+  let isDragging = false;
   let dragStartX = 0;
   let dragStartScroll = 0;
 
   function getCardStep() {
-    if (!slider || !cards[0]) return 0;
+    const card = cards[0];
+    if (!card || !slider) return 0;
 
-    const styles = getComputedStyle(slider);
+    const styles = window.getComputedStyle(slider);
     const gap = parseFloat(styles.columnGap || styles.gap || '0');
-    return cards[0].getBoundingClientRect().width + gap;
+    return card.getBoundingClientRect().width + gap;
   }
 
-  function updateSlider() {
+  function updateSliderState() {
     if (!slider || !cards.length) return;
 
     const step = getCardStep();
@@ -150,21 +152,17 @@
 
   function moveSlider(direction) {
     if (!slider) return;
-
-    slider.scrollBy({
-      left: getCardStep() * direction,
-      behavior: 'smooth'
-    });
+    slider.scrollBy({ left: getCardStep() * direction, behavior: 'smooth' });
   }
 
   previousButton?.addEventListener('click', () => moveSlider(-1));
   nextButton?.addEventListener('click', () => moveSlider(1));
-  slider?.addEventListener('scroll', updateSlider, { passive: true });
+  slider?.addEventListener('scroll', updateSliderState, { passive: true });
 
   slider?.addEventListener('pointerdown', (event) => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
 
-    dragging = true;
+    isDragging = true;
     dragStartX = event.clientX;
     dragStartScroll = slider.scrollLeft;
     slider.classList.add('dragging');
@@ -172,12 +170,13 @@
   });
 
   slider?.addEventListener('pointermove', (event) => {
-    if (!dragging) return;
+    if (!isDragging) return;
     slider.scrollLeft = dragStartScroll - (event.clientX - dragStartX) * 1.15;
   });
 
   function stopDragging() {
-    dragging = false;
+    if (!isDragging) return;
+    isDragging = false;
     slider?.classList.remove('dragging');
   }
 
@@ -185,7 +184,15 @@
   slider?.addEventListener('pointercancel', stopDragging);
   slider?.addEventListener('pointerleave', stopDragging);
 
-  // ---------- Interactive particle background ----------
+  /* ---------- Reveal animation ---------- */
+  function revealVisibleElements(root = document) {
+    $$('.reveal', root).forEach((element, index) => {
+      element.style.setProperty('--reveal-delay', `${Math.min(index * 70, 350)}ms`);
+      element.classList.add('revealed');
+    });
+  }
+
+  /* ---------- Interactive space background ---------- */
   const canvas = $('#space-canvas');
   const context = canvas?.getContext('2d');
   let particles = [];
@@ -214,7 +221,7 @@
     }));
   }
 
-  function drawParticles() {
+  function drawSpace() {
     if (!canvas || !context) return;
 
     const width = window.innerWidth;
@@ -238,34 +245,34 @@
       context.fill();
     });
 
-    animationFrame = requestAnimationFrame(drawParticles);
+    animationFrame = requestAnimationFrame(drawSpace);
   }
 
   window.addEventListener('resize', () => {
     resizeCanvas();
     updateIndicator($('.nav-item.active'));
-    updateSlider();
+    updateSliderState();
   });
 
   resizeCanvas();
-  drawParticles();
+  drawSpace();
 
-  // ---------- Initial state ----------
+  /* ---------- Initial state ---------- */
   const hash = window.location.hash.replace('#', '');
-  const initialView = hash === 'album'
+  const initialTarget = hash === 'album'
     ? 'album-view'
     : hash === 'story'
       ? 'story-view'
       : 'home-view';
 
-  showView(initialView, false);
-  updateSlider();
+  showView(initialTarget, false);
+  updateSliderState();
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
       cancelAnimationFrame(animationFrame);
     } else {
-      animationFrame = requestAnimationFrame(drawParticles);
+      animationFrame = requestAnimationFrame(drawSpace);
     }
   });
 })();
