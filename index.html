@@ -3,123 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#030816">
+    <meta name="theme-color" content="#0a6cff">
     <title>Our Little Universe 💙</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- Home layout -->
     <style>
-        .landing::before,
-        .landing::after {
+        /* ============================================================
+           HOMEPAGE — BLUE / WHITE FOCUS
+           ============================================================ */
+        :root {
+            --blue-main: #168cff;
+            --blue-light: #6fd7ff;
+            --blue-deep: #061a3d;
+            --white: #ffffff;
+        }
+
+        body {
+            overflow-x: hidden;
+            background:
+                radial-gradient(circle at 18% 20%, rgba(74, 181, 255, .20), transparent 28%),
+                radial-gradient(circle at 82% 75%, rgba(30, 113, 255, .20), transparent 32%),
+                linear-gradient(135deg, #02091b 0%, #061b42 48%, #073f86 100%);
+        }
+
+        .ambient {
+            opacity: .7;
+            filter: blur(70px);
+            animation: ambientMove 9s ease-in-out infinite alternate;
+        }
+
+        .ambient-a {
+            background: #1aa7ff !important;
+        }
+
+        .ambient-b {
+            background: #4778ff !important;
+            animation-delay: -4s;
+        }
+
+        @keyframes ambientMove {
+            0% { transform: translate3d(-4%, -3%, 0) scale(1); }
+            100% { transform: translate3d(5%, 4%, 0) scale(1.14); }
+        }
+
+        #space-canvas {
+            opacity: .65;
+        }
+
+        /* Remove hamburger/sidebar completely. */
+        .liquid-sidebar,
+        #liquid-sidebar,
+        .sidebar-toggle,
+        .sidebar-panel {
             display: none !important;
         }
 
+        .app-shell {
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        /* Long bottom liquid bar is the only menu. */
+        .liquid-nav {
+            position: fixed !important;
+            left: 50% !important;
+            bottom: 24px !important;
+            transform: translateX(-50%) !important;
+            width: min(520px, calc(100vw - 32px)) !important;
+            height: 70px !important;
+            padding: 7px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-around !important;
+            border: 1px solid rgba(255, 255, 255, .30) !important;
+            border-radius: 999px !important;
+            background: rgba(76, 167, 255, .22) !important;
+            box-shadow: 0 18px 55px rgba(0, 20, 80, .35), inset 0 1px 0 rgba(255,255,255,.22) !important;
+            backdrop-filter: blur(24px) saturate(150%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+            z-index: 1000 !important;
+        }
+
+        .liquid-indicator {
+            top: 7px !important;
+            height: 56px !important;
+            border-radius: 999px !important;
+            background: rgba(255, 255, 255, .94) !important;
+            box-shadow: 0 8px 25px rgba(0, 94, 255, .25) !important;
+        }
+
+        .nav-item {
+            position: relative !important;
+            z-index: 2 !important;
+            width: 33.333% !important;
+            height: 56px !important;
+            color: rgba(255,255,255,.85) !important;
+            border: 0 !important;
+            background: transparent !important;
+        }
+
+        .nav-item.active {
+            color: #075dc9 !important;
+        }
+
+        /* Continuous ticker: enters from LEFT and travels LEFT -> RIGHT. */
+        .welcome-ticker {
+            position: relative !important;
+            width: min(1120px, calc(100% - 40px)) !important;
+            margin: 26px auto 0 !important;
+            height: 42px !important;
+            overflow: hidden !important;
+            border: 1px solid rgba(255,255,255,.16) !important;
+            border-radius: 999px !important;
+            background: rgba(255,255,255,.07) !important;
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+            mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+        }
+
+        .welcome-ticker-track {
+            width: max-content !important;
+            height: 100% !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 90px !important;
+            animation: tickerLeftToRight 18s linear infinite !important;
+            will-change: transform;
+        }
+
+        .welcome-ticker-track span {
+            flex: 0 0 auto !important;
+            white-space: nowrap !important;
+            color: #fff !important;
+            font-weight: 700 !important;
+            letter-spacing: .12em !important;
+        }
+
+        @keyframes tickerLeftToRight {
+            from { transform: translateX(-50%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Home hero */
         .hero-grid {
-            min-height: auto !important;
-            padding: 40px 0 70px !important;
-            grid-template-columns: minmax(280px, .9fr) minmax(0, 1.1fr) !important;
-            gap: clamp(35px, 6vw, 80px) !important;
+            min-height: calc(100vh - 100px) !important;
+            padding: 45px 0 120px !important;
+            grid-template-columns: minmax(340px, .95fr) minmax(430px, 1.05fr) !important;
+            gap: clamp(20px, 4vw, 70px) !important;
             align-items: center !important;
         }
 
         .hero-copy {
-            order: 2;
+            order: 1 !important;
+            text-align: left !important;
+        }
+
+        .hero-copy .eyebrow {
+            color: #72d8ff !important;
         }
 
         .hero-copy h2 {
-            font-size: clamp(38px, 5vw, 64px) !important;
+            color: #fff !important;
+            font-size: clamp(44px, 5.5vw, 78px) !important;
+            line-height: .94 !important;
+            letter-spacing: -.055em !important;
+        }
+
+        .hero-copy h2 span {
+            color: #69d5ff !important;
         }
 
         .hero-copy > p {
-            max-width: 560px;
+            max-width: 560px !important;
+            color: rgba(235,248,255,.78) !important;
         }
 
         .hero-visual {
-            order: 1 !important;
-            min-height: 0 !important;
-            height: auto !important;
+            order: 2 !important;
+            min-height: 540px !important;
             display: flex !important;
-            flex-direction: column !important;
             align-items: center !important;
-            justify-content: flex-start !important;
+            justify-content: center !important;
             position: relative !important;
-            width: 100% !important;
-            gap: 22px !important;
         }
 
         .dora-stage {
-            order: 1 !important;
             position: relative !important;
-            width: 360px !important;
-            height: 470px !important;
+            width: min(480px, 48vw) !important;
+            height: 570px !important;
             z-index: 10 !important;
+            overflow: visible !important;
             flex: none !important;
+        }
+
+        .dora-3d-wrap {
+            position: absolute !important;
+            inset: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
             overflow: visible !important;
         }
 
-        .main-photo-card {
-            display: none !important;
+        .dora-3d-wrap canvas {
+            width: 100% !important;
+            height: 100% !important;
+            display: block !important;
+            touch-action: none !important;
         }
 
         .orbit {
-            z-index: 0 !important;
+            pointer-events: none !important;
+            opacity: .8 !important;
         }
 
         .orbit-one {
-            width: 390px !important;
-            height: 390px !important;
+            width: 470px !important;
+            height: 470px !important;
+            border-color: rgba(102, 215, 255, .35) !important;
+            animation: orbitSpin 18s linear infinite !important;
         }
 
         .orbit-two {
-            width: 430px !important;
-            height: 210px !important;
+            width: 520px !important;
+            height: 250px !important;
+            border-color: rgba(255, 255, 255, .24) !important;
+            animation: orbitSpinReverse 13s linear infinite !important;
+        }
+
+        @keyframes orbitSpin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes orbitSpinReverse {
+            to { transform: translate(-50%, -50%) rotate(-360deg); }
         }
 
         .floating-chip {
-            z-index: 12 !important;
+            z-index: 20 !important;
+            border-color: rgba(255,255,255,.28) !important;
+            background: rgba(255,255,255,.09) !important;
+            color: #fff !important;
+            backdrop-filter: blur(12px) !important;
         }
 
-        .chip-one {
-            left: 0 !important;
-            top: 35px !important;
+        .chip-one { left: 0 !important; top: 70px !important; }
+        .chip-two { right: 0 !important; bottom: 55px !important; }
+
+        .primary-btn {
+            background: #fff !important;
+            color: #075dc9 !important;
+            box-shadow: 0 14px 38px rgba(0, 110, 255, .22) !important;
         }
 
-        .chip-two {
-            right: 0 !important;
-            bottom: 25px !important;
+        .primary-btn:hover {
+            transform: translateY(-3px);
         }
 
         @media (max-width: 900px) {
             .hero-grid {
                 grid-template-columns: 1fr !important;
-                padding-top: 20px !important;
+                min-height: auto !important;
+                padding-top: 25px !important;
             }
 
             .hero-copy {
-                order: 2;
-                text-align: center;
+                order: 2 !important;
+                text-align: center !important;
             }
 
             .hero-visual {
                 order: 1 !important;
+                min-height: 480px !important;
             }
 
             .hero-actions {
-                justify-content: center;
+                justify-content: center !important;
+            }
+
+            .dora-stage {
+                width: min(440px, 88vw) !important;
+                height: 510px !important;
             }
         }
 
         @media (max-width: 600px) {
+            .welcome-ticker {
+                width: calc(100% - 24px) !important;
+                margin-top: 14px !important;
+            }
+
             .hero-grid {
-                padding: 10px 0 45px !important;
-                gap: 20px !important;
+                padding: 10px 0 120px !important;
+                gap: 0 !important;
+            }
+
+            .hero-visual {
+                min-height: 400px !important;
             }
 
             .dora-stage {
-                width: 320px !important;
-                height: 420px !important;
-                transform: none !important;
-                margin-bottom: -40px !important;
+                width: 330px !important;
+                max-width: 90vw !important;
+                height: 430px !important;
+            }
+
+            .orbit-one {
+                width: 350px !important;
+                height: 350px !important;
+            }
+
+            .orbit-two {
+                width: 390px !important;
+                height: 190px !important;
+            }
+
+            .chip-one { left: 2px !important; top: 45px !important; }
+            .chip-two { right: 2px !important; bottom: 30px !important; }
+
+            .hero-copy h2 {
+                font-size: clamp(40px, 12vw, 58px) !important;
+            }
+
+            .liquid-nav {
+                bottom: 14px !important;
+                width: calc(100vw - 24px) !important;
+                height: 64px !important;
             }
         }
     </style>
@@ -142,36 +351,10 @@
     </div>
 
     <main id="content-area" class="app-shell">
-        <div id="liquid-sidebar" class="liquid-sidebar">
-            <button
-                id="sidebar-toggle"
-                class="sidebar-toggle"
-                type="button"
-                aria-label="Buka menu"
-            >
-                <i></i>
-                <i></i>
-                <i></i>
-            </button>
-
-            <div class="sidebar-panel">
-                <button class="sidebar-link active" data-target="home-view" type="button">
-                    ⌂ <span>Home</span>
-                </button>
-                <button class="sidebar-link" data-target="album-view" type="button">
-                    ◈ <span>Album</span>
-                </button>
-                <button class="sidebar-link" data-target="story-view" type="button">
-                    ✦ <span>Note</span>
-                </button>
-                <button id="sidebar-music" class="sidebar-link" type="button">
-                    ♪ <span>Music</span>
-                </button>
-            </div>
-        </div>
-
         <div class="welcome-ticker" aria-hidden="true">
             <div class="welcome-ticker-track">
+                <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
+                <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
                 <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
                 <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
             </div>
@@ -201,15 +384,9 @@
                 <div class="hero-visual reveal">
                     <div class="orbit orbit-one"></div>
                     <div class="orbit orbit-two"></div>
-
                     <div class="floating-chip chip-one">✦ GOOD VIBES</div>
                     <div class="floating-chip chip-two">DORAEMON ✦</div>
-
-                    <div
-                        id="dora-stage"
-                        class="dora-stage"
-                        aria-label="Doraemon interaktif"
-                    ></div>
+                    <div id="dora-stage" class="dora-stage" aria-label="Doraemon interaktif"></div>
                 </div>
             </div>
         </section>
@@ -217,48 +394,29 @@
         <section id="album-view" class="view-page">
             <div class="page-heading">
                 <span class="eyebrow">MEMORY ALBUM</span>
-                <h2>
-                    Little moments,<br>
-                    <span>kept forever.</span>
-                </h2>
+                <h2>Little moments,<br><span>kept forever.</span></h2>
                 <p>Geser untuk melihat kenangan.</p>
             </div>
 
             <div class="slider-wrap">
                 <button id="prev-card" class="slider-arrow" type="button">←</button>
-
                 <div id="card-slider" class="card-slider">
                     <article class="memory-card">
                         <span class="card-number">01</span>
                         <img src="IMG_20260731_204858.jpg" alt="Kenangan 1">
-                        <div class="card-info">
-                            <span>MOMENT</span>
-                            <h3>One frame.</h3>
-                            <p>Satu foto, satu cerita kecil.</p>
-                        </div>
+                        <div class="card-info"><span>MOMENT</span><h3>One frame.</h3><p>Satu foto, satu cerita kecil.</p></div>
                     </article>
-
                     <article class="memory-card">
                         <span class="card-number">02</span>
                         <img src="IMG_20260731_204858.jpg" alt="Kenangan 2">
-                        <div class="card-info">
-                            <span>MEMORY</span>
-                            <h3>Good vibes.</h3>
-                            <p>Hal sederhana yang layak diingat.</p>
-                        </div>
+                        <div class="card-info"><span>MEMORY</span><h3>Good vibes.</h3><p>Hal sederhana yang layak diingat.</p></div>
                     </article>
-
                     <article class="memory-card">
                         <span class="card-number">03</span>
                         <img src="IMG_20260731_204858.jpg" alt="Kenangan 3">
-                        <div class="card-info">
-                            <span>STORY</span>
-                            <h3>Keep it close.</h3>
-                            <p>Momen kecil yang tetap punya arti.</p>
-                        </div>
+                        <div class="card-info"><span>STORY</span><h3>Keep it close.</h3><p>Momen kecil yang tetap punya arti.</p></div>
                     </article>
                 </div>
-
                 <button id="next-card" class="slider-arrow" type="button">→</button>
             </div>
 
@@ -272,19 +430,12 @@
         <section id="story-view" class="view-page">
             <div class="page-heading">
                 <span class="eyebrow">A LITTLE NOTE</span>
-                <h2>
-                    For the moments<br>
-                    <span>that matter.</span>
-                </h2>
+                <h2>For the moments<br><span>that matter.</span></h2>
             </div>
-
             <article class="note-card">
                 <span>NOTE</span>
                 <h3>Keep the good ones.</h3>
-                <p>
-                    Semoga setiap halaman di sini selalu mengingatkan bahwa momen
-                    kecil juga bisa menjadi kenangan yang besar.
-                </p>
+                <p>Semoga setiap halaman di sini selalu mengingatkan bahwa momen kecil juga bisa menjadi kenangan yang besar.</p>
                 <div class="signature">— Nezza 💙</div>
             </article>
         </section>
@@ -292,23 +443,13 @@
 
     <nav class="liquid-nav" aria-label="Navigasi utama">
         <span id="liquid-indicator" class="liquid-indicator"></span>
-
-        <button class="nav-item active" data-target="home-view" type="button">
-            ⌂ <small>Home</small>
-        </button>
-        <button class="nav-item" data-target="album-view" type="button">
-            ◈ <small>Album</small>
-        </button>
-        <button class="nav-item" data-target="story-view" type="button">
-            ✦ <small>Note</small>
-        </button>
+        <button class="nav-item active" data-target="home-view" type="button">⌂ <small>Home</small></button>
+        <button class="nav-item" data-target="album-view" type="button">◈ <small>Album</small></button>
+        <button class="nav-item" data-target="story-view" type="button">✦ <small>Note</small></button>
     </nav>
 
     <audio id="bg-music" loop preload="metadata">
-        <source
-            src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3"
-            type="audio/mpeg"
-        >
+        <source src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3" type="audio/mpeg">
     </audio>
 
     <script src="script.js"></script>
