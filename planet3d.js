@@ -1,6 +1,5 @@
 /*
- * NEZZA — Interactive 3D planet for the homepage hero.
- * Uses procedural Three.js geometry only: no external 3D model required.
+ * NEZZA — Interactive 3D planet + immersive universe background.
  */
 
 (() => {
@@ -8,6 +7,140 @@
 
     const CDN = 'https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js';
     const FALLBACK = 'https://unpkg.com/three@0.186.0/build/three.module.js';
+
+    function injectUniverseStyle() {
+        if (document.getElementById('universe-effect-style')) return;
+
+        const style = document.createElement('style');
+        style.id = 'universe-effect-style';
+        style.textContent = `
+            html, body {
+                background: #010714 !important;
+            }
+
+            body {
+                --mx: 0px;
+                --my: 0px;
+                overflow-x: hidden !important;
+                position: relative;
+            }
+
+            body::before {
+                content: '' !important;
+                position: fixed !important;
+                inset: -18% !important;
+                z-index: -3 !important;
+                pointer-events: none !important;
+                background:
+                    radial-gradient(circle at 18% 35%, rgba(0, 119, 255, .28), transparent 24%),
+                    radial-gradient(circle at 76% 22%, rgba(78, 218, 255, .20), transparent 22%),
+                    radial-gradient(circle at 52% 78%, rgba(20, 66, 190, .24), transparent 30%),
+                    radial-gradient(circle at 88% 76%, rgba(0, 155, 255, .18), transparent 22%);
+                filter: blur(34px);
+                transform: translate3d(calc(var(--mx) * .35), calc(var(--my) * .35), 0) scale(1.05);
+                animation: universeNebula 16s ease-in-out infinite alternate;
+                will-change: transform;
+            }
+
+            body::after {
+                content: '' !important;
+                position: fixed !important;
+                inset: 0 !important;
+                z-index: -2 !important;
+                pointer-events: none !important;
+                background:
+                    radial-gradient(ellipse at center, transparent 30%, rgba(0, 4, 16, .30) 100%),
+                    linear-gradient(180deg, rgba(0, 8, 28, .28), rgba(0, 18, 55, .10));
+                mix-blend-mode: normal;
+            }
+
+            #space-canvas {
+                z-index: -1 !important;
+                opacity: .95 !important;
+                mix-blend-mode: screen !important;
+            }
+
+            .ambient {
+                filter: blur(110px) !important;
+                opacity: .22 !important;
+                transform: translate3d(var(--mx), var(--my), 0);
+                transition: transform 1.2s ease-out;
+            }
+
+            .welcome-ticker {
+                position: fixed !important;
+                top: 0 !important;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                width: 100% !important;
+                max-width: none !important;
+                margin: 0 !important;
+                height: 48px !important;
+                border-radius: 0 !important;
+                border-left: 0 !important;
+                border-right: 0 !important;
+                border-top: 0 !important;
+                z-index: 900 !important;
+                background: rgba(2, 14, 39, .36) !important;
+                box-shadow: 0 8px 40px rgba(0, 60, 180, .10), inset 0 -1px 0 rgba(255,255,255,.10) !important;
+            }
+
+            .welcome-ticker-track {
+                height: 48px !important;
+            }
+
+            .app-shell {
+                padding-top: 48px !important;
+            }
+
+            .chip-two {
+                font-size: 0 !important;
+            }
+
+            .chip-two::after {
+                content: 'OUR UNIVERSE ✦';
+                font-size: 9px;
+                letter-spacing: .08em;
+            }
+
+            @keyframes universeNebula {
+                0% { transform: translate3d(calc(var(--mx) * .35 - 2%), calc(var(--my) * .35 - 1%), 0) scale(1); }
+                50% { transform: translate3d(calc(var(--mx) * .55 + 2%), calc(var(--my) * .55 + 2%), 0) scale(1.08); }
+                100% { transform: translate3d(calc(var(--mx) * .35 - 1%), calc(var(--my) * .35 + 3%), 0) scale(1.14); }
+            }
+
+            @media (max-width: 600px) {
+                .welcome-ticker,
+                .welcome-ticker-track {
+                    height: 42px !important;
+                }
+
+                .app-shell {
+                    padding-top: 42px !important;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                body::before { animation: none !important; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    function setupUniverseInteraction() {
+        const updatePointer = (x, y) => {
+            const px = (x / window.innerWidth - .5) * 2;
+            const py = (y / window.innerHeight - .5) * 2;
+            document.body.style.setProperty('--mx', `${px * 28}px`);
+            document.body.style.setProperty('--my', `${py * 28}px`);
+        };
+
+        window.addEventListener('pointermove', (event) => {
+            updatePointer(event.clientX, event.clientY);
+        }, { passive: true });
+
+        window.addEventListener('pointerleave', () => updatePointer(window.innerWidth / 2, window.innerHeight / 2));
+    }
 
     async function loadThree() {
         try {
@@ -36,6 +169,7 @@
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
             camera.position.set(0, 0.25, 7.2);
+            camera.lookAt(0, 0.15, 0);
 
             const renderer = new THREE.WebGLRenderer({
                 alpha: true,
@@ -72,15 +206,6 @@
             );
             planetGroup.add(planet);
 
-            // Bright white/blue cloud bands made from slightly offset transparent spheres.
-            const cloudMaterial = new THREE.MeshStandardMaterial({
-                color: 0xeaf9ff,
-                transparent: true,
-                opacity: 0.19,
-                roughness: 0.65,
-                depthWrite: false,
-            });
-
             const cloudBands = [];
             [
                 { y: 0.55, scale: [1.48, 0.16, 1.50], rot: 0.22 },
@@ -89,7 +214,13 @@
             ].forEach((band) => {
                 const mesh = new THREE.Mesh(
                     new THREE.SphereGeometry(1, 48, 24),
-                    cloudMaterial.clone(),
+                    new THREE.MeshStandardMaterial({
+                        color: 0xeaf9ff,
+                        transparent: true,
+                        opacity: 0.19,
+                        roughness: 0.65,
+                        depthWrite: false,
+                    }),
                 );
                 mesh.position.y = band.y;
                 mesh.scale.set(...band.scale);
@@ -98,36 +229,24 @@
                 planetGroup.add(mesh);
             });
 
-            // Procedural continents / islands: small flattened spheres give the planet more depth.
-            const landMaterial = new THREE.MeshStandardMaterial({
-                color: 0x5de1ff,
-                roughness: 0.72,
-                metalness: 0,
-            });
-
             const land = new THREE.Group();
             planetGroup.add(land);
+            const landMaterial = new THREE.MeshStandardMaterial({ color: 0x5de1ff, roughness: 0.72 });
 
-            const islands = [
+            [
                 [-0.65, 0.55, 1.34, 0.34, 0.20],
                 [0.45, 0.78, 1.27, 0.30, 0.14],
                 [0.70, -0.20, 1.38, 0.42, 0.16],
                 [-0.35, -0.62, 1.38, 0.38, 0.14],
                 [0.15, 0.10, 1.52, 0.24, 0.12],
-            ];
-
-            islands.forEach(([x, y, z, sx, sy]) => {
-                const island = new THREE.Mesh(
-                    new THREE.SphereGeometry(1, 24, 16),
-                    landMaterial,
-                );
+            ].forEach(([x, y, z, sx, sy]) => {
+                const island = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 16), landMaterial);
                 island.position.set(x, y, z);
                 island.scale.set(sx, sy, 0.035);
                 land.add(island);
             });
 
-            // Glowing atmosphere around the planet.
-            const atmosphere = new THREE.Mesh(
+            planetGroup.add(new THREE.Mesh(
                 new THREE.SphereGeometry(1.68, 64, 48),
                 new THREE.MeshBasicMaterial({
                     color: 0x55dfff,
@@ -137,33 +256,26 @@
                     blending: THREE.AdditiveBlending,
                     depthWrite: false,
                 }),
-            );
-            planetGroup.add(atmosphere);
+            ));
 
-            // Saturn-like rings, rotated for a premium 3D silhouette.
             const ringGroup = new THREE.Group();
             ringGroup.rotation.x = THREE.MathUtils.degToRad(67);
             ringGroup.rotation.z = THREE.MathUtils.degToRad(-18);
             planetGroup.add(ringGroup);
 
-            const ringMaterials = [
-                new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.72, side: THREE.DoubleSide }),
-                new THREE.MeshBasicMaterial({ color: 0x65d9ff, transparent: true, opacity: 0.50, side: THREE.DoubleSide }),
-                new THREE.MeshBasicMaterial({ color: 0x238cff, transparent: true, opacity: 0.34, side: THREE.DoubleSide }),
-            ];
-
             [
-                [2.05, 2.26, ringMaterials[0]],
-                [2.30, 2.44, ringMaterials[1]],
-                [2.48, 2.62, ringMaterials[2]],
-            ].forEach(([inner, outer, material]) => {
-                ringGroup.add(new THREE.Mesh(new THREE.RingGeometry(inner, outer, 96), material));
+                [2.05, 2.26, 0xffffff, 0.72],
+                [2.30, 2.44, 0x65d9ff, 0.50],
+                [2.48, 2.62, 0x238cff, 0.34],
+            ].forEach(([inner, outer, color, opacity]) => {
+                ringGroup.add(new THREE.Mesh(
+                    new THREE.RingGeometry(inner, outer, 96),
+                    new THREE.MeshBasicMaterial({ color, transparent: true, opacity, side: THREE.DoubleSide }),
+                ));
             });
 
-            // Small moon orbiting the planet.
             const moonOrbit = new THREE.Group();
             planetGroup.add(moonOrbit);
-
             const moon = new THREE.Mesh(
                 new THREE.SphereGeometry(0.22, 32, 24),
                 new THREE.MeshStandardMaterial({ color: 0xf3fbff, roughness: 0.7 }),
@@ -171,10 +283,9 @@
             moon.position.set(2.65, 0.35, 0);
             moonOrbit.add(moon);
 
-            // Tiny star particles behind the planet.
-            const starPositions = new Float32Array(420 * 3);
-            for (let i = 0; i < 420; i += 1) {
-                const radius = 5 + Math.random() * 5;
+            const starPositions = new Float32Array(700 * 3);
+            for (let i = 0; i < 700; i += 1) {
+                const radius = 5 + Math.random() * 8;
                 const theta = Math.random() * Math.PI * 2;
                 const phi = Math.acos((Math.random() * 2) - 1);
                 starPositions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
@@ -186,7 +297,7 @@
             starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const stars = new THREE.Points(
                 starGeometry,
-                new THREE.PointsMaterial({ color: 0xffffff, size: 0.025, transparent: true, opacity: 0.7 }),
+                new THREE.PointsMaterial({ color: 0xffffff, size: 0.028, transparent: true, opacity: 0.82 }),
             );
             scene.add(stars);
 
@@ -237,18 +348,14 @@
             }
 
             animate();
-
-            // If the old character renderer inserts its canvas later, remove it.
-            const observer = new MutationObserver(() => {
-                const foreignNodes = [...stage.children].filter((child) => child !== wrapper);
-                if (foreignNodes.length) foreignNodes.forEach((child) => child.remove());
-            });
-            observer.observe(stage, { childList: true });
         } catch (error) {
             stage.dataset.planetReady = 'false';
             console.error('3D planet failed to initialize:', error);
         }
     }
+
+    injectUniverseStyle();
+    setupUniverseInteraction();
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initPlanet, { once: true });
