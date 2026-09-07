@@ -9,6 +9,149 @@
     const $ = (selector, parent = document) => parent?.querySelector(selector);
     const $$ = (selector, parent = document) => [...(parent || document).querySelectorAll(selector)];
 
+    // Remove leftovers from the old 3D/universe version.
+    // This keeps the existing HTML compatible while preventing empty/heavy
+    // visual layers from taking space or triggering compositor work.
+    function cleanOldVisuals() {
+        ['#space-canvas', '#dora-stage', '.ambient', '.orbit'].forEach(selector => {
+            $$(selector).forEach(el => el.remove());
+        });
+    }
+
+    // Mobile-first performance/layout patch.
+    function applyMobileLayout() {
+        if (!document.getElementById('nezza-mobile-performance')) {
+            const style = document.createElement('style');
+            style.id = 'nezza-mobile-performance';
+            style.textContent = `
+                /* Keep the important content immediately visible on phones. */
+                @media (max-width: 760px) {
+                    body {
+                        overflow-x: hidden;
+                        background: linear-gradient(180deg, #061a3d 0%, #0b4e9b 52%, #7bdcff 100%);
+                    }
+
+                    .hero-grid {
+                        display: block !important;
+                        min-height: auto !important;
+                        padding: 28px 16px 115px !important;
+                    }
+
+                    .hero-visual {
+                        display: none !important;
+                    }
+
+                    .hero-copy {
+                        display: block !important;
+                        order: 1 !important;
+                        width: 100% !important;
+                        max-width: 720px !important;
+                        margin: 0 auto !important;
+                        text-align: center !important;
+                    }
+
+                    .hero-copy .eyebrow {
+                        font-size: 11px !important;
+                        letter-spacing: .18em !important;
+                    }
+
+                    .hero-copy h2 {
+                        margin: 12px auto 16px !important;
+                        font-size: clamp(42px, 12vw, 62px) !important;
+                        line-height: .94 !important;
+                    }
+
+                    .hero-copy > p {
+                        max-width: 520px !important;
+                        margin: 0 auto !important;
+                        font-size: 13px !important;
+                        line-height: 1.65 !important;
+                    }
+
+                    .hero-actions {
+                        margin-top: 22px !important;
+                        display: flex !important;
+                        flex-wrap: wrap !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        gap: 12px !important;
+                    }
+
+                    .scroll-note {
+                        width: 100% !important;
+                        text-align: center !important;
+                    }
+
+                    /* Keep the navigation glass simple on low-power phones. */
+                    .liquid-nav {
+                        backdrop-filter: none !important;
+                        -webkit-backdrop-filter: none !important;
+                        background: rgba(93, 183, 255, .92) !important;
+                        box-shadow: 0 10px 28px rgba(0, 20, 80, .22) !important;
+                    }
+
+                    .welcome-ticker {
+                        backdrop-filter: none !important;
+                        -webkit-backdrop-filter: none !important;
+                        background: rgba(8, 39, 87, .72) !important;
+                    }
+
+                    .floating-chip,
+                    .ambient,
+                    .orbit,
+                    #space-canvas,
+                    #dora-stage {
+                        display: none !important;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .welcome-ticker {
+                        height: 38px !important;
+                        margin-top: 10px !important;
+                    }
+
+                    .welcome-ticker-track {
+                        gap: 55px !important;
+                        animation-duration: 22s !important;
+                    }
+
+                    .welcome-ticker-track span {
+                        font-size: 11px !important;
+                    }
+
+                    .hero-grid {
+                        padding: 30px 14px 108px !important;
+                    }
+
+                    .hero-copy h2 {
+                        font-size: clamp(40px, 12.5vw, 54px) !important;
+                    }
+
+                    .primary-btn {
+                        min-height: 52px !important;
+                    }
+
+                    .liquid-nav {
+                        bottom: 10px !important;
+                        width: calc(100vw - 20px) !important;
+                        height: 60px !important;
+                    }
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .welcome-ticker-track {
+                        animation: none !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    cleanOldVisuals();
+    applyMobileLayout();
+
     const landing = $('#landing-page');
     const content = $('#content-area');
     const enterButton = $('#enter-btn');
