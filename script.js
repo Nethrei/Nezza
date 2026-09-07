@@ -1,6 +1,6 @@
 /*
  * NEZZA — Main interactions
- * Homepage-focused controller + interactive procedural 3D planet.
+ * Homepage-focused controller + lightweight background effects.
  */
 
 (() => {
@@ -92,9 +92,14 @@
     nextButton?.addEventListener('click', () => slider?.scrollBy({ left: sliderStep(), behavior: 'smooth' }));
     slider?.addEventListener('scroll', updateSlider, { passive: true });
 
+    // Lightweight star canvas. On phones it uses one device pixel per CSS pixel,
+    // fewer particles, and a capped 30 FPS loop. The visual design stays the same.
     const spaceCanvas = $('#space-canvas');
-    const spaceContext = spaceCanvas?.getContext('2d');
+    const spaceContext = spaceCanvas?.getContext('2d', { alpha: true });
     let particles = [];
+    let backgroundFrame = 0;
+    let lastBackgroundFrame = 0;
+    let backgroundRunning = true;
     const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
 
     window.addEventListener('pointermove', (event) => {
@@ -104,29 +109,41 @@
 
     function resizeBackground() {
         if (!spaceCanvas || !spaceContext) return;
-        const ratio = Math.min(window.devicePixelRatio || 1, 2);
-        spaceCanvas.width = window.innerWidth * ratio;
-        spaceCanvas.height = window.innerHeight * ratio;
-        spaceCanvas.style.width = `${window.innerWidth}px`;
-        spaceCanvas.style.height = `${window.innerHeight}px`;
+        const mobile = window.innerWidth <= 700;
+        const ratio = mobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5);
+        const width = Math.max(1, Math.floor(window.innerWidth));
+        const height = Math.max(1, Math.floor(window.innerHeight));
+        spaceCanvas.width = Math.floor(width * ratio);
+        spaceCanvas.height = Math.floor(height * ratio);
+        spaceCanvas.style.width = `${width}px`;
+        spaceCanvas.style.height = `${height}px`;
         spaceContext.setTransform(ratio, 0, 0, ratio, 0, 0);
-        const amount = Math.min(120, Math.max(50, Math.floor(window.innerWidth / 13)));
+
+        const amount = mobile
+            ? Math.min(38, Math.max(24, Math.floor(width / 11)))
+            : Math.min(90, Math.max(45, Math.floor(width / 14)));
+
         particles = Array.from({ length: amount }, () => ({
-            x: Math.random() * window.innerWidth,
-            y: Math.random() * window.innerHeight,
-            radius: Math.random() * 1.7 + .35,
-            speedX: (Math.random() - .5) * .22,
-            speedY: Math.random() * .20 + .03,
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * (mobile ? 1.35 : 1.7) + .35,
+            speedX: (Math.random() - .5) * (mobile ? .15 : .22),
+            speedY: Math.random() * (mobile ? .14 : .20) + .03,
             alpha: Math.random() * .45 + .12,
             phase: Math.random() * Math.PI * 2,
         }));
     }
 
-    function animateBackground() {
+    function animateBackground(timestamp = 0) {
         if (!spaceContext) return;
+        backgroundFrame = requestAnimationFrame(animateBackground);
+        if (!backgroundRunning || timestamp - lastBackgroundFrame < 33) return;
+        lastBackgroundFrame = timestamp;
+
         pointer.x += (pointer.targetX - pointer.x) * .025;
         pointer.y += (pointer.targetY - pointer.y) * .025;
         spaceContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
         particles.forEach((particle) => {
             particle.x += particle.speedX;
             particle.y -= particle.speedY;
@@ -142,8 +159,16 @@
             spaceContext.fillStyle = `rgba(190, 240, 255, ${alpha})`;
             spaceContext.fill();
         });
-        requestAnimationFrame(animateBackground);
     }
+
+    document.addEventListener('visibilitychange', () => {
+        backgroundRunning = !document.hidden;
+        if (document.hidden && backgroundFrame) cancelAnimationFrame(backgroundFrame);
+        if (!document.hidden && spaceContext) {
+            lastBackgroundFrame = 0;
+            backgroundFrame = requestAnimationFrame(animateBackground);
+        }
+    });
 
     resizeBackground();
     animateBackground();
