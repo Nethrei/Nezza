@@ -217,6 +217,17 @@
     });
 
     /* ================================================================
+       SCROLL STORY
+       ================================================================
+       Adds a photo + sticker sequence below the hero. Each element
+       reveals as it enters the viewport and stickers gently parallax.
+    */
+
+    import('./scroll-effects.js').catch((error) => {
+        console.error('Unable to load the scroll story:', error);
+    });
+
+    /* ================================================================
        INITIAL STATE
        ================================================================ */
 
