@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nezza — Our Little Universe 💙</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <canvas id="space-canvas"></canvas>
+
+  <div id="landing-page" class="landing">
+    <div class="sonic-stage">
+      <div class="speed-ring"></div>
+      <div class="sonic-runner">
+        <div class="sonic-spike spike-1"></div>
+        <div class="sonic-spike spike-2"></div>
+        <div class="sonic-spike spike-3"></div>
+        <div class="sonic-head">
+          <div class="eye eye-a"></div>
+          <div class="eye eye-b"></div>
+          <div class="nose"></div>
+        </div>
+        <div class="sonic-body"></div>
+        <div class="sonic-arm arm-a"></div>
+        <div class="sonic-arm arm-b"></div>
+        <div class="sonic-shoe shoe-a"></div>
+        <div class="sonic-shoe shoe-b"></div>
+      </div>
+    </div>
+
+    <div class="landing-content">
+      <span class="eyebrow">A LITTLE DIGITAL UNIVERSE</span>
+      <h1>Hai, <span>Kesayangan.</span></h1>
+      <p>Ada dunia kecil yang gue bikin khusus buat menyimpan cerita, foto, dan momen yang berharga.</p>
+      <button id="enter-btn" class="primary-btn">
+        Masuk ke cerita <span>→</span>
+      </button>
+    </div>
+  </div>
+
+  <main id="content-area" class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <strong>NEZZA</strong>
+        <small>OUR UNIVERSE</small>
+      </div>
+      <button id="music-toggle-btn" class="icon-btn">♪</button>
+    </header>
+
+    <section id="home-view" class="view-page active">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow">WELCOME TO OUR WORLD</span>
+          <h2>Small moments.<br><span>Big memories.</span></h2>
+          <p>Bukan sekadar galeri. Ini tempat kecil buat menyimpan hal-hal yang mungkin sederhana, tapi selalu punya cerita.</p>
+          <div class="hero-actions">
+            <button class="primary-btn" data-go="album-view">
+              Lihat kenangan <span>↗</span>
+            </button>
+            <span class="scroll-note">scroll untuk menjelajah ↓</span>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="main-photo-card tilt-card">
+            <img src="IMG_20260731_204858.jpg" alt="Foto utama">
+            <div class="photo-label">
+              <span>MEMORY 01</span>
+              <b>one frame, one story</b>
+            </div>
+          </div>
+          <div class="floating-chip chip-one">✦ GOOD VIBES</div>
+          <div class="floating-chip chip-two">SONIC SPEED ⚡</div>
+        </div>
+      </div>
+
+      <div class="story-block reveal">
+        <div>
+          <span class="eyebrow">01 / OUR STORY</span>
+          <h3>Kalau momen bisa disimpan,<br>gue pilih yang ini.</h3>
+        </div>
+        <p>Geser halaman, nikmati animasi, dan biarkan setiap foto jadi potongan kecil dari cerita kita.</p>
+      </div>
+
+      <div class="mini-memory-row">
+        <article class="memory-tile reveal">
+          <span>01</span>
+          <h4>First frame</h4>
+          <p>Satu foto yang jadi pembuka.</p>
+        </article>
+        <article class="memory-tile reveal">
+          <span>02</span>
+          <h4>Little things</h4>
+          <p>Hal kecil yang bikin senyum.</p>
+        </article>
+        <article class="memory-tile reveal">
+          <span>03</span>
+          <h4>Keep going</h4>
+          <p>Masih banyak cerita berikutnya.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="album-view" class="view-page">
+      <div class="page-heading reveal">
+        <span class="eyebrow">02 / MEMORY SLIDER</span>
+        <h2>Swipe the <span>memories.</span></h2>
+        <p>Geser card untuk melihat koleksi foto.</p>
+      </div>
+
+      <div class="slider-wrap reveal">
+        <button class="slider-arrow prev" id="prev-card">‹</button>
+
+        <div class="card-slider" id="card-slider">
+          <article class="memory-card">
+            <div class="card-number">01</div>
+            <img src="IMG_20260731_204858.jpg" alt="Memory 01">
+            <div class="card-info">
+              <span>MEMORY 01</span>
+              <h3>One frame.</h3>
+              <p>Awal dari halaman kecil ini.</p>
+            </div>
+          </article>
+
+          <article class="memory-card">
+            <div class="card-number">02</div>
+            <img src="IMG_20260731_204858.jpg" alt="Memory 02">
+            <div class="card-info">
+              <span>MEMORY 02</span>
+              <h3>Same picture.</h3>
+              <p>Foto yang sama, cerita yang berbeda.</p>
+            </div>
+          </article>
+
+          <article class="memory-card">
+            <div class="card-number">03</div>
+            <img src="IMG_20260731_204858.jpg" alt="Memory 03">
+            <div class="card-info">
+              <span>MEMORY 03</span>
+              <h3>Keep it.</h3>
+              <p>Simpan momen yang ingin diingat.</p>
+            </div>
+          </article>
+
+          <article class="memory-card">
+            <div class="card-number">04</div>
+            <img src="IMG_20260731_204858.jpg" alt="Memory 04">
+            <div class="card-info">
+              <span>MEMORY 04</span>
+              <h3>Next chapter.</h3>
+              <p>Halaman berikutnya masih kosong.</p>
+            </div>
+          </article>
+        </div>
+
+        <button class="slider-arrow next" id="next-card">›</button>
+      </div>
+
+      <div class="slider-progress">
+        <span id="slider-count">01</span>
+        <div><i id="slider-bar"></i></div>
+        <span>04</span>
+      </div>
+    </section>
+
+    <section id="story-view" class="view-page">
+      <div class="page-heading reveal">
+        <span class="eyebrow">03 / LITTLE NOTE</span>
+        <h2>A tiny note <span>for you.</span></h2>
+      </div>
+
+      <div class="note-card reveal">
+        <span>DEAR YOU,</span>
+        <h3>Some things are better<br>kept as memories.</h3>
+        <p>Terima kasih sudah menjadi bagian dari cerita yang layak disimpan. ✦</p>
+        <div class="signature">— Nezuro</div>
+      </div>
+    </section>
+  </main>
+
+  <nav class="liquid-nav" id="liquid-nav">
+    <span class="liquid-indicator" id="liquid-indicator"></span>
+    <button class="nav-item active" data-target="home-view">
+      <b>⌂</b>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" data-target="album-view">
+      <b>◈</b>
+      <span>Album</span>
+    </button>
+    <button class="nav-item" data-target="story-view">
+      <b>✦</b>
+      <span>Note</span>
+    </button>
+  </nav>
+
+  <audio id="bg-music" src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3" loop></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
