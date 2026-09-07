@@ -114,8 +114,6 @@
         particles = Array.from({ length: amount }, () => ({
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
-            baseX: Math.random() * window.innerWidth,
-            baseY: Math.random() * window.innerHeight,
             radius: Math.random() * 1.7 + .35,
             speedX: (Math.random() - .5) * .22,
             speedY: Math.random() * .20 + .03,
@@ -136,10 +134,8 @@
             if (particle.x < -10) particle.x = window.innerWidth + 10;
             if (particle.x > window.innerWidth + 10) particle.x = -10;
             if (particle.y < -10) particle.y = window.innerHeight + 10;
-            const driftX = pointer.x * 12 + Math.sin(particle.phase) * 2;
-            const driftY = pointer.y * 8;
-            const x = particle.x + driftX;
-            const y = particle.y + driftY;
+            const x = particle.x + pointer.x * 12 + Math.sin(particle.phase) * 2;
+            const y = particle.y + pointer.y * 8;
             const alpha = particle.alpha + (Math.sin(particle.phase) + 1) * .12;
             spaceContext.beginPath();
             spaceContext.arc(x, y, particle.radius, 0, Math.PI * 2);
@@ -157,6 +153,7 @@
     import('./scroll-effects.js').catch((error) => console.error('Unable to load the scroll story:', error));
     import('./global-scroll.js').catch((error) => console.error('Unable to load global scroll animations:', error));
     import('./layout-fix.js').catch((error) => console.error('Unable to load responsive layout:', error));
+    import('./universe-bg.js').catch((error) => console.error('Unable to load universe background:', error));
 
     updateSlider();
     const initialView = window.location.hash ? `${window.location.hash.slice(1)}-view` : 'home-view';
