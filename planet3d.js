@@ -1,5 +1,6 @@
 /*
  * NEZZA — Interactive 3D planet + immersive universe background.
+ * Mobile optimized: lower geometry, DPR, star count and render rate.
  */
 
 (() => {
@@ -7,6 +8,7 @@
 
     const CDN = 'https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js';
     const FALLBACK = 'https://unpkg.com/three@0.186.0/build/three.module.js';
+    const isMobile = window.matchMedia('(max-width: 700px)').matches;
 
     function injectUniverseStyle() {
         if (document.getElementById('universe-effect-style')) return;
@@ -14,17 +16,13 @@
         const style = document.createElement('style');
         style.id = 'universe-effect-style';
         style.textContent = `
-            html, body {
-                background: #010714 !important;
-            }
-
+            html, body { background: #010714 !important; }
             body {
                 --mx: 0px;
                 --my: 0px;
                 overflow-x: hidden !important;
                 position: relative;
             }
-
             body::before {
                 content: '' !important;
                 position: fixed !important;
@@ -32,16 +30,15 @@
                 z-index: -3 !important;
                 pointer-events: none !important;
                 background:
-                    radial-gradient(circle at 18% 35%, rgba(0, 119, 255, .28), transparent 24%),
-                    radial-gradient(circle at 76% 22%, rgba(78, 218, 255, .20), transparent 22%),
-                    radial-gradient(circle at 52% 78%, rgba(20, 66, 190, .24), transparent 30%),
-                    radial-gradient(circle at 88% 76%, rgba(0, 155, 255, .18), transparent 22%);
+                    radial-gradient(circle at 18% 35%, rgba(0,119,255,.28), transparent 24%),
+                    radial-gradient(circle at 76% 22%, rgba(78,218,255,.20), transparent 22%),
+                    radial-gradient(circle at 52% 78%, rgba(20,66,190,.24), transparent 30%),
+                    radial-gradient(circle at 88% 76%, rgba(0,155,255,.18), transparent 22%);
                 filter: blur(34px);
                 transform: translate3d(calc(var(--mx) * .35), calc(var(--my) * .35), 0) scale(1.05);
                 animation: universeNebula 16s ease-in-out infinite alternate;
                 will-change: transform;
             }
-
             body::after {
                 content: '' !important;
                 position: fixed !important;
@@ -49,24 +46,20 @@
                 z-index: -2 !important;
                 pointer-events: none !important;
                 background:
-                    radial-gradient(ellipse at center, transparent 30%, rgba(0, 4, 16, .30) 100%),
-                    linear-gradient(180deg, rgba(0, 8, 28, .28), rgba(0, 18, 55, .10));
-                mix-blend-mode: normal;
+                    radial-gradient(ellipse at center, transparent 30%, rgba(0,4,16,.30) 100%),
+                    linear-gradient(180deg, rgba(0,8,28,.28), rgba(0,18,55,.10));
             }
-
             #space-canvas {
                 z-index: -1 !important;
                 opacity: .95 !important;
                 mix-blend-mode: screen !important;
             }
-
             .ambient {
                 filter: blur(110px) !important;
                 opacity: .22 !important;
                 transform: translate3d(var(--mx), var(--my), 0);
                 transition: transform 1.2s ease-out;
             }
-
             .welcome-ticker {
                 position: fixed !important;
                 top: 0 !important;
@@ -81,45 +74,26 @@
                 border-right: 0 !important;
                 border-top: 0 !important;
                 z-index: 900 !important;
-                background: rgba(2, 14, 39, .36) !important;
-                box-shadow: 0 8px 40px rgba(0, 60, 180, .10), inset 0 -1px 0 rgba(255,255,255,.10) !important;
+                background: rgba(2,14,39,.36) !important;
+                box-shadow: 0 8px 40px rgba(0,60,180,.10), inset 0 -1px 0 rgba(255,255,255,.10) !important;
             }
-
-            .welcome-ticker-track {
-                height: 48px !important;
-            }
-
-            .app-shell {
-                padding-top: 48px !important;
-            }
-
-            .chip-two {
-                font-size: 0 !important;
-            }
-
+            .welcome-ticker-track { height: 48px !important; }
+            .app-shell { padding-top: 48px !important; }
+            .chip-two { font-size: 0 !important; }
             .chip-two::after {
                 content: 'OUR UNIVERSE ✦';
                 font-size: 9px;
                 letter-spacing: .08em;
             }
-
             @keyframes universeNebula {
                 0% { transform: translate3d(calc(var(--mx) * .35 - 2%), calc(var(--my) * .35 - 1%), 0) scale(1); }
                 50% { transform: translate3d(calc(var(--mx) * .55 + 2%), calc(var(--my) * .55 + 2%), 0) scale(1.08); }
                 100% { transform: translate3d(calc(var(--mx) * .35 - 1%), calc(var(--my) * .35 + 3%), 0) scale(1.14); }
             }
-
             @media (max-width: 600px) {
-                .welcome-ticker,
-                .welcome-ticker-track {
-                    height: 42px !important;
-                }
-
-                .app-shell {
-                    padding-top: 42px !important;
-                }
+                .welcome-ticker, .welcome-ticker-track { height: 42px !important; }
+                .app-shell { padding-top: 42px !important; }
             }
-
             @media (prefers-reduced-motion: reduce) {
                 body::before { animation: none !important; }
             }
@@ -128,6 +102,8 @@
     }
 
     function setupUniverseInteraction() {
+        if (isMobile) return;
+
         const updatePointer = (x, y) => {
             const px = (x / window.innerWidth - .5) * 2;
             const py = (y / window.innerHeight - .5) * 2;
@@ -135,11 +111,13 @@
             document.body.style.setProperty('--my', `${py * 28}px`);
         };
 
-        window.addEventListener('pointermove', (event) => {
+        window.addEventListener('pointermove', event => {
             updatePointer(event.clientX, event.clientY);
         }, { passive: true });
 
-        window.addEventListener('pointerleave', () => updatePointer(window.innerWidth / 2, window.innerHeight / 2));
+        window.addEventListener('pointerleave', () => {
+            updatePointer(window.innerWidth / 2, window.innerHeight / 2);
+        });
     }
 
     async function loadThree() {
@@ -173,10 +151,10 @@
 
             const renderer = new THREE.WebGLRenderer({
                 alpha: true,
-                antialias: true,
+                antialias: !isMobile,
                 powerPreference: 'high-performance',
             });
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio || 1, 1.5));
             renderer.outputColorSpace = THREE.SRGBColorSpace;
             renderer.setClearColor(0, 0);
             renderer.domElement.style.cssText = 'display:block;width:100%;height:100%;touch-action:none;';
@@ -196,8 +174,17 @@
             planetGroup.position.set(0, 0.1, 0);
             scene.add(planetGroup);
 
+            const sphereSegments = isMobile ? 32 : 56;
+            const sphereRings = isMobile ? 20 : 36;
+            const cloudSegments = isMobile ? 24 : 40;
+            const cloudRings = isMobile ? 12 : 20;
+            const islandSegments = isMobile ? 12 : 20;
+            const islandRings = isMobile ? 8 : 12;
+            const ringSegments = isMobile ? 48 : 72;
+            const moonSegments = isMobile ? 14 : 24;
+
             const planet = new THREE.Mesh(
-                new THREE.SphereGeometry(1.55, 64, 48),
+                new THREE.SphereGeometry(1.55, sphereSegments, sphereRings),
                 new THREE.MeshStandardMaterial({
                     color: 0x167dff,
                     roughness: 0.48,
@@ -211,9 +198,9 @@
                 { y: 0.55, scale: [1.48, 0.16, 1.50], rot: 0.22 },
                 { y: -0.25, scale: [1.52, 0.12, 1.48], rot: -0.34 },
                 { y: -0.78, scale: [1.34, 0.10, 1.38], rot: 0.18 },
-            ].forEach((band) => {
+            ].forEach(band => {
                 const mesh = new THREE.Mesh(
-                    new THREE.SphereGeometry(1, 48, 24),
+                    new THREE.SphereGeometry(1, cloudSegments, cloudRings),
                     new THREE.MeshStandardMaterial({
                         color: 0xeaf9ff,
                         transparent: true,
@@ -240,14 +227,17 @@
                 [-0.35, -0.62, 1.38, 0.38, 0.14],
                 [0.15, 0.10, 1.52, 0.24, 0.12],
             ].forEach(([x, y, z, sx, sy]) => {
-                const island = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 16), landMaterial);
+                const island = new THREE.Mesh(
+                    new THREE.SphereGeometry(1, islandSegments, islandRings),
+                    landMaterial,
+                );
                 island.position.set(x, y, z);
                 island.scale.set(sx, sy, 0.035);
                 land.add(island);
             });
 
             planetGroup.add(new THREE.Mesh(
-                new THREE.SphereGeometry(1.68, 64, 48),
+                new THREE.SphereGeometry(1.68, isMobile ? 32 : 56, isMobile ? 20 : 36),
                 new THREE.MeshBasicMaterial({
                     color: 0x55dfff,
                     transparent: true,
@@ -269,7 +259,7 @@
                 [2.48, 2.62, 0x238cff, 0.34],
             ].forEach(([inner, outer, color, opacity]) => {
                 ringGroup.add(new THREE.Mesh(
-                    new THREE.RingGeometry(inner, outer, 96),
+                    new THREE.RingGeometry(inner, outer, ringSegments),
                     new THREE.MeshBasicMaterial({ color, transparent: true, opacity, side: THREE.DoubleSide }),
                 ));
             });
@@ -277,14 +267,15 @@
             const moonOrbit = new THREE.Group();
             planetGroup.add(moonOrbit);
             const moon = new THREE.Mesh(
-                new THREE.SphereGeometry(0.22, 32, 24),
+                new THREE.SphereGeometry(0.22, moonSegments, Math.max(8, Math.floor(moonSegments * .65))),
                 new THREE.MeshStandardMaterial({ color: 0xf3fbff, roughness: 0.7 }),
             );
             moon.position.set(2.65, 0.35, 0);
             moonOrbit.add(moon);
 
-            const starPositions = new Float32Array(700 * 3);
-            for (let i = 0; i < 700; i += 1) {
+            const starCount = isMobile ? 100 : 420;
+            const starPositions = new Float32Array(starCount * 3);
+            for (let i = 0; i < starCount; i += 1) {
                 const radius = 5 + Math.random() * 8;
                 const theta = Math.random() * Math.PI * 2;
                 const phi = Math.acos((Math.random() * 2) - 1);
@@ -297,24 +288,31 @@
             starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const stars = new THREE.Points(
                 starGeometry,
-                new THREE.PointsMaterial({ color: 0xffffff, size: 0.028, transparent: true, opacity: 0.82 }),
+                new THREE.PointsMaterial({
+                    color: 0xffffff,
+                    size: isMobile ? 0.035 : 0.028,
+                    transparent: true,
+                    opacity: 0.82,
+                }),
             );
             scene.add(stars);
 
             const pointer = { x: 0, y: 0 };
             const target = { x: 0, y: 0 };
 
-            function onPointerMove(event) {
-                const rect = renderer.domElement.getBoundingClientRect();
-                target.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-                target.y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-            }
+            if (!isMobile) {
+                function onPointerMove(event) {
+                    const rect = renderer.domElement.getBoundingClientRect();
+                    target.x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+                    target.y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+                }
 
-            renderer.domElement.addEventListener('pointermove', onPointerMove, { passive: true });
-            renderer.domElement.addEventListener('pointerleave', () => {
-                target.x = 0;
-                target.y = 0;
-            });
+                renderer.domElement.addEventListener('pointermove', onPointerMove, { passive: true });
+                renderer.domElement.addEventListener('pointerleave', () => {
+                    target.x = 0;
+                    target.y = 0;
+                });
+            }
 
             function resize() {
                 const width = Math.max(1, stage.clientWidth);
@@ -328,8 +326,22 @@
             resize();
 
             const clock = new THREE.Clock();
+            let lastFrame = 0;
+            let running = true;
 
-            function animate() {
+            const visibilityObserver = new IntersectionObserver(entries => {
+                running = entries[0]?.isIntersecting ?? true;
+            }, { threshold: 0.01 });
+            visibilityObserver.observe(stage);
+
+            function animate(timestamp) {
+                requestAnimationFrame(animate);
+                if (!running || document.hidden) return;
+
+                const frameInterval = isMobile ? 33 : 0;
+                if (frameInterval && timestamp - lastFrame < frameInterval) return;
+                lastFrame = timestamp;
+
                 const time = clock.getElapsedTime();
                 pointer.x += (target.x - pointer.x) * 0.045;
                 pointer.y += (target.y - pointer.y) * 0.045;
@@ -338,16 +350,18 @@
                 planetGroup.rotation.x = Math.sin(time * 0.35) * 0.035 + pointer.y * 0.08;
                 moonOrbit.rotation.y = time * 0.55;
                 ringGroup.rotation.z = THREE.MathUtils.degToRad(-18) + Math.sin(time * 0.22) * 0.04;
-                stars.rotation.y = time * 0.008;
-                cloudBands.forEach((band, index) => {
-                    band.rotation.y = time * (0.025 + index * 0.012);
-                });
+
+                if (!isMobile) {
+                    stars.rotation.y = time * 0.008;
+                    cloudBands.forEach((band, index) => {
+                        band.rotation.y = time * (0.025 + index * 0.012);
+                    });
+                }
 
                 renderer.render(scene, camera);
-                requestAnimationFrame(animate);
             }
 
-            animate();
+            requestAnimationFrame(animate);
         } catch (error) {
             stage.dataset.planetReady = 'false';
             console.error('3D planet failed to initialize:', error);
@@ -357,9 +371,17 @@
     injectUniverseStyle();
     setupUniverseInteraction();
 
+    const startPlanet = () => {
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(initPlanet, { timeout: 1200 });
+        } else {
+            setTimeout(initPlanet, 350);
+        }
+    };
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initPlanet, { once: true });
+        document.addEventListener('DOMContentLoaded', startPlanet, { once: true });
     } else {
-        initPlanet();
+        startPlanet();
     }
 })();
