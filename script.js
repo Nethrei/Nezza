@@ -1,34 +1,29 @@
-// 1. Logika Masuk Web & Mainkan Musik Latar
-document.getElementById('enter-btn').addEventListener('click', function() {
-    // Jalankan musik (browser hanya mengizinkan play audio jika ada interaksi klik dari user)
-    const bgMusic = document.getElementById('bg-music');
-    bgMusic.play().catch(error => console.log("Audio play digagalkan oleh browser:", error));
+// Kontrol halaman awal
+const enterBtn = document.getElementById('enter-btn');
+const landingPage = document.getElementById('landing-page');
+const contentArea = document.getElementById('content-area');
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const musicToggleBtn = document.getElementById('music-toggle-btn');
+const bgMusic = document.getElementById('bg-music');
 
-    // Animasi menghilangkan halaman depan
-    const landingPage = document.getElementById('landing-page');
+enterBtn.addEventListener('click', () => {
+    bgMusic.play().catch(error => console.log('Audio tidak dapat diputar:', error));
     landingPage.style.opacity = '0';
     landingPage.style.transform = 'scale(1.2)';
-    
-    // Tunggu animasi selesai lalu ganti tampilan
+
     setTimeout(() => {
-        landingPage.style.display = 'none'; 
-        
-        // Tampilkan area konten, tombol menu, & tombol musik
-        document.getElementById('hamburger-btn').style.display = 'flex';
-        document.getElementById('music-toggle-btn').style.display = 'flex';
-        document.getElementById('content-area').style.display = 'flex';
-        
-        // Tampilkan halaman utama saja
-        document.getElementById('home-view').style.display = 'flex';
-        document.getElementById('album-view').style.display = 'none';
-        document.getElementById('kosong1-view').style.display = 'none';
-        document.getElementById('kosong2-view').style.display = 'none';
-    }, 600); 
+        landingPage.style.display = 'none';
+        hamburgerBtn.style.display = 'flex';
+        musicToggleBtn.style.display = 'flex';
+        contentArea.classList.add('active');
+        showView('home-view');
+    }, 600);
 });
 
-// 2. Logika Sidebar Menu
+// Sidebar
 const sidebarMenu = document.getElementById('sidebar-menu');
 const sidebarOverlay = document.getElementById('sidebar-overlay');
+const closeSidebar = document.getElementById('close-sidebar');
 
 function openMenu() {
     sidebarMenu.classList.add('open');
@@ -40,76 +35,48 @@ function closeMenu() {
     sidebarOverlay.classList.remove('open');
 }
 
-document.getElementById('hamburger-btn').addEventListener('click', openMenu);
-document.getElementById('close-sidebar').addEventListener('click', closeMenu);
+hamburgerBtn.addEventListener('click', openMenu);
+closeSidebar.addEventListener('click', closeMenu);
 sidebarOverlay.addEventListener('click', closeMenu);
 
-// 3. Logika Pindah Halaman lewat Menu
-const navItems = document.querySelectorAll('.nav-item');
+// Navigasi halaman
 const allViews = document.querySelectorAll('.view-page');
+const navItems = document.querySelectorAll('.nav-item');
+
+function showView(targetId) {
+    allViews.forEach(view => view.classList.remove('active'));
+    const target = document.getElementById(targetId);
+    if (target) target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 navItems.forEach(item => {
-    item.addEventListener('click', function(e) {
-        e.preventDefault(); 
-        
-        const targetId = this.getAttribute('data-target');
-        
-        // Sembunyikan SEMUA halaman
-        allViews.forEach(view => {
-            view.style.display = 'none';
-        });
-        
-        // Tampilkan hanya halaman yang diklik
-        document.getElementById(targetId).style.display = 'flex';
-        
-        // Otomatis tutup menu
+    item.addEventListener('click', event => {
+        event.preventDefault();
+        showView(item.dataset.target);
         closeMenu();
-        
-        // Scroll kembali ke atas saat ganti halaman
-        window.scrollTo(0, 0);
     });
 });
 
-// 4. Logika Buku Kenangan (Scrapbook)
+// Scrapbook
 const pages = document.querySelectorAll('.page');
-
 pages.forEach((page, index) => {
-    // Atur lapisan supaya buku rapi
     page.style.zIndex = pages.length - index;
-    
-    page.addEventListener('click', function() {
-        let isFlipped = this.classList.contains('flipped');
-        
-        if (isFlipped) {
-            // Membalik ke Kanan (Tutup)
-            this.classList.remove('flipped');
-            setTimeout(() => {
-                this.style.zIndex = pages.length - index;
-            }, 400);
+    page.addEventListener('click', () => {
+        const flipped = page.classList.toggle('flipped');
+        if (flipped) {
+            setTimeout(() => page.style.zIndex = '1', 400);
         } else {
-            // Membalik ke Kiri (Buka)
-            this.classList.add('flipped');
-            setTimeout(() => {
-                this.style.zIndex = 1;
-            }, 400);
+            setTimeout(() => page.style.zIndex = String(pages.length - index), 400);
         }
     });
 });
 
-// 5. Logika Tombol Mute/Unmute Musik di Pojok Kanan Atas
-const musicToggleBtn = document.getElementById('music-toggle-btn');
-const bgMusic = document.getElementById('bg-music');
+// Musik
 let isMuted = false;
-
-musicToggleBtn.addEventListener('click', function() {
+musicToggleBtn.addEventListener('click', () => {
     isMuted = !isMuted;
     bgMusic.muted = isMuted;
-    
-    if (isMuted) {
-        musicToggleBtn.textContent = '🔇';
-        musicToggleBtn.classList.add('muted');
-    } else {
-        musicToggleBtn.textContent = '🎵';
-        musicToggleBtn.classList.remove('muted');
-    }
+    musicToggleBtn.textContent = isMuted ? '🔇' : '🎵';
+    musicToggleBtn.classList.toggle('muted', isMuted);
 });
