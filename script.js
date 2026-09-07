@@ -53,20 +53,4 @@
   function react(){const text=lines[Math.floor(Math.random()*lines.length)];bubble&&(bubble.textContent=text);stage.classList.remove('talk','running','bounce','spin-gadget');void stage.offsetWidth;stage.classList.add('talk','running','bounce','spin-gadget');speak(text);setTimeout(()=>stage.classList.remove('running','bounce','spin-gadget'),2200);setTimeout(()=>stage.classList.remove('talk'),5000)}
   dora.addEventListener('click',react);dora.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();react()}});
   addEventListener('mousemove',e=>{if(stage.classList.contains('running'))return;const r=dora.getBoundingClientRect(),x=Math.max(-8,Math.min(8,(e.clientX-(r.left+r.width/2))*.035)),y=Math.max(-5,Math.min(5,(e.clientY-(r.top+r.height/2))*.02));dora.style.transform=`translateX(-50%) translateY(${y}px) rotateY(${x}deg)`});
-
-  /* Put the photo UNDER Doraemon, never behind/inside him. */
-  const photo=$('.main-photo-card', $('.hero-visual'));
-  const visual=$('.hero-visual');
-  function placePhoto(){
-    if(!photo||!visual)return;
-    visual.style.minHeight=innerWidth<=900?'520px':'620px';
-    photo.style.position='absolute';
-    photo.style.left='50%';
-    photo.style.top=innerWidth<=600?'78%':'84%';
-    photo.style.zIndex='2';
-    photo.style.width=innerWidth<=600?'150px':'180px';
-    photo.style.transform='translateX(-50%) rotate(-4deg)';
-    photo.style.opacity='.72';
-  }
-  placePhoto();addEventListener('resize',placePhoto);
 })();
