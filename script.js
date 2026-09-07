@@ -1,6 +1,6 @@
 /*
  * NEZZA — Main interactions
- * Lightweight controller: no Three.js / WebGL / heavy background engine.
+ * Lightweight: HTML + CSS + JavaScript only. No WebGL / Three.js.
  */
 
 (() => {
@@ -39,10 +39,6 @@
         navItems.forEach(item => item.classList.toggle('active', item.dataset.target === id));
         moveIndicator(navItems.find(item => item.dataset.target === id));
         if (updateHash) history.replaceState(null, '', `#${id.replace('-view', '')}`);
-        $$('.reveal', page).forEach((element, index) => {
-            element.style.setProperty('--reveal-delay', `${Math.min(index * 70, 350)}ms`);
-            element.classList.add('revealed');
-        });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -90,13 +86,11 @@
     previousButton?.addEventListener('click', () => slider?.scrollBy({ left: -sliderStep(), behavior: 'smooth' }));
     nextButton?.addEventListener('click', () => slider?.scrollBy({ left: sliderStep(), behavior: 'smooth' }));
     slider?.addEventListener('scroll', updateSlider, { passive: true });
-
     updateSlider();
 
-    // Keep only the useful lightweight interaction modules.
-    import('./scroll-effects.js').catch(error => console.error('Unable to load scroll story:', error));
-    import('./global-scroll.js').catch(error => console.error('Unable to load global scroll animations:', error));
-    import('./layout-fix.js').catch(error => console.error('Unable to load responsive layout:', error));
+    // Keep only the useful story + responsive modules.
+    import('./scroll-effects.js').catch(() => {});
+    import('./layout-fix.js').catch(() => {});
 
     const initialView = window.location.hash ? `${window.location.hash.slice(1)}-view` : 'home-view';
     if (document.getElementById(initialView)) showView(initialView, false);
