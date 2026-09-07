@@ -179,9 +179,82 @@
                 #liquid-nav .nav-item small{font-size:6.5px!important}
             }
 
+            /* =========================================================
+               ALBUM — STACKED PAPER SLIDER
+               Cards overlap like a small pile of photographs.
+               ========================================================= */
+            .slider-wrap{
+                position:relative!important;
+                display:grid!important;
+                grid-template-columns:46px minmax(0,1fr) 46px!important;
+                align-items:center!important;
+                gap:12px!important;
+                width:min(760px,100%)!important;
+                margin:0 auto!important;
+            }
+            .card-slider{
+                position:relative!important;
+                display:block!important;
+                width:100%!important;
+                height:520px!important;
+                overflow:hidden!important;
+                padding:28px 0 35px!important;
+                scroll-snap-type:none!important;
+                cursor:default!important;
+                overscroll-behavior:contain!important;
+                isolation:isolate!important;
+            }
+            .memory-card{
+                position:absolute!important;
+                left:50%!important;
+                top:28px!important;
+                width:min(360px,78%)!important;
+                height:455px!important;
+                margin:0!important;
+                flex:none!important;
+                overflow:hidden!important;
+                border:1px solid rgba(255,255,255,.2)!important;
+                border-radius:24px!important;
+                background:linear-gradient(150deg,rgba(22,48,91,.96),rgba(5,13,31,.98))!important;
+                box-shadow:0 26px 55px rgba(0,0,0,.34),0 4px 0 rgba(255,255,255,.035) inset!important;
+                transform:translateX(-50%) rotate(0deg)!important;
+                transform-origin:50% 92%!important;
+                transition:transform .45s cubic-bezier(.2,.8,.2,1),filter .35s ease,opacity .35s ease,box-shadow .35s ease!important;
+            }
+            .memory-card:nth-child(1){z-index:3!important;transform:translateX(-50%) rotate(-3.5deg)!important}
+            .memory-card:nth-child(2){z-index:2!important;transform:translateX(-50%) translate(18px,10px) rotate(4.5deg) scale(.96)!important}
+            .memory-card:nth-child(3){z-index:1!important;transform:translateX(-50%) translate(-17px,20px) rotate(-6deg) scale(.92)!important}
+            .memory-card:hover{transform:translateX(-50%) translateY(-5px) rotate(-2deg)!important}
+            .memory-card img{height:310px!important;object-fit:cover!important}
+            .card-info{padding:22px!important}
+            .card-info h3{margin:8px 0!important;font-size:24px!important}
+            .card-info p{font-size:11px!important}
+            .card-number{z-index:4!important}
+            .slider-arrow{position:relative!important;z-index:10!important;width:46px!important;height:46px!important}
+            .slider-progress{width:min(700px,calc(100% - 30px))!important;margin:4px auto 0!important}
+
+            @media(max-width:600px){
+                .slider-wrap{grid-template-columns:38px minmax(0,1fr) 38px!important;gap:5px!important}
+                .card-slider{height:470px!important;padding:22px 0 30px!important}
+                .memory-card{top:22px!important;width:min(310px,78vw)!important;height:410px!important;border-radius:22px!important}
+                .memory-card:nth-child(1){transform:translateX(-50%) rotate(-3deg)!important}
+                .memory-card:nth-child(2){transform:translateX(-50%) translate(13px,9px) rotate(4deg) scale(.95)!important}
+                .memory-card:nth-child(3){transform:translateX(-50%) translate(-12px,18px) rotate(-5deg) scale(.9)!important}
+                .memory-card img{height:275px!important}
+                .card-info{padding:18px!important}
+                .card-info h3{font-size:21px!important}
+                .slider-arrow{width:38px!important;height:38px!important;font-size:14px!important}
+            }
+
+            @media(max-width:380px){
+                .card-slider{height:440px!important}
+                .memory-card{width:min(285px,76vw)!important;height:385px!important}
+                .memory-card img{height:255px!important}
+            }
+
             @media(prefers-reduced-motion:reduce){
                 .welcome-ticker-track{animation:none!important}
-                #liquid-nav,#liquid-nav .nav-items,#liquid-nav .nav-item,#liquid-nav .nav-toggle{transition:none!important}
+                #liquid-nav,#liquid-nav .nav-items,#liquid-nav .nav-item,#liquid-nav .nav-toggle,.memory-card{transition:none!important}
             }
         `;
         document.head.appendChild(style);
@@ -277,26 +350,51 @@
     const sliderCount = $('#slider-count');
     const sliderBar = $('#slider-bar');
 
-    function sliderStep() {
-        if (!slider || !cards.length) return 0;
-        return cards[0].getBoundingClientRect().width + (parseFloat(getComputedStyle(slider).gap) || 0);
+    /* The album is now a stacked-paper deck.
+       Arrows bring the selected card to the front instead of scrolling a row. */
+    let albumIndex = 0;
+
+    function renderAlbumDeck() {
+        if (!cards.length) return;
+
+        cards.forEach((card, index) => {
+            const offset = (index - albumIndex + cards.length) % cards.length;
+            card.classList.remove('deck-front','deck-mid','deck-back');
+            card.style.zIndex = String(cards.length - offset);
+
+            if (offset === 0) {
+                card.classList.add('deck-front');
+                card.style.transform = 'translateX(-50%) rotate(-2.5deg)';
+                card.style.opacity = '1';
+                card.style.filter = 'none';
+            } else if (offset === 1) {
+                card.classList.add('deck-mid');
+                card.style.transform = 'translateX(-50%) translate(16px,10px) rotate(4deg) scale(.96)';
+                card.style.opacity = '.96';
+                card.style.filter = 'brightness(.9)';
+            } else {
+                card.classList.add('deck-back');
+                card.style.transform = 'translateX(-50%) translate(-15px,20px) rotate(-5deg) scale(.92)';
+                card.style.opacity = '.88';
+                card.style.filter = 'brightness(.76)';
+            }
+        });
+
+        if (sliderCount) sliderCount.textContent = String(albumIndex + 1).padStart(2, '0');
+        if (sliderBar) sliderBar.style.width = `${((albumIndex + 1) / cards.length) * 100}%`;
+        if (previousButton) previousButton.disabled = cards.length < 2;
+        if (nextButton) nextButton.disabled = cards.length < 2;
     }
 
-    function updateSlider() {
-        if (!slider || !cards.length) return;
-        const step = sliderStep();
-        const index = step ? Math.round(slider.scrollLeft / step) : 0;
-        const safeIndex = Math.max(0, Math.min(cards.length - 1, index));
-        if (sliderCount) sliderCount.textContent = String(safeIndex + 1).padStart(2, '0');
-        if (sliderBar) sliderBar.style.width = `${((safeIndex + 1) / cards.length) * 100}%`;
-        if (previousButton) previousButton.disabled = safeIndex === 0;
-        if (nextButton) nextButton.disabled = safeIndex === cards.length - 1;
+    function moveAlbum(direction) {
+        if (!cards.length) return;
+        albumIndex = (albumIndex + direction + cards.length) % cards.length;
+        renderAlbumDeck();
     }
 
-    previousButton?.addEventListener('click', () => slider?.scrollBy({ left: -sliderStep(), behavior: 'smooth' }));
-    nextButton?.addEventListener('click', () => slider?.scrollBy({ left: sliderStep(), behavior: 'smooth' }));
-    slider?.addEventListener('scroll', updateSlider, { passive: true });
-    updateSlider();
+    previousButton?.addEventListener('click', () => moveAlbum(-1));
+    nextButton?.addEventListener('click', () => moveAlbum(1));
+    renderAlbumDeck();
 
     import('./scroll-effects.js').catch(() => {});
     import('./layout-fix.js').catch(() => {});
