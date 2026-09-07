@@ -207,24 +207,22 @@
 
     /* ================================================================
        3D PLANET
-       ================================================================
-       The dedicated planet renderer replaces the old Doraemon renderer.
-       It is loaded after the DOM exists and has its own CDN fallback.
-    */
+       ================================================================ */
 
     import('./planet3d.js').catch((error) => {
         console.error('Unable to load the 3D planet:', error);
     });
 
     /* ================================================================
-       SCROLL STORY
-       ================================================================
-       Adds a photo + sticker sequence below the hero. Each element
-       reveals as it enters the viewport and stickers gently parallax.
-    */
+       SCROLL STORY + GLOBAL REVEAL
+       ================================================================ */
 
     import('./scroll-effects.js').catch((error) => {
         console.error('Unable to load the scroll story:', error);
+    });
+
+    import('./global-scroll.js').catch((error) => {
+        console.error('Unable to load global scroll animations:', error);
     });
 
     /* ================================================================
