@@ -1,906 +1,322 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Little Universe 💙</title>
-  <link rel="stylesheet" href="style.css">
-
-  <style>
-    /* ===== HOME LAYOUT FIX ===== */
-    .landing::before,
-    .landing::after {
-      display: none !important;
-    }
-
-    .hero-grid {
-      min-height: auto !important;
-      padding: 40px 0 70px !important;
-      grid-template-columns: minmax(280px, .9fr) minmax(0, 1.1fr) !important;
-      gap: clamp(35px, 6vw, 80px) !important;
-      align-items: center !important;
-    }
-
-    .hero-copy {
-      order: 2;
-    }
-
-    .hero-visual {
-      order: 1 !important;
-      min-height: 0 !important;
-      height: auto !important;
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
-      justify-content: flex-start !important;
-      position: relative !important;
-      width: 100% !important;
-      gap: 22px !important;
-    }
-
-    .hero-copy h2 {
-      font-size: clamp(38px, 5vw, 64px) !important;
-    }
-
-    .hero-copy > p {
-      max-width: 560px;
-    }
-
-    /* Photo */
-    .main-photo-card {
-      order: 2 !important;
-      position: relative !important;
-      left: auto !important;
-      top: auto !important;
-      right: auto !important;
-      bottom: auto !important;
-      width: min(270px, 72vw) !important;
-      height: auto !important;
-      aspect-ratio: 1 / 1 !important;
-      flex: none !important;
-      border-radius: 26px !important;
-      opacity: .92 !important;
-      transform: none !important;
-      z-index: 4 !important;
-      margin: 0 auto !important;
-      overflow: hidden !important;
-    }
-
-    .main-photo-card img {
-      width: 100% !important;
-      height: 100% !important;
-      object-fit: cover !important;
-    }
-
-    /* Doraemon stage */
-    .dora-stage {
-      order: 1 !important;
-      position: relative !important;
-      left: auto !important;
-      top: auto !important;
-      width: 270px !important;
-      height: 390px !important;
-      transform: none !important;
-      z-index: 10 !important;
-      flex: none !important;
-    }
-
-    .orbit {
-      z-index: 0 !important;
-    }
-
-    .orbit-one {
-      width: 320px !important;
-      height: 320px !important;
-    }
-
-    .orbit-two {
-      width: 360px !important;
-      height: 180px !important;
-    }
-
-    .floating-chip {
-      z-index: 12 !important;
-    }
-
-    .chip-one {
-      left: 0 !important;
-      top: 35px !important;
-    }
-
-    .chip-two {
-      right: 0 !important;
-      bottom: 25px !important;
-    }
-
-    /* ===== LEGACY DORAEMON FALLBACK ===== */
-    .doraemon {
-      position: absolute;
-      left: 50%;
-      bottom: 25px;
-      width: 170px;
-      height: 310px;
-      transform: translateX(-50%);
-      cursor: pointer;
-      transition: transform .35s cubic-bezier(.2, .8, .2, 1);
-      transform-style: preserve-3d;
-      filter: drop-shadow(0 22px 22px rgba(0, 70, 150, .25));
-    }
-
-    .doraemon:hover {
-      transform: translateX(-50%) translateY(-10px) rotateY(-8deg) scale(1.035);
-    }
-
-    .dora-head {
-      position: absolute;
-      left: 15px;
-      top: 0;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 34% 26%, #72dcff 0 7%, #25afe9 32%, #0879ca 72%, #04548e 100%);
-      box-shadow: inset -13px -16px 22px rgba(0, 45, 100, .22), inset 7px 8px 16px rgba(255, 255, 255, .22);
-      z-index: 5;
-    }
-
-    .dora-face {
-      position: absolute;
-      left: 17px;
-      top: 31px;
-      width: 106px;
-      height: 103px;
-      border-radius: 48% 48% 50% 50%;
-      background: radial-gradient(circle at 52% 20%, #fff, #f9fbff 70%, #dbe8f3);
-      z-index: 2;
-      box-shadow: 0 5px 10px rgba(0, 50, 100, .13);
-    }
-
-    .dora-eye {
-      position: absolute;
-      top: 17px;
-      width: 26px;
-      height: 34px;
-      border-radius: 50%;
-      background: #fff;
-      border: 2px solid #101827;
-      z-index: 5;
-    }
-
-    .dora-eye.left { left: 26px; }
-    .dora-eye.right { left: 51px; }
-
-    .dora-pupil {
-      position: absolute;
-      left: 8px;
-      top: 10px;
-      width: 9px;
-      height: 13px;
-      border-radius: 50%;
-      background: #111;
-    }
-
-    .dora-nose {
-      position: absolute;
-      left: 47px;
-      top: 49px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #e52c3c;
-      z-index: 6;
-    }
-
-    .dora-mouth {
-      position: absolute;
-      left: 45px;
-      top: 64px;
-      width: 22px;
-      height: 24px;
-      border-bottom: 3px solid #171717;
-      border-radius: 0 0 50% 50%;
-      z-index: 5;
-    }
-
-    .dora-mouth::after {
-      content: '';
-      position: absolute;
-      left: 8px;
-      top: 15px;
-      width: 7px;
-      height: 4px;
-      border-radius: 50%;
-      background: #e45d70;
-    }
-
-    .whisker {
-      position: absolute;
-      width: 33px;
-      height: 1px;
-      background: #28323d;
-      z-index: 5;
-    }
-
-    .w1 { left: -8px; top: 58px; transform: rotate(10deg); }
-    .w2 { left: -8px; top: 70px; }
-    .w3 { left: -6px; top: 82px; transform: rotate(-10deg); }
-    .w4 { right: -8px; top: 58px; transform: rotate(-10deg); }
-    .w5 { right: -8px; top: 70px; }
-    .w6 { right: -6px; top: 82px; transform: rotate(10deg); }
-
-    .dora-body {
-      position: absolute;
-      left: 20px;
-      top: 117px;
-      width: 130px;
-      height: 150px;
-      border-radius: 46% 46% 38% 38%;
-      background: linear-gradient(145deg, #27b9ef, #087fcf 55%, #04538d);
-      box-shadow: inset -14px -18px 20px rgba(0, 45, 100, .25), inset 8px 5px 15px rgba(255, 255, 255, .16);
-      z-index: 2;
-    }
-
-    .dora-belly {
-      position: absolute;
-      left: 25px;
-      top: 27px;
-      width: 80px;
-      height: 92px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 45% 25%, #fff, #f8fbff 68%, #d7e5ef);
-      box-shadow: inset -6px -9px 13px rgba(0, 45, 90, .12);
-    }
-
-    .dora-pocket {
-      position: absolute;
-      left: 16px;
-      top: 45px;
-      width: 49px;
-      height: 40px;
-      border-radius: 0 0 24px 24px;
-      background: linear-gradient(#f5fbff, #d9e6ef);
-      border: 2px solid #b9cedd;
-      z-index: 3;
-    }
-
-    .dora-collar {
-      position: absolute;
-      left: 5px;
-      top: 6px;
-      width: 120px;
-      height: 14px;
-      border-radius: 999px;
-      background: linear-gradient(#f03445, #b91225);
-      z-index: 5;
-    }
-
-    .dora-bell {
-      position: absolute;
-      left: 51px;
-      top: 12px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 25%, #fff36b, #ffc928 55%, #d68a00);
-      border: 2px solid #d69200;
-      z-index: 6;
-    }
-
-    .dora-bell::after {
-      content: '';
-      position: absolute;
-      left: 10px;
-      bottom: 3px;
-      width: 7px;
-      height: 4px;
-      border-radius: 50%;
-      background: #9b6700;
-    }
-
-    .dora-arm {
-      position: absolute;
-      top: 135px;
-      width: 37px;
-      height: 80px;
-      border-radius: 30px;
-      background: linear-gradient(145deg, #2bc0f4, #087dcb 75%);
-      z-index: 1;
-      box-shadow: inset -6px -8px 10px rgba(0, 45, 90, .18);
-    }
-
-    .dora-arm.left {
-      left: -3px;
-      transform: rotate(24deg);
-    }
-
-    .dora-arm.right {
-      right: -3px;
-      transform: rotate(-24deg);
-    }
-
-    .dora-hand {
-      position: absolute;
-      bottom: -8px;
-      left: -4px;
-      width: 43px;
-      height: 43px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 32% 25%, #fff, #edf5fa 70%, #c9dce8);
-      box-shadow: 0 5px 9px rgba(0, 50, 90, .15);
-    }
-
-    .dora-foot {
-      position: absolute;
-      bottom: -4px;
-      width: 61px;
-      height: 32px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 40% 25%, #fff, #edf5fa 70%, #c8dce8);
-      z-index: 5;
-      box-shadow: 0 8px 12px rgba(0, 50, 90, .18);
-    }
-
-    .dora-foot.left { left: 17px; }
-    .dora-foot.right { right: 17px; }
-
-    .dora-propeller {
-      position: absolute;
-      left: 50%;
-      top: -48px;
-      width: 12px;
-      height: 52px;
-      transform: translateX(-50%);
-      z-index: 8;
-    }
-
-    .prop-stick {
-      position: absolute;
-      left: 5px;
-      top: 0;
-      width: 4px;
-      height: 52px;
-      border-radius: 5px;
-      background: linear-gradient(#e7f4ff, #8ab2d0);
-    }
-
-    .prop-blade {
-      position: absolute;
-      left: -42px;
-      top: -4px;
-      width: 88px;
-      height: 17px;
-      border-radius: 50%;
-      background: linear-gradient(90deg, transparent 0 10%, #ffda37 18%, #fff3a2 50%, #ffda37 82%, transparent 90%);
-      animation: propSpin .55s linear infinite;
-    }
-
-    .dora-ring {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 245px;
-      height: 245px;
-      transform: translate(-50%, -50%);
-      border: 1px solid rgba(44, 190, 255, .22);
-      border-radius: 50%;
-      box-shadow: 0 0 65px rgba(0, 150, 255, .15);
-      animation: doraOrbit 10s linear infinite;
-    }
-
-    .dora-ring::before,
-    .dora-ring::after {
-      content: '';
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #ffdc35;
-      box-shadow: 0 0 18px #ffdc35;
-    }
-
-    .dora-ring::before { left: 9%; top: 22%; }
-    .dora-ring::after { right: 7%; bottom: 20%; }
-
-    .dora-stage.running .doraemon { animation: doraFloat .55s infinite alternate ease-in-out; }
-    .dora-stage.running .dora-ring { animation: doraOrbit 2.4s linear infinite; }
-    .dora-stage.running .prop-blade { animation-duration: .18s; }
-
-    .dora-bubble {
-      position: absolute;
-      right: -4px;
-      top: 28px;
-      max-width: 180px;
-      width: max-content;
-      padding: 9px 13px;
-      border-radius: 16px 16px 4px 16px;
-      background: rgba(255, 255, 255, .94);
-      color: #07539b;
-      font-size: 9px;
-      font-weight: 900;
-      box-shadow: 0 10px 30px rgba(0, 50, 110, .18);
-      opacity: 0;
-      transform: translateY(7px) scale(.96);
-      transition: .25s ease;
-      z-index: 20;
-    }
-
-    .dora-stage.talk .dora-bubble {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
-    .dora-hint {
-      position: absolute;
-      left: 50%;
-      bottom: -2px;
-      transform: translateX(-50%);
-      font-size: 7px;
-      font-weight: 800;
-      letter-spacing: .13em;
-      color: rgba(255, 255, 255, .78);
-      white-space: nowrap;
-    }
-
-    @keyframes propSpin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes doraOrbit {
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
-
-    @keyframes doraFloat {
-      from { transform: translateX(-50%) translateY(0) rotateY(-2deg); }
-      to { transform: translateX(-50%) translateY(-12px) rotateY(5deg); }
-    }
-
-    /* ===== HEADER ===== */
-    .welcome-ticker {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 2400;
-      width: 100%;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      background: linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(255, 255, 255, .14) 34%, rgba(255, 255, 255, .045) 72%, transparent);
-      backdrop-filter: blur(18px);
-      pointer-events: none;
-    }
-
-    .welcome-ticker-track {
-      display: flex;
-      white-space: nowrap;
-      min-width: max-content;
-      animation: welcomeMove 13s linear infinite;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .15em;
-      color: rgba(255, 255, 255, .92);
-      padding-left: 92px;
-    }
-
-    .welcome-ticker-track span {
-      padding-right: 70px;
-    }
-
-    @keyframes welcomeMove {
-      from { transform: translateX(100%); }
-      to { transform: translateX(-100%); }
-    }
-
-    /* ===== SIDEBAR ===== */
-    .liquid-sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 2500;
-    }
-
-    .sidebar-toggle {
-      width: 76px;
-      height: 64px;
-      border: 0 !important;
-      background: transparent !important;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      cursor: pointer;
-    }
-
-    .sidebar-toggle i {
-      display: block;
-      width: 24px;
-      height: 2px;
-      border-radius: 10px;
-      background: #fff;
-      transition: .3s;
-    }
-
-    .sidebar-toggle.active i:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .sidebar-toggle.active i:nth-child(2) { opacity: 0; }
-    .sidebar-toggle.active i:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-    .sidebar-panel {
-      width: 0;
-      overflow: hidden;
-      opacity: 0;
-      transform: translateX(-10px);
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, .13);
-      backdrop-filter: blur(24px);
-      transition: .35s;
-    }
-
-    .liquid-sidebar.open .sidebar-panel {
-      width: 150px;
-      padding: 8px;
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .sidebar-link {
-      width: 100%;
-      height: 42px;
-      border: 0;
-      border-radius: 13px;
-      background: transparent;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 13px;
-      font-size: 10px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .sidebar-link:hover,
-    .sidebar-link.active {
-      background: rgba(255, 255, 255, .86);
-      color: #07539b;
-    }
-
-    /* ===== NAV OVERRIDES ===== */
-    .app-shell {
-      padding-top: 96px !important;
-    }
-
-    .top-liquid-bar {
-      display: none !important;
-    }
-
-    .liquid-nav {
-      width: min(350px, calc(100vw - 28px)) !important;
-      height: 68px !important;
-      border-radius: 24px !important;
-      background: rgba(4, 28, 62, .86) !important;
-      overflow: visible !important;
-    }
-
-    .nav-item.active {
-      transform: translateY(-18px) !important;
-    }
-
-    .liquid-indicator {
-      top: -9px !important;
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 900px) {
-      .hero-grid {
-        grid-template-columns: 1fr !important;
-        padding-top: 20px !important;
-      }
-
-      .hero-copy {
-        order: 2;
-        text-align: center;
-      }
-
-      .hero-visual {
-        order: 1 !important;
-      }
-
-      .hero-actions {
-        justify-content: center;
-      }
-
-      .welcome-ticker {
-        height: 56px;
-      }
-
-      .sidebar-toggle {
-        width: 68px;
-        height: 56px;
-      }
-
-      .app-shell {
-        padding-top: 78px !important;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .hero-grid {
-        padding: 10px 0 45px !important;
-        gap: 20px !important;
-      }
-
-      .hero-visual {
-        min-height: 0 !important;
-      }
-
-      .hero-copy h2 {
-        font-size: clamp(34px, 10vw, 48px) !important;
-      }
-
-      .hero-copy > p {
-        font-size: 12px !important;
-      }
-
-      .dora-stage {
-        transform: scale(.78) !important;
-        margin-bottom: -65px !important;
-      }
-
-      .main-photo-card {
-        width: min(260px, 82vw) !important;
-      }
-
-      .welcome-ticker {
-        height: 50px;
-      }
-
-      .welcome-ticker-track {
-        font-size: 8px;
-        padding-left: 74px;
-      }
-
-      .sidebar-toggle {
-        width: 60px;
-        height: 50px;
-      }
-
-      .app-shell {
-        padding: 68px 16px calc(var(--nav-height) + 30px) !important;
-      }
-
-      .liquid-nav {
-        width: calc(100vw - 18px) !important;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#030816">
+    <title>Our Little Universe 💙</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Home layout -->
+    <style>
+        .landing::before,
+        .landing::after {
+            display: none !important;
+        }
+
+        .hero-grid {
+            min-height: auto !important;
+            padding: 40px 0 70px !important;
+            grid-template-columns: minmax(280px, .9fr) minmax(0, 1.1fr) !important;
+            gap: clamp(35px, 6vw, 80px) !important;
+            align-items: center !important;
+        }
+
+        .hero-copy {
+            order: 2;
+        }
+
+        .hero-copy h2 {
+            font-size: clamp(38px, 5vw, 64px) !important;
+        }
+
+        .hero-copy > p {
+            max-width: 560px;
+        }
+
+        .hero-visual {
+            order: 1 !important;
+            min-height: 0 !important;
+            height: auto !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            position: relative !important;
+            width: 100% !important;
+            gap: 22px !important;
+        }
+
+        .dora-stage {
+            order: 1 !important;
+            position: relative !important;
+            width: 270px !important;
+            height: 390px !important;
+            z-index: 10 !important;
+            flex: none !important;
+            overflow: visible !important;
+        }
+
+        .main-photo-card {
+            display: none !important;
+        }
+
+        .orbit {
+            z-index: 0 !important;
+        }
+
+        .orbit-one {
+            width: 320px !important;
+            height: 320px !important;
+        }
+
+        .orbit-two {
+            width: 360px !important;
+            height: 180px !important;
+        }
+
+        .floating-chip {
+            z-index: 12 !important;
+        }
+
+        .chip-one {
+            left: 0 !important;
+            top: 35px !important;
+        }
+
+        .chip-two {
+            right: 0 !important;
+            bottom: 25px !important;
+        }
+
+        @media (max-width: 900px) {
+            .hero-grid {
+                grid-template-columns: 1fr !important;
+                padding-top: 20px !important;
+            }
+
+            .hero-copy {
+                order: 2;
+                text-align: center;
+            }
+
+            .hero-visual {
+                order: 1 !important;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-grid {
+                padding: 10px 0 45px !important;
+                gap: 20px !important;
+            }
+
+            .dora-stage {
+                transform: scale(.78) !important;
+                margin-bottom: -65px !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div class="ambient ambient-a"></div>
-  <div class="ambient ambient-b"></div>
-  <canvas id="space-canvas"></canvas>
+    <!-- Ambient background -->
+    <div class="ambient ambient-a"></div>
+    <div class="ambient ambient-b"></div>
+    <canvas id="space-canvas"></canvas>
 
-  <div id="landing-page" class="landing">
-    <button id="enter-btn" class="primary-btn landing-enter">
-      Masuk <span>→</span>
-    </button>
-  </div>
-
-  <main id="content-area" class="app-shell">
-    <div class="liquid-sidebar" id="liquid-sidebar">
-      <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Buka menu">
-        <i></i>
-        <i></i>
-        <i></i>
-      </button>
-
-      <div class="sidebar-panel">
-        <button class="sidebar-link active" data-target="home-view">⌂ <span>Home</span></button>
-        <button class="sidebar-link" data-target="album-view">◈ <span>Album</span></button>
-        <button class="sidebar-link" data-target="story-view">✦ <span>Note</span></button>
-        <button class="sidebar-link" id="sidebar-music">♪ <span>Music</span></button>
-      </div>
+    <!-- Landing screen -->
+    <div id="landing-page" class="landing">
+        <button id="enter-btn" class="primary-btn landing-enter">
+            Masuk <span>→</span>
+        </button>
     </div>
 
-    <div class="welcome-ticker" aria-hidden="true">
-      <div class="welcome-ticker-track">
-        <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
-        <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
-      </div>
-    </div>
-
-    <section id="home-view" class="view-page active">
-      <div class="hero-grid">
-        <div class="hero-copy reveal">
-          <span class="eyebrow">WELCOME TO OUR WORLD</span>
-          <h2>
-            Small moments.<br>
-            <span>Big memories.</span>
-          </h2>
-          <p>
-            Bukan sekadar galeri. Ini tempat kecil buat menyimpan hal-hal yang mungkin sederhana,
-            tapi selalu punya cerita.
-          </p>
-
-          <div class="hero-actions">
-            <button class="primary-btn" data-go="album-view">
-              Lihat kenangan <span>↗</span>
+    <!-- Main application -->
+    <main id="content-area" class="app-shell">
+        <!-- Sidebar -->
+        <div id="liquid-sidebar" class="liquid-sidebar">
+            <button
+                id="sidebar-toggle"
+                class="sidebar-toggle"
+                type="button"
+                aria-label="Buka menu"
+            >
+                <i></i>
+                <i></i>
+                <i></i>
             </button>
-            <span class="scroll-note">scroll untuk menjelajah ↓</span>
-          </div>
+
+            <div class="sidebar-panel">
+                <button class="sidebar-link active" data-target="home-view" type="button">
+                    ⌂ <span>Home</span>
+                </button>
+                <button class="sidebar-link" data-target="album-view" type="button">
+                    ◈ <span>Album</span>
+                </button>
+                <button class="sidebar-link" data-target="story-view" type="button">
+                    ✦ <span>Note</span>
+                </button>
+                <button id="sidebar-music" class="sidebar-link" type="button">
+                    ♪ <span>Music</span>
+                </button>
+            </div>
         </div>
 
-        <div class="hero-visual reveal">
-          <div class="orbit orbit-one"></div>
-          <div class="orbit orbit-two"></div>
-          <div class="floating-chip chip-one">✦ GOOD VIBES</div>
-          <div class="floating-chip chip-two">DORAEMON ✦</div>
+        <!-- Welcome ticker -->
+        <div class="welcome-ticker" aria-hidden="true">
+            <div class="welcome-ticker-track">
+                <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
+                <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
+            </div>
+        </div>
 
-          <div class="dora-stage" id="dora-stage" aria-label="Doraemon interaktif">
-            <div class="dora-ring"></div>
-            <div class="dora-bubble" id="dora-bubble">Ada yang butuh bantuan? ✨</div>
+        <!-- Home -->
+        <section id="home-view" class="view-page active">
+            <div class="hero-grid">
+                <div class="hero-copy reveal">
+                    <span class="eyebrow">WELCOME TO OUR WORLD</span>
+                    <h2>
+                        Small moments.<br>
+                        <span>Big memories.</span>
+                    </h2>
+                    <p>
+                        Bukan sekadar galeri. Ini tempat kecil buat menyimpan hal-hal
+                        yang mungkin sederhana, tapi selalu punya cerita.
+                    </p>
 
-            <div class="doraemon" id="doraemon" role="button" tabindex="0" aria-label="Klik Doraemon">
-              <div class="dora-propeller">
-                <i class="prop-stick"></i>
-                <i class="prop-blade"></i>
-              </div>
-
-              <div class="dora-head">
-                <div class="dora-face">
-                  <div class="dora-eye left"><i class="dora-pupil"></i></div>
-                  <div class="dora-eye right"><i class="dora-pupil"></i></div>
-                  <i class="dora-nose"></i>
-                  <i class="dora-mouth"></i>
-                  <i class="whisker w1"></i>
-                  <i class="whisker w2"></i>
-                  <i class="whisker w3"></i>
-                  <i class="whisker w4"></i>
-                  <i class="whisker w5"></i>
-                  <i class="whisker w6"></i>
+                    <div class="hero-actions">
+                        <button class="primary-btn" data-go="album-view" type="button">
+                            Lihat kenangan <span>↗</span>
+                        </button>
+                        <span class="scroll-note">scroll untuk menjelajah ↓</span>
+                    </div>
                 </div>
-              </div>
 
-              <div class="dora-body">
-                <div class="dora-collar"></div>
-                <div class="dora-bell"></div>
-                <div class="dora-belly"></div>
-                <div class="dora-pocket"></div>
-              </div>
+                <div class="hero-visual reveal">
+                    <div class="orbit orbit-one"></div>
+                    <div class="orbit orbit-two"></div>
 
-              <div class="dora-arm left"><i class="dora-hand"></i></div>
-              <div class="dora-arm right"><i class="dora-hand"></i></div>
-              <div class="dora-foot left"></div>
-              <div class="dora-foot right"></div>
+                    <div class="floating-chip chip-one">✦ GOOD VIBES</div>
+                    <div class="floating-chip chip-two">DORAEMON ✦</div>
+
+                    <!-- Three.js mounts the character here -->
+                    <div
+                        id="dora-stage"
+                        class="dora-stage"
+                        aria-label="Doraemon interaktif"
+                    ></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Album -->
+        <section id="album-view" class="view-page">
+            <div class="page-heading">
+                <span class="eyebrow">MEMORY ALBUM</span>
+                <h2>
+                    Little moments,<br>
+                    <span>kept forever.</span>
+                </h2>
+                <p>Geser untuk melihat kenangan.</p>
             </div>
 
-            <div class="dora-hint">KLIK DORAEMON ✦</div>
-          </div>
+            <div class="slider-wrap">
+                <button id="prev-card" class="slider-arrow" type="button">←</button>
 
-          <div class="main-photo-card tilt-card">
-            <img src="IMG_20260731_204858.jpg" alt="Foto kenangan utama">
-          </div>
-        </div>
-      </div>
-    </section>
+                <div id="card-slider" class="card-slider">
+                    <article class="memory-card">
+                        <span class="card-number">01</span>
+                        <img src="IMG_20260731_204858.jpg" alt="Kenangan 1">
+                        <div class="card-info">
+                            <span>MOMENT</span>
+                            <h3>One frame.</h3>
+                            <p>Satu foto, satu cerita kecil.</p>
+                        </div>
+                    </article>
 
-    <section id="album-view" class="view-page">
-      <div class="page-heading">
-        <span class="eyebrow">MEMORY ALBUM</span>
-        <h2>
-          Little moments,<br>
-          <span>kept forever.</span>
-        </h2>
-        <p>Geser untuk melihat kenangan.</p>
-      </div>
+                    <article class="memory-card">
+                        <span class="card-number">02</span>
+                        <img src="IMG_20260731_204858.jpg" alt="Kenangan 2">
+                        <div class="card-info">
+                            <span>MEMORY</span>
+                            <h3>Good vibes.</h3>
+                            <p>Hal sederhana yang layak diingat.</p>
+                        </div>
+                    </article>
 
-      <div class="slider-wrap">
-        <button id="prev-card" class="slider-arrow">←</button>
+                    <article class="memory-card">
+                        <span class="card-number">03</span>
+                        <img src="IMG_20260731_204858.jpg" alt="Kenangan 3">
+                        <div class="card-info">
+                            <span>STORY</span>
+                            <h3>Keep it close.</h3>
+                            <p>Momen kecil yang tetap punya arti.</p>
+                        </div>
+                    </article>
+                </div>
 
-        <div id="card-slider" class="card-slider">
-          <article class="memory-card">
-            <span class="card-number">01</span>
-            <img src="IMG_20260731_204858.jpg" alt="Kenangan 1">
-            <div class="card-info">
-              <span>MOMENT</span>
-              <h3>One frame.</h3>
-              <p>Satu foto, satu cerita kecil.</p>
+                <button id="next-card" class="slider-arrow" type="button">→</button>
             </div>
-          </article>
 
-          <article class="memory-card">
-            <span class="card-number">02</span>
-            <img src="IMG_20260731_204858.jpg" alt="Kenangan 2">
-            <div class="card-info">
-              <span>MEMORY</span>
-              <h3>Good vibes.</h3>
-              <p>Hal sederhana yang layak diingat.</p>
+            <div class="slider-progress">
+                <span id="slider-count">01</span>
+                <div><i id="slider-bar"></i></div>
+                <span>03</span>
             </div>
-          </article>
+        </section>
 
-          <article class="memory-card">
-            <span class="card-number">03</span>
-            <img src="IMG_20260731_204858.jpg" alt="Kenangan 3">
-            <div class="card-info">
-              <span>STORY</span>
-              <h3>Keep it close.</h3>
-              <p>Momen kecil yang tetap punya arti.</p>
+        <!-- Note -->
+        <section id="story-view" class="view-page">
+            <div class="page-heading">
+                <span class="eyebrow">A LITTLE NOTE</span>
+                <h2>
+                    For the moments<br>
+                    <span>that matter.</span>
+                </h2>
             </div>
-          </article>
-        </div>
 
-        <button id="next-card" class="slider-arrow">→</button>
-      </div>
+            <article class="note-card">
+                <span>NOTE</span>
+                <h3>Keep the good ones.</h3>
+                <p>
+                    Semoga setiap halaman di sini selalu mengingatkan bahwa momen
+                    kecil juga bisa menjadi kenangan yang besar.
+                </p>
+                <div class="signature">— Nezza 💙</div>
+            </article>
+        </section>
+    </main>
 
-      <div class="slider-progress">
-        <span id="slider-count">01</span>
-        <div><i id="slider-bar"></i></div>
-        <span>03</span>
-      </div>
-    </section>
+    <!-- Liquid navigation -->
+    <nav class="liquid-nav" aria-label="Navigasi utama">
+        <span id="liquid-indicator" class="liquid-indicator"></span>
 
-    <section id="story-view" class="view-page">
-      <div class="page-heading">
-        <span class="eyebrow">A LITTLE NOTE</span>
-        <h2>
-          For the moments<br>
-          <span>that matter.</span>
-        </h2>
-      </div>
+        <button class="nav-item active" data-target="home-view" type="button">
+            ⌂ <small>Home</small>
+        </button>
+        <button class="nav-item" data-target="album-view" type="button">
+            ◈ <small>Album</small>
+        </button>
+        <button class="nav-item" data-target="story-view" type="button">
+            ✦ <small>Note</small>
+        </button>
+    </nav>
 
-      <article class="note-card">
-        <span>NOTE</span>
-        <h3>Keep the good ones.</h3>
-        <p>
-          Semoga setiap halaman di sini selalu mengingatkan bahwa momen kecil juga bisa menjadi
-          kenangan yang besar.
-        </p>
-        <div class="signature">— Nezza 💙</div>
-      </article>
-    </section>
-  </main>
+    <!-- Background music -->
+    <audio id="bg-music" loop preload="metadata">
+        <source
+            src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3"
+            type="audio/mpeg"
+        >
+    </audio>
 
-  <nav class="liquid-nav" aria-label="Navigasi utama">
-    <span id="liquid-indicator" class="liquid-indicator"></span>
-    <button class="nav-item active" data-target="home-view">⌂<small>Home</small></button>
-    <button class="nav-item" data-target="album-view">◈<small>Album</small></button>
-    <button class="nav-item" data-target="story-view">✦<small>Note</small></button>
-  </nav>
-
-  <audio id="bg-music" loop preload="metadata">
-    <source src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3" type="audio/mpeg">
-  </audio>
-
-  <script src="script.js"></script>
-  <script>
-    const sb = document.getElementById('liquid-sidebar');
-    const st = document.getElementById('sidebar-toggle');
-
-    st?.addEventListener('click', () => {
-      sb?.classList.toggle('open');
-      st.classList.toggle('active');
-    });
-
-    document.querySelectorAll('.sidebar-link[data-target]').forEach((button) => {
-      button.addEventListener('click', () => {
-        document.querySelector(`[data-target="${button.dataset.target}"]`)?.click();
-        sb?.classList.remove('open');
-        st?.classList.remove('active');
-      });
-    });
-
-    document.getElementById('sidebar-music')?.addEventListener('click', () => {
-      const music = document.getElementById('bg-music');
-      if (music?.paused) {
-        music.play().catch(() => {});
-      } else {
-        music?.pause();
-      }
-    });
-  </script>
+    <!-- Application scripts -->
+    <script src="script.js"></script>
+    <script src="doraemon3d.js"></script>
 </body>
 </html>
