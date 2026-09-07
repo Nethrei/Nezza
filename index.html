@@ -50,8 +50,8 @@
         .dora-stage {
             order: 1 !important;
             position: relative !important;
-            width: 270px !important;
-            height: 390px !important;
+            width: 360px !important;
+            height: 470px !important;
             z-index: 10 !important;
             flex: none !important;
             overflow: visible !important;
@@ -66,13 +66,13 @@
         }
 
         .orbit-one {
-            width: 320px !important;
-            height: 320px !important;
+            width: 390px !important;
+            height: 390px !important;
         }
 
         .orbit-two {
-            width: 360px !important;
-            height: 180px !important;
+            width: 430px !important;
+            height: 210px !important;
         }
 
         .floating-chip {
@@ -116,29 +116,32 @@
             }
 
             .dora-stage {
-                transform: scale(.78) !important;
-                margin-bottom: -65px !important;
+                width: 320px !important;
+                height: 420px !important;
+                transform: none !important;
+                margin-bottom: -40px !important;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Ambient background -->
     <div class="ambient ambient-a"></div>
     <div class="ambient ambient-b"></div>
     <canvas id="space-canvas"></canvas>
 
-    <!-- Landing screen -->
     <div id="landing-page" class="landing">
-        <button id="enter-btn" class="primary-btn landing-enter">
-            Masuk <span>→</span>
-        </button>
+        <div class="landing-content">
+            <span class="eyebrow">OUR LITTLE UNIVERSE</span>
+            <h1>Small moments.<br><span>Big memories.</span></h1>
+            <p>Tempat kecil untuk menyimpan cerita, kenangan, dan momen yang berarti.</p>
+            <button id="enter-btn" class="primary-btn landing-enter" type="button">
+                Masuk <span>→</span>
+            </button>
+        </div>
     </div>
 
-    <!-- Main application -->
     <main id="content-area" class="app-shell">
-        <!-- Sidebar -->
         <div id="liquid-sidebar" class="liquid-sidebar">
             <button
                 id="sidebar-toggle"
@@ -167,7 +170,6 @@
             </div>
         </div>
 
-        <!-- Welcome ticker -->
         <div class="welcome-ticker" aria-hidden="true">
             <div class="welcome-ticker-track">
                 <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
@@ -175,7 +177,6 @@
             </div>
         </div>
 
-        <!-- Home -->
         <section id="home-view" class="view-page active">
             <div class="hero-grid">
                 <div class="hero-copy reveal">
@@ -204,7 +205,6 @@
                     <div class="floating-chip chip-one">✦ GOOD VIBES</div>
                     <div class="floating-chip chip-two">DORAEMON ✦</div>
 
-                    <!-- Three.js mounts the character here -->
                     <div
                         id="dora-stage"
                         class="dora-stage"
@@ -214,7 +214,6 @@
             </div>
         </section>
 
-        <!-- Album -->
         <section id="album-view" class="view-page">
             <div class="page-heading">
                 <span class="eyebrow">MEMORY ALBUM</span>
@@ -270,7 +269,6 @@
             </div>
         </section>
 
-        <!-- Note -->
         <section id="story-view" class="view-page">
             <div class="page-heading">
                 <span class="eyebrow">A LITTLE NOTE</span>
@@ -292,7 +290,6 @@
         </section>
     </main>
 
-    <!-- Liquid navigation -->
     <nav class="liquid-nav" aria-label="Navigasi utama">
         <span id="liquid-indicator" class="liquid-indicator"></span>
 
@@ -307,7 +304,6 @@
         </button>
     </nav>
 
-    <!-- Background music -->
     <audio id="bg-music" loop preload="metadata">
         <source
             src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3"
@@ -315,8 +311,6 @@
         >
     </audio>
 
-    <!-- Application scripts -->
     <script src="script.js"></script>
-    <script src="doraemon3d.js"></script>
 </body>
 </html>
