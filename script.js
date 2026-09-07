@@ -7,6 +7,19 @@
   const music=$('#bg-music'), musicBtn=$('#music-toggle-btn');
   const pages=$$('.view-page'), navs=$$('.nav-item'), indicator=$('#liquid-indicator');
 
+  /* Top welcome ticker: text stays INSIDE the bar and reveals/moves left -> right. */
+  const tickerStyle=document.createElement('style');
+  tickerStyle.textContent=`
+    .welcome-ticker{z-index:4000!important;left:76px!important;width:calc(100% - 76px)!important;height:64px!important;overflow:hidden!important;display:flex!important;align-items:center!important;background:rgba(3,12,28,.72)!important;backdrop-filter:blur(18px)!important;-webkit-backdrop-filter:blur(18px)!important;}
+    .welcome-ticker-track{position:relative!important;display:block!important;min-width:0!important;width:max-content!important;white-space:nowrap!important;padding-left:0!important;animation:welcomeRevealLTR 9s linear infinite!important;will-change:transform!important;}
+    .welcome-ticker-track span{display:inline-block!important;padding-right:55px!important;}
+    @keyframes welcomeRevealLTR{0%{transform:translateX(-100%)}12%{transform:translateX(0)}75%{transform:translateX(0)}100%{transform:translateX(100%)} }
+    .liquid-sidebar{z-index:5000!important;background:rgba(3,12,28,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+    @media(max-width:900px){.welcome-ticker{left:68px!important;width:calc(100% - 68px)!important;height:56px!important}.welcome-ticker-track{animation-duration:8s!important}}
+    @media(max-width:600px){.welcome-ticker{left:60px!important;width:calc(100% - 60px)!important;height:50px!important}.welcome-ticker-track{animation-duration:7s!important}}
+  `;
+  document.head.appendChild(tickerStyle);
+
   function indicatorMove(item){
     if(!indicator||!item)return;
     const n=item.closest('.liquid-nav'), a=n.getBoundingClientRect(), b=item.getBoundingClientRect();
@@ -45,7 +58,7 @@
   addEventListener('resize',()=>{resize();indicatorMove($('.nav-item.active'));state()});resize();stars();
   const h=location.hash.replace('#','');showView(h==='album'?'album-view':h==='story'?'story-view':'home-view',false);state();
 
-  /* Doraemon: no Sonic code, no Sonic loader. */
+  /* Doraemon: interactive, no Sonic code. */
   const stage=$('#dora-stage'), dora=$('#doraemon'), bubble=$('#dora-bubble');
   if(!stage||!dora)return;
   const lines=['Halo Nezuro! 👋','Ayo jelajahi cerita ini! 💙','Dorayaki time! ✨','Pintu ke mana saja siap! 🚪','Wah, kenangan bagus!','Klik aku lagi! 😄'];
