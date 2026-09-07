@@ -1,5 +1,5 @@
 /*
- * NEZZA — Responsive layout lock + album media
+ * NEZZA — Responsive layout lock + album media + hero photo
  */
 (() => {
   'use strict';
@@ -11,6 +11,47 @@
       width: 100%;
       max-width: 1120px;
       margin-inline: auto;
+    }
+
+    /* STANDING PHOTO BESIDE THE HOMEPAGE TITLE */
+    .hero-grid.nezza-hero-with-photo {
+      grid-template-columns:minmax(0,1fr) minmax(220px,360px)!important;
+      gap:clamp(20px,4vw,70px)!important;
+      align-items:center!important;
+    }
+    .nezza-hero-photo {
+      position:relative;
+      width:100%;
+      height:min(72vh,610px);
+      min-height:330px;
+      display:flex;
+      align-items:flex-end;
+      justify-content:center;
+      pointer-events:none;
+      z-index:2;
+      overflow:visible;
+    }
+    .nezza-hero-photo::before {
+      content:'';
+      position:absolute;
+      width:220px;
+      height:220px;
+      right:12%;
+      bottom:5%;
+      border-radius:50%;
+      background:radial-gradient(circle,rgba(91,218,255,.24),rgba(91,218,255,0) 68%);
+      filter:blur(12px);
+      z-index:-1;
+    }
+    .nezza-hero-photo img {
+      display:block;
+      width:auto;
+      height:100%;
+      max-width:100%;
+      object-fit:contain;
+      object-position:center bottom;
+      filter:drop-shadow(0 28px 35px rgba(0,0,0,.35));
+      user-select:none;
     }
 
     @media (max-width: 760px) {
@@ -32,6 +73,14 @@
       .brand strong { font-size:9px; }
       .brand small { display:none; }
       #space-canvas { opacity:.25!important; }
+
+      .hero-grid.nezza-hero-with-photo {
+        grid-template-columns:minmax(0,1.08fr) minmax(105px,.72fr)!important;
+        gap:4px!important;
+        min-height:calc(100dvh - 116px)!important;
+      }
+      .nezza-hero-photo { height:min(68vh,470px); min-height:260px; }
+      .nezza-hero-photo img { max-width:120%; }
     }
 
     @media (max-width:480px) {
@@ -42,6 +91,8 @@
       .hero-visual { min-height:245px; height:50vw; max-height:315px; }
       .main-photo-card { width:94%; border-radius:18px; }
       .liquid-nav { width:calc(100vw - 16px)!important; max-width:430px; }
+      .hero-grid.nezza-hero-with-photo { grid-template-columns:minmax(0,1.16fr) minmax(100px,.66fr)!important; gap:2px!important; }
+      .nezza-hero-photo { min-height:230px; height:60vw; max-height:330px; }
     }
 
     @media (max-width:360px) {
@@ -49,6 +100,8 @@
       .hero-copy h2,.page-heading h2 { font-size:27px; }
       .hero-copy>p { font-size:7.5px; }
       .hero-visual { min-height:220px; }
+      .hero-grid.nezza-hero-with-photo { grid-template-columns:minmax(0,1.18fr) minmax(88px,.62fr)!important; }
+      .nezza-hero-photo { min-height:205px; }
     }
 
     /* FOTOBAR — foto bersama di atas album, dibuat seperti tumpukan kertas */
@@ -87,10 +140,10 @@
       object-fit:cover;
       display:block;
     }
-    #album-view .fotobar-photo:nth-of-type(2) { transform:translateX(-50%) rotate(-10deg) translate(-105px,10px); z-index:1; }
-    #album-view .fotobar-photo:nth-of-type(3) { transform:translateX(-50%) rotate(7deg) translate(104px,12px); z-index:2; }
-    #album-view .fotobar-photo:nth-of-type(4) { transform:translateX(-50%) rotate(-4deg) translate(-38px,2px); z-index:4; }
-    #album-view .fotobar-photo:nth-of-type(5) { transform:translateX(-50%) rotate(5deg) translate(42px,5px); z-index:3; }
+    #album-view .fotobar-photo:nth-child(2) { transform:translateX(-50%) rotate(-10deg) translate(-105px,10px); z-index:1; }
+    #album-view .fotobar-photo:nth-child(3) { transform:translateX(-50%) rotate(7deg) translate(104px,12px); z-index:2; }
+    #album-view .fotobar-photo:nth-child(4) { transform:translateX(-50%) rotate(-4deg) translate(-38px,2px); z-index:4; }
+    #album-view .fotobar-photo:nth-child(5) { transform:translateX(-50%) rotate(5deg) translate(42px,5px); z-index:3; }
     #album-view .fotobar-photo:hover { z-index:10!important; transform:translateX(-50%) translateY(-8px) rotate(0deg) scale(1.04)!important; box-shadow:0 28px 55px rgba(0,0,0,.38); }
 
     #album-view .album-fotobar + .slider-wrap { margin-top:8px; }
@@ -101,10 +154,10 @@
       #album-view .album-fotobar { width:94vw; height:205px; margin-bottom:26px; }
       #album-view .album-fotobar-title { top:-24px; font-size:8px; }
       #album-view .fotobar-photo { width:140px; height:170px; padding:5px 5px 22px; top:15px; }
-      #album-view .fotobar-photo:nth-of-type(2) { transform:translateX(-50%) rotate(-10deg) translate(-76px,7px); }
-      #album-view .fotobar-photo:nth-of-type(3) { transform:translateX(-50%) rotate(7deg) translate(75px,8px); }
-      #album-view .fotobar-photo:nth-of-type(4) { transform:translateX(-50%) rotate(-4deg) translate(-27px,1px); }
-      #album-view .fotobar-photo:nth-of-type(5) { transform:translateX(-50%) rotate(5deg) translate(29px,3px); }
+      #album-view .fotobar-photo:nth-child(2) { transform:translateX(-50%) rotate(-10deg) translate(-76px,7px); }
+      #album-view .fotobar-photo:nth-child(3) { transform:translateX(-50%) rotate(7deg) translate(75px,8px); }
+      #album-view .fotobar-photo:nth-child(4) { transform:translateX(-50%) rotate(-4deg) translate(-27px,1px); }
+      #album-view .fotobar-photo:nth-child(5) { transform:translateX(-50%) rotate(5deg) translate(29px,3px); }
       #album-view .album-fotobar + .slider-wrap { margin-top:5px; }
       #album-view .page-heading p::after { font-size:11px; }
     }
@@ -119,6 +172,19 @@
     #album-view .card-number { color:#168cff; }
   `;
   document.head.appendChild(style);
+
+  function addHeroPhoto() {
+    const home = document.querySelector('#home-view');
+    const grid = home?.querySelector('.hero-grid');
+    const copy = grid?.querySelector('.hero-copy');
+    if (!grid || !copy || grid.querySelector('.nezza-hero-photo')) return;
+
+    grid.classList.add('nezza-hero-with-photo');
+    const visual = document.createElement('div');
+    visual.className = 'nezza-hero-photo';
+    visual.innerHTML = `<img src="Proyek Baru [D604282].png" alt="Nezuro berdiri" loading="eager" decoding="async">`;
+    grid.appendChild(visual);
+  }
 
   function addAlbumMedia() {
     const album = document.querySelector('#album-view');
@@ -152,5 +218,6 @@
     });
   }
 
+  addHeroPhoto();
   addAlbumMedia();
 })();
