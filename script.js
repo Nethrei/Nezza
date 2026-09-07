@@ -208,17 +208,69 @@
   });
 })();
 
-/* ---------- Load the real 3D Sonic hero after the base UI is ready ---------- */
+/* ---------- Doraemon interaction: animated, reactive and able to speak ---------- */
 (() => {
-  const loadScript = (src) => new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = src;
-    script.onload = resolve;
-    script.onerror = reject;
-    document.head.appendChild(script);
+  const stage = document.getElementById('dora-stage');
+  const dora = document.getElementById('doraemon');
+  const bubble = document.getElementById('dora-bubble');
+  if (!stage || !dora) return;
+
+  const lines = [
+    'Halo Nezuro! 👋 Selamat datang di cerita kecil ini!',
+    'Dorayaki time! 💙 Jangan lupa bahagia hari ini ya!',
+    'Aku Doraemon! Siap menemani kamu menjelajah.',
+    'Pintu ke mana saja siap! 🚪 Kita mulai petualangan!',
+    'Ada yang butuh bantuan? ✨ Klik aku lagi!',
+    'Wah, kenangan ini bagus banget! ✦',
+    'Ayo simpan momen-momen terbaik di sini! 💙'
+  ];
+  let timer;
+  let speechTimer;
+
+  function speak(text) {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'id-ID';
+    utterance.rate = 1.02;
+    utterance.pitch = 1.25;
+    utterance.volume = 0.9;
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find(v => /id-ID|indonesian/i.test(`${v.lang} ${v.name}`));
+    if (voice) utterance.voice = voice;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function react() {
+    const text = lines[Math.floor(Math.random() * lines.length)];
+    stage.classList.remove('talk', 'running', 'bounce', 'spin-gadget');
+    void stage.offsetWidth;
+    stage.classList.add('talk', 'running', 'bounce', 'spin-gadget');
+    if (bubble) bubble.textContent = text;
+    speak(text);
+    clearTimeout(timer);
+    clearTimeout(speechTimer);
+    timer = setTimeout(() => stage.classList.remove('running', 'bounce', 'spin-gadget'), 2200);
+    speechTimer = setTimeout(() => stage.classList.remove('talk'), 5000);
+  }
+
+  dora.addEventListener('click', react);
+  dora.addEventListener('keydown', event => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      react();
+    }
   });
 
-  loadScript('https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js')
-    .then(() => loadScript('sonic3d.js'))
-    .catch(() => console.warn('3D Sonic gagal dimuat. Tampilan utama tetap berjalan.'));
+  document.addEventListener('mousemove', event => {
+    if (stage.classList.contains('running')) return;
+    const r = dora.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const x = Math.max(-9, Math.min(9, (event.clientX - cx) * 0.035));
+    const y = Math.max(-6, Math.min(6, (event.clientY - cy) * 0.02));
+    dora.style.transform = `translateX(-50%) translateY(${y}px) rotateY(${x}deg)`;
+  });
+
+  window.speechSynthesis?.addEventListener?.('voiceschanged', () => {});
 })();
