@@ -62,8 +62,42 @@
   const stage=$('#dora-stage'), dora=$('#doraemon'), bubble=$('#dora-bubble');
   if(!stage||!dora)return;
   const lines=['Halo Nezuro! 👋','Ayo jelajahi cerita ini! 💙','Dorayaki time! ✨','Pintu ke mana saja siap! 🚪','Wah, kenangan bagus!','Klik aku lagi! 😄'];
-  function speak(text){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='id-ID';u.rate=1.02;u.pitch=1.22;speechSynthesis.speak(u)}
-  function react(){const text=lines[Math.floor(Math.random()*lines.length)];bubble&&(bubble.textContent=text);stage.classList.remove('talk','running','bounce','spin-gadget');void stage.offsetWidth;stage.classList.add('talk','running','bounce','spin-gadget');speak(text);setTimeout(()=>stage.classList.remove('running','bounce','spin-gadget'),2200);setTimeout(()=>stage.classList.remove('talk'),5000)}
-  dora.addEventListener('click',react);dora.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();react()}});
+
+  /* Character-like synthetic voice: uses an installed Japanese voice when available.
+     It is not a recording of the original Doraemon voice actor. */
+  function pickDoraVoice(){
+    if(!('speechSynthesis' in window))return null;
+    const voices=speechSynthesis.getVoices();
+    return voices.find(v=>/^ja(-|_)/i.test(v.lang) && /female|woman|girl|kyoko|otoya|haruka|sayaka/i.test(v.name))
+      || voices.find(v=>/^ja(-|_)/i.test(v.lang))
+      || voices.find(v=>/japanese/i.test(v.name))
+      || null;
+  }
+  function speak(text){
+    if(!('speechSynthesis' in window))return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    const voice=pickDoraVoice();
+    if(voice)u.voice=voice;
+    u.lang=voice?.lang||'ja-JP';
+    u.rate=.9;
+    u.pitch=1.55;
+    u.volume=1;
+    speechSynthesis.speak(u);
+  }
+  if('speechSynthesis' in window)speechSynthesis.onvoiceschanged=()=>{};
+
+  function react(){
+    const text=lines[Math.floor(Math.random()*lines.length)];
+    bubble&&(bubble.textContent=text);
+    stage.classList.remove('talk','running','bounce','spin-gadget');
+    void stage.offsetWidth;
+    stage.classList.add('talk','running','bounce','spin-gadget');
+    speak(text);
+    setTimeout(()=>stage.classList.remove('running','bounce','spin-gadget'),2200);
+    setTimeout(()=>stage.classList.remove('talk'),5000);
+  }
+  dora.addEventListener('click',react);
+  dora.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();react()}});
   addEventListener('mousemove',e=>{if(stage.classList.contains('running'))return;const r=dora.getBoundingClientRect(),x=Math.max(-8,Math.min(8,(e.clientX-(r.left+r.width/2))*.035)),y=Math.max(-5,Math.min(5,(e.clientY-(r.top+r.height/2))*.02));dora.style.transform=`translateX(-50%) translateY(${y}px) rotateY(${x}deg)`});
 })();
