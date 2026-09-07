@@ -8,6 +8,60 @@
   <style>
     .landing::before,
     .landing::after { display: none !important; }
+
+    /* HOME: lebih padat, rapi, dan foto lebih kecil */
+    .hero-grid {
+      min-height: auto !important;
+      padding: 42px 0 52px;
+      grid-template-columns: minmax(0, 1.15fr) minmax(240px, .65fr) !important;
+      gap: clamp(28px, 5vw, 70px) !important;
+    }
+    .hero-copy h2 { font-size: clamp(38px, 5vw, 64px) !important; }
+    .hero-copy > p { max-width: 560px; }
+    .hero-visual {
+      min-height: 360px !important;
+      width: 100%;
+    }
+    .main-photo-card {
+      width: min(245px, 62vw) !important;
+      border-radius: 24px !important;
+    }
+    .orbit-one { width: 300px !important; height: 300px !important; }
+    .orbit-two { width: 340px !important; height: 170px !important; }
+    .floating-chip { font-size: 7px !important; padding: 8px 11px !important; }
+    .chip-one { left: 0 !important; top: 14% !important; }
+    .chip-two { right: 0 !important; bottom: 12% !important; }
+    .story-block { padding: 52px 0 !important; }
+
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: 1fr !important;
+        padding-top: 24px;
+      }
+      .hero-copy { text-align: center; }
+      .hero-copy > p { margin-left: auto; margin-right: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-visual { min-height: 320px !important; margin-top: -8px; }
+      .main-photo-card { width: min(220px, 58vw) !important; }
+      .orbit-one { width: 270px !important; height: 270px !important; }
+      .orbit-two { width: 300px !important; height: 150px !important; }
+      .story-block { grid-template-columns: 1fr !important; gap: 18px !important; }
+    }
+
+    @media (max-width: 600px) {
+      .hero-grid { padding: 12px 0 38px; gap: 8px !important; }
+      .hero-copy h2 { font-size: clamp(34px, 10vw, 48px) !important; margin-bottom: 16px !important; }
+      .hero-copy > p { font-size: 12px !important; line-height: 1.7 !important; }
+      .hero-visual { min-height: 275px !important; }
+      .main-photo-card { width: 185px !important; border-radius: 20px !important; }
+      .orbit-one { width: 230px !important; height: 230px !important; }
+      .orbit-two { width: 255px !important; height: 125px !important; }
+      .chip-one { left: 2% !important; top: 12% !important; }
+      .chip-two { right: 2% !important; bottom: 9% !important; }
+      .story-block { padding: 38px 0 !important; }
+      .story-block h3 { font-size: 28px !important; }
+      .mini-memory-row { grid-template-columns: 1fr !important; }
+    }
   </style>
 </head>
 <body>
