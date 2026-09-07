@@ -48,7 +48,7 @@
     const visual=document.createElement('div');
     visual.className='nezza-hero-photo';
     const img=document.createElement('img');
-    img.alt='Nezuro — 1788052638907.png';
+    img.alt='Nezuro — 1788769492774.png';
     img.loading='eager';
     img.decoding='async';
     img.src=HERO_DATA;
