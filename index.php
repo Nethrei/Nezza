@@ -1,101 +1,99 @@
+<?php
+// Versi PHP tetap bisa dijalankan di hosting PHP.
+// Untuk GitHub Pages, gunakan index.html.
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#07152f">
-<title>Nezuro • Blue Memories</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nezza — Our Little Universe 💙</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<canvas id="bg-canvas"></canvas>
-<div id="cursor-glow"></div>
-<div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <canvas id="space-canvas"></canvas>
 
-<audio id="bg-music" src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3" loop></audio>
-
-<div id="landing-page">
-  <div class="landing-orbit"></div>
-  <div class="sonic-stage landing-sonic"><canvas id="sonic-canvas" width="360" height="360"></canvas></div>
-  <div class="landing-content">
-    <span class="eyebrow">A LITTLE BLUE UNIVERSE</span>
-    <h1>For Someone<br><span>Special.</span></h1>
-    <p>Masuk ke dunia kecil yang dibuat Nezuro ✦</p>
-    <button id="enter-btn"><span>Open the memory</span><b>→</b></button>
+  <div id="landing-page" class="landing">
+    <div class="sonic-stage">
+      <div class="speed-ring"></div>
+      <div class="sonic-runner" aria-label="Animasi karakter Sonic-style">
+        <div class="sonic-spike spike-1"></div><div class="sonic-spike spike-2"></div><div class="sonic-spike spike-3"></div>
+        <div class="sonic-head"><div class="eye eye-a"></div><div class="eye eye-b"></div><div class="nose"></div></div>
+        <div class="sonic-body"></div><div class="sonic-arm arm-a"></div><div class="sonic-arm arm-b"></div>
+        <div class="sonic-shoe shoe-a"></div><div class="sonic-shoe shoe-b"></div>
+      </div>
+    </div>
+    <div class="landing-content">
+      <span class="eyebrow">A LITTLE DIGITAL UNIVERSE</span>
+      <h1>Hai, <span>Kesayangan.</span></h1>
+      <p>Ada dunia kecil yang gue bikin khusus buat menyimpan cerita, foto, dan momen yang berharga.</p>
+      <button id="enter-btn" class="primary-btn">Masuk ke cerita <span>→</span></button>
+    </div>
   </div>
-</div>
 
-<header class="topbar">
-  <button id="menu-btn" class="glass-btn" aria-label="Buka menu"><i></i><i></i><i></i></button>
-  <div class="brand"><span class="brand-dot"></span> NEZURO</div>
-  <button id="music-toggle-btn" class="glass-btn" aria-label="Musik">♫</button>
-</header>
+  <main id="content-area" class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot"></span><strong>NEZZA</strong><small>OUR UNIVERSE</small></div>
+      <button id="music-toggle-btn" class="icon-btn" aria-label="Kontrol musik">♪</button>
+    </header>
 
-<div id="sidebar-overlay"></div>
-<aside id="sidebar-menu">
-  <div class="sidebar-top"><strong>NEZURO</strong><button id="close-sidebar">×</button></div>
-  <p class="side-label">EXPLORE</p>
-  <nav>
-    <button class="nav-item active" data-target="home-view">⌂ <span>Home</span></button>
-    <button class="nav-item" data-target="album-view">▣ <span>Album</span></button>
-    <button class="nav-item" data-target="about-view">✦ <span>Our Story</span></button>
+    <section id="home-view" class="view-page active">
+      <div class="hero-grid">
+        <div class="hero-copy reveal">
+          <span class="eyebrow">WELCOME TO OUR WORLD</span>
+          <h2>Small moments.<br><span>Big memories.</span></h2>
+          <p>Bukan sekadar galeri. Ini tempat kecil buat menyimpan hal-hal yang mungkin sederhana, tapi selalu punya cerita.</p>
+          <div class="hero-actions"><button class="primary-btn" data-go="album-view">Lihat kenangan <span>↗</span></button><span class="scroll-note">scroll untuk menjelajah ↓</span></div>
+        </div>
+        <div class="hero-visual reveal">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+          <div class="main-photo-card tilt-card"><img src="IMG_20260731_204858.jpg" alt="Foto utama Nezza"><div class="photo-label"><span>MEMORY 01</span><b>one frame, one story</b></div></div>
+          <div class="floating-chip chip-one">✦ GOOD VIBES</div><div class="floating-chip chip-two">SONIC SPEED ⚡</div>
+        </div>
+      </div>
+
+      <div class="story-block reveal">
+        <div><span class="eyebrow">01 / OUR STORY</span><h3>Kalau momen bisa disimpan,<br>gue pilih yang ini.</h3></div>
+        <p>Geser halaman, nikmati animasi, dan biarkan setiap foto jadi potongan kecil dari cerita kita.</p>
+      </div>
+      <div class="mini-memory-row">
+        <article class="memory-tile reveal"><span>01</span><h4>First frame</h4><p>Satu foto yang jadi pembuka.</p></article>
+        <article class="memory-tile reveal"><span>02</span><h4>Little things</h4><p>Hal kecil yang bikin senyum.</p></article>
+        <article class="memory-tile reveal"><span>03</span><h4>Keep going</h4><p>Masih banyak cerita berikutnya.</p></article>
+      </div>
+    </section>
+
+    <section id="album-view" class="view-page">
+      <div class="page-heading reveal"><span class="eyebrow">02 / MEMORY SLIDER</span><h2>Swipe the <span>memories.</span></h2><p>Geser card untuk melihat koleksi foto dari repository.</p></div>
+      <div class="slider-wrap reveal">
+        <button class="slider-arrow prev" id="prev-card">‹</button>
+        <div class="card-slider" id="card-slider">
+          <article class="memory-card"><div class="card-number">01</div><img src="IMG_20260731_204858.jpg" alt="Memory 01"><div class="card-info"><span>MEMORY 01</span><h3>One frame.</h3><p>Awal dari halaman kecil ini.</p></div></article>
+          <article class="memory-card"><div class="card-number">02</div><img src="IMG_20260731_204858.jpg" alt="Memory 02"><div class="card-info"><span>MEMORY 02</span><h3>Same picture.</h3><p>Foto yang sama, cerita yang berbeda.</p></div></article>
+          <article class="memory-card"><div class="card-number">03</div><img src="IMG_20260731_204858.jpg" alt="Memory 03"><div class="card-info"><span>MEMORY 03</span><h3>Keep it.</h3><p>Simpan momen yang ingin diingat.</p></div></article>
+          <article class="memory-card"><div class="card-number">04</div><img src="IMG_20260731_204858.jpg" alt="Memory 04"><div class="card-info"><span>MEMORY 04</span><h3>Next chapter.</h3><p>Halaman berikutnya masih kosong.</p></div></article>
+        </div>
+        <button class="slider-arrow next" id="next-card">›</button>
+      </div>
+      <div class="slider-progress"><span id="slider-count">01</span><div><i id="slider-bar"></i></div><span>04</span></div>
+    </section>
+
+    <section id="story-view" class="view-page">
+      <div class="page-heading reveal"><span class="eyebrow">03 / LITTLE NOTE</span><h2>A tiny note <span>for you.</span></h2></div>
+      <div class="note-card reveal"><div class="note-glow"></div><span>DEAR YOU,</span><h3>Some things are better<br>kept as memories.</h3><p>Terima kasih sudah menjadi bagian dari cerita yang layak disimpan. ✦</p><div class="signature">— Nezuro</div></div>
+    </section>
+  </main>
+
+  <nav class="liquid-nav" id="liquid-nav" aria-label="Navigasi utama">
+    <span class="liquid-indicator" id="liquid-indicator"></span>
+    <button class="nav-item active" data-target="home-view"><b>⌂</b><span>Home</span></button>
+    <button class="nav-item" data-target="album-view"><b>◈</b><span>Album</span></button>
+    <button class="nav-item" data-target="story-view"><b>✦</b><span>Note</span></button>
   </nav>
-  <div class="side-card"><small>BLUE NOTE</small><p>“Setiap momen kecil punya tempatnya sendiri.”</p></div>
-</aside>
 
-<main id="content-area">
-  <section id="home-view" class="view-page active">
-    <div class="hero-grid">
-      <div class="hero-copy reveal">
-        <span class="eyebrow">WELCOME TO OUR SPACE</span>
-        <h2>Kenangan yang<br><em>nggak biasa.</em></h2>
-        <p>Satu halaman untuk menyimpan foto, cerita, dan momen yang ingin tetap diingat.</p>
-        <button class="primary-btn" data-go="album-view">Lihat album <span>↗</span></button>
-      </div>
-      <div class="hero-visual reveal">
-        <div class="photo-glow"></div>
-        <div class="photo-card tilt-card"><img src="IMG_20260731_204858.jpg" alt="Foto utama Nezuro"><span class="photo-tag">MEMORY 01</span></div>
-        <div class="sonic-float"><canvas id="sonic-small" width="220" height="220"></canvas></div>
-        <div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div>
-      </div>
-    </div>
-    <div class="stats-row reveal">
-      <div><strong>01</strong><span>PHOTO<br>ARCHIVE</span></div>
-      <div><strong>∞</strong><span>GOOD<br>MEMORIES</span></div>
-      <div><strong>✦</strong><span>MADE BY<br>NEZURO</span></div>
-    </div>
-    <div class="quote-card reveal"><span>✦</span><p>“Bukan tentang seberapa banyak foto yang tersimpan, tapi tentang cerita di balik setiap foto.”</p></div>
-  </section>
-
-  <section id="album-view" class="view-page">
-    <div class="section-head reveal"><span class="eyebrow">MEMORY ARCHIVE</span><h2>Album <em>Foto.</em></h2><p>Geser card atau tekan tombol untuk melihat koleksi.</p></div>
-    <div class="slider-wrap reveal">
-      <button class="slider-arrow prev" aria-label="Sebelumnya">←</button>
-      <div class="card-slider" id="card-slider">
-        <article class="memory-card"><div class="card-image"><img src="IMG_20260731_204858.jpg" alt="Memory 01"><span>01 / MEMORY</span></div><div class="card-body"><small>THE FIRST FRAME</small><h3>Awal yang indah.</h3><p>Satu foto, satu cerita, satu alasan untuk tersenyum.</p></div></article>
-        <article class="memory-card"><div class="card-image"><img src="IMG_20260731_204858.jpg" alt="Memory 02"><span>02 / MEMORY</span></div><div class="card-body"><small>BLUE MOMENT</small><h3>Sesederhana itu.</h3><p>Momen biasa yang berubah jadi kenangan luar biasa.</p></div></article>
-        <article class="memory-card"><div class="card-image"><img src="IMG_20260731_204858.jpg" alt="Memory 03"><span>03 / MEMORY</span></div><div class="card-body"><small>STAY HERE</small><h3>Keep this moment.</h3><p>Karena beberapa momen memang pantas disimpan lebih lama.</p></div></article>
-        <article class="memory-card"><div class="card-image"><img src="IMG_20260731_204858.jpg" alt="Memory 04"><span>04 / MEMORY</span></div><div class="card-body"><small>FOREVER BLUE</small><h3>One more chapter.</h3><p>Album ini masih punya ruang untuk cerita berikutnya.</p></div></article>
-      </div>
-      <button class="slider-arrow next" aria-label="Berikutnya">→</button>
-    </div>
-    <div class="slider-meta"><span id="slider-counter">01 / 04</span><div class="progress"><i id="slider-progress"></i></div><span>SWIPE →</span></div>
-  </section>
-
-  <section id="about-view" class="view-page">
-    <div class="story-card reveal"><span class="eyebrow">OUR STORY</span><h2>Made with<br><em>blue feelings.</em></h2><p>Web ini dibuat sebagai ruang kecil yang hidup: background bergerak mengikuti cursor, bintang-bintang melayang, Sonic berlari, dan navigasi bawah mengikuti halaman yang sedang dibuka.</p><button class="primary-btn" data-go="home-view">Kembali home <span>↗</span></button></div>
-    <div class="sonic-panel reveal"><canvas id="sonic-about" width="360" height="260"></canvas><div><small>RUN WITH THE MEMORIES</small><h3>Keep moving.</h3><p>Tap layar, gerakkan cursor, lalu lihat dunianya bereaksi.</p></div></div>
-  </section>
-</main>
-
-<nav id="liquid-nav" aria-label="Navigasi utama">
-  <div class="liquid-pill"></div>
-  <button class="liquid-item active" data-target="home-view"><span>⌂</span><b>Home</b></button>
-  <button class="liquid-item" data-target="album-view"><span>▣</span><b>Album</b></button>
-  <button class="liquid-item" data-target="about-view"><span>✦</span><b>Story</b></button>
-</nav>
-<div id="toast">Memory mode on ✦</div>
-<footer class="site-footer">NEZURO <span>•</span> BLUE MEMORIES</footer>
-<script src="script.js"></script>
+  <audio id="bg-music" src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3" loop></audio>
+  <script src="script.js"></script>
 </body>
 </html>
