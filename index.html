@@ -8,116 +8,42 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* ============================================================
-           HOMEPAGE — BLUE / WHITE FOCUS
-           ============================================================ */
         :root {
             --blue-main: #168cff;
             --blue-light: #6fd7ff;
             --blue-deep: #061a3d;
-            --white: #ffffff;
+            --white: #fff;
         }
 
         body {
             overflow-x: hidden;
-            background:
-                radial-gradient(circle at 18% 20%, rgba(74, 181, 255, .20), transparent 28%),
-                radial-gradient(circle at 82% 75%, rgba(30, 113, 255, .20), transparent 32%),
-                linear-gradient(135deg, #02091b 0%, #061b42 48%, #073f86 100%);
+            background: linear-gradient(160deg, #06142f 0%, #0b3d82 48%, #63d5ff 100%);
         }
 
-        .ambient {
-            opacity: .7;
-            filter: blur(70px);
-            animation: ambientMove 9s ease-in-out infinite alternate;
-        }
+        /* Hide old heavy visual leftovers. */
+        .ambient,
+        #space-canvas,
+        .dora-stage,
+        .dora-3d-wrap,
+        .orbit,
+        .floating-chip { display: none !important; }
 
-        .ambient-a {
-            background: #1aa7ff !important;
-        }
-
-        .ambient-b {
-            background: #4778ff !important;
-            animation-delay: -4s;
-        }
-
-        @keyframes ambientMove {
-            0% { transform: translate3d(-4%, -3%, 0) scale(1); }
-            100% { transform: translate3d(5%, 4%, 0) scale(1.14); }
-        }
-
-        #space-canvas {
-            opacity: .65;
-        }
-
-        /* Remove hamburger/sidebar completely. */
         .liquid-sidebar,
         #liquid-sidebar,
         .sidebar-toggle,
-        .sidebar-panel {
-            display: none !important;
-        }
+        .sidebar-panel { display: none !important; }
 
-        .app-shell {
-            width: 100%;
-            min-height: 100vh;
-        }
+        .app-shell { width: 100%; min-height: 100vh; }
 
-        /* Long bottom liquid bar is the only menu. */
-        .liquid-nav {
-            position: fixed !important;
-            left: 50% !important;
-            bottom: 24px !important;
-            transform: translateX(-50%) !important;
-            width: min(520px, calc(100vw - 32px)) !important;
-            height: 70px !important;
-            padding: 7px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: space-around !important;
-            border: 1px solid rgba(255, 255, 255, .30) !important;
-            border-radius: 999px !important;
-            background: rgba(76, 167, 255, .22) !important;
-            box-shadow: 0 18px 55px rgba(0, 20, 80, .35), inset 0 1px 0 rgba(255,255,255,.22) !important;
-            backdrop-filter: blur(24px) saturate(150%) !important;
-            -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
-            z-index: 1000 !important;
-        }
-
-        .liquid-indicator {
-            top: 7px !important;
-            height: 56px !important;
-            border-radius: 999px !important;
-            background: rgba(255, 255, 255, .94) !important;
-            box-shadow: 0 8px 25px rgba(0, 94, 255, .25) !important;
-        }
-
-        .nav-item {
-            position: relative !important;
-            z-index: 2 !important;
-            width: 33.333% !important;
-            height: 56px !important;
-            color: rgba(255,255,255,.85) !important;
-            border: 0 !important;
-            background: transparent !important;
-        }
-
-        .nav-item.active {
-            color: #075dc9 !important;
-        }
-
-        /* Continuous ticker: enters from LEFT and travels LEFT -> RIGHT. */
         .welcome-ticker {
             position: relative !important;
             width: min(1120px, calc(100% - 40px)) !important;
-            margin: 26px auto 0 !important;
+            margin: 18px auto 0 !important;
             height: 42px !important;
             overflow: hidden !important;
-            border: 1px solid rgba(255,255,255,.16) !important;
+            border: 1px solid rgba(255,255,255,.2) !important;
             border-radius: 999px !important;
-            background: rgba(255,255,255,.07) !important;
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
+            background: rgba(255,255,255,.08) !important;
             mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
             -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
         }
@@ -129,7 +55,6 @@
             align-items: center !important;
             gap: 90px !important;
             animation: tickerLeftToRight 18s linear infinite !important;
-            will-change: transform;
         }
 
         .welcome-ticker-track span {
@@ -145,208 +70,157 @@
             to { transform: translateX(0); }
         }
 
-        /* Home hero */
         .hero-grid {
-            min-height: calc(100vh - 100px) !important;
-            padding: 45px 0 120px !important;
-            grid-template-columns: minmax(340px, .95fr) minmax(430px, 1.05fr) !important;
-            gap: clamp(20px, 4vw, 70px) !important;
+            min-height: calc(100vh - 90px) !important;
+            padding: 50px 5vw 125px !important;
+            grid-template-columns: 1fr !important;
+            gap: 0 !important;
             align-items: center !important;
         }
 
         .hero-copy {
             order: 1 !important;
-            text-align: left !important;
+            text-align: center !important;
+            max-width: 900px !important;
+            margin: auto !important;
         }
 
-        .hero-copy .eyebrow {
-            color: #72d8ff !important;
-        }
-
+        .hero-copy .eyebrow { color: #7be0ff !important; }
         .hero-copy h2 {
             color: #fff !important;
-            font-size: clamp(44px, 5.5vw, 78px) !important;
+            font-size: clamp(48px, 7vw, 86px) !important;
             line-height: .94 !important;
             letter-spacing: -.055em !important;
         }
-
-        .hero-copy h2 span {
-            color: #69d5ff !important;
-        }
-
+        .hero-copy h2 span { color: #73d8ff !important; }
         .hero-copy > p {
-            max-width: 560px !important;
-            color: rgba(235,248,255,.78) !important;
+            max-width: 650px !important;
+            margin-inline: auto !important;
+            color: rgba(240,250,255,.82) !important;
         }
-
-        .hero-visual {
-            order: 2 !important;
-            min-height: 540px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            position: relative !important;
-        }
-
-        .dora-stage {
-            position: relative !important;
-            width: min(480px, 48vw) !important;
-            height: 570px !important;
-            z-index: 10 !important;
-            overflow: visible !important;
-            flex: none !important;
-        }
-
-        .dora-3d-wrap {
-            position: absolute !important;
-            inset: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            overflow: visible !important;
-        }
-
-        .dora-3d-wrap canvas {
-            width: 100% !important;
-            height: 100% !important;
-            display: block !important;
-            touch-action: none !important;
-        }
-
-        .orbit {
-            pointer-events: none !important;
-            opacity: .8 !important;
-        }
-
-        .orbit-one {
-            width: 470px !important;
-            height: 470px !important;
-            border-color: rgba(102, 215, 255, .35) !important;
-            animation: orbitSpin 18s linear infinite !important;
-        }
-
-        .orbit-two {
-            width: 520px !important;
-            height: 250px !important;
-            border-color: rgba(255, 255, 255, .24) !important;
-            animation: orbitSpinReverse 13s linear infinite !important;
-        }
-
-        @keyframes orbitSpin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        @keyframes orbitSpinReverse {
-            to { transform: translate(-50%, -50%) rotate(-360deg); }
-        }
-
-        .floating-chip {
-            z-index: 20 !important;
-            border-color: rgba(255,255,255,.28) !important;
-            background: rgba(255,255,255,.09) !important;
-            color: #fff !important;
-            backdrop-filter: blur(12px) !important;
-        }
-
-        .chip-one { left: 0 !important; top: 70px !important; }
-        .chip-two { right: 0 !important; bottom: 55px !important; }
-
+        .hero-actions { justify-content: center !important; }
         .primary-btn {
             background: #fff !important;
             color: #075dc9 !important;
-            box-shadow: 0 14px 38px rgba(0, 110, 255, .22) !important;
+            box-shadow: 0 12px 30px rgba(0,80,190,.2) !important;
         }
 
-        .primary-btn:hover {
-            transform: translateY(-3px);
+        /* 5-button bottom navigation */
+        .liquid-nav {
+            position: fixed !important;
+            left: 50% !important;
+            bottom: max(14px, env(safe-area-inset-bottom)) !important;
+            transform: translateX(-50%) !important;
+            width: min(620px, calc(100vw - 24px)) !important;
+            height: 68px !important;
+            padding: 6px !important;
+            display: grid !important;
+            grid-template-columns: repeat(5, 1fr) !important;
+            align-items: center !important;
+            border: 1px solid rgba(255,255,255,.32) !important;
+            border-radius: 999px !important;
+            background: rgba(104,190,255,.24) !important;
+            box-shadow: 0 12px 40px rgba(0,30,100,.28), inset 0 1px 0 rgba(255,255,255,.3) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
+            z-index: 1000 !important;
         }
 
-        @media (max-width: 900px) {
-            .hero-grid {
-                grid-template-columns: 1fr !important;
-                min-height: auto !important;
-                padding-top: 25px !important;
-            }
-
-            .hero-copy {
-                order: 2 !important;
-                text-align: center !important;
-            }
-
-            .hero-visual {
-                order: 1 !important;
-                min-height: 480px !important;
-            }
-
-            .hero-actions {
-                justify-content: center !important;
-            }
-
-            .dora-stage {
-                width: min(440px, 88vw) !important;
-                height: 510px !important;
-            }
+        .liquid-indicator {
+            position: absolute !important;
+            left: 6px !important;
+            top: 6px !important;
+            width: 20% !important;
+            height: 56px !important;
+            border-radius: 999px !important;
+            background: #fff !important;
+            box-shadow: 0 7px 20px rgba(0,94,255,.2) !important;
+            transition: transform .25s ease, width .25s ease !important;
+            z-index: 1 !important;
         }
+
+        .nav-item {
+            position: relative !important;
+            z-index: 2 !important;
+            width: 100% !important;
+            height: 56px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 2px !important;
+            padding: 0 !important;
+            border: 0 !important;
+            background: transparent !important;
+            color: rgba(255,255,255,.9) !important;
+            font-size: 19px !important;
+            line-height: 1 !important;
+            cursor: pointer !important;
+        }
+
+        .nav-item small {
+            font-size: 9px !important;
+            font-weight: 700 !important;
+            letter-spacing: .04em !important;
+            color: inherit !important;
+        }
+
+        .nav-item.active { color: #075dc9 !important; }
+        .nav-item:active { transform: scale(.94); }
+
+        .nav-item.music-playing { color: #fff !important; }
+        .nav-item.music-playing small { color: #dff7ff !important; }
 
         @media (max-width: 600px) {
             .welcome-ticker {
-                width: calc(100% - 24px) !important;
-                margin-top: 14px !important;
+                width: calc(100% - 20px) !important;
+                margin-top: 12px !important;
+                height: 38px !important;
             }
 
             .hero-grid {
-                padding: 10px 0 120px !important;
-                gap: 0 !important;
+                min-height: calc(100svh - 105px) !important;
+                padding: 30px 18px 115px !important;
             }
 
-            .hero-visual {
-                min-height: 400px !important;
-            }
-
-            .dora-stage {
-                width: 330px !important;
-                max-width: 90vw !important;
-                height: 430px !important;
-            }
-
-            .orbit-one {
-                width: 350px !important;
-                height: 350px !important;
-            }
-
-            .orbit-two {
-                width: 390px !important;
-                height: 190px !important;
-            }
-
-            .chip-one { left: 2px !important; top: 45px !important; }
-            .chip-two { right: 2px !important; bottom: 30px !important; }
-
-            .hero-copy h2 {
-                font-size: clamp(40px, 12vw, 58px) !important;
-            }
+            .hero-copy h2 { font-size: clamp(43px, 13vw, 58px) !important; }
+            .hero-copy > p { font-size: 13px !important; line-height: 1.6 !important; }
+            .scroll-note { display: none !important; }
 
             .liquid-nav {
-                bottom: 14px !important;
-                width: calc(100vw - 24px) !important;
+                width: calc(100vw - 18px) !important;
                 height: 64px !important;
+                padding: 5px !important;
+                bottom: max(8px, env(safe-area-inset-bottom)) !important;
+                background: rgba(66,164,235,.3) !important;
+                backdrop-filter: blur(10px) !important;
+                -webkit-backdrop-filter: blur(10px) !important;
             }
+
+            .liquid-indicator {
+                left: 5px !important;
+                top: 5px !important;
+                height: 54px !important;
+            }
+
+            .nav-item { height: 54px !important; font-size: 17px !important; }
+            .nav-item small { font-size: 8px !important; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .welcome-ticker-track { animation: none !important; }
+            .liquid-indicator { transition: none !important; }
         }
     </style>
 </head>
 
 <body>
-    <div class="ambient ambient-a"></div>
-    <div class="ambient ambient-b"></div>
-    <canvas id="space-canvas"></canvas>
-
     <div id="landing-page" class="landing">
         <div class="landing-content">
             <span class="eyebrow">OUR LITTLE UNIVERSE</span>
             <h1>Small moments.<br><span>Big memories.</span></h1>
             <p>Tempat kecil untuk menyimpan cerita, kenangan, dan momen yang berarti.</p>
-            <button id="enter-btn" class="primary-btn landing-enter" type="button">
-                Masuk <span>→</span>
-            </button>
+            <button id="enter-btn" class="primary-btn landing-enter" type="button">Masuk <span>→</span></button>
         </div>
     </div>
 
@@ -364,29 +238,12 @@
             <div class="hero-grid">
                 <div class="hero-copy reveal">
                     <span class="eyebrow">WELCOME TO OUR WORLD</span>
-                    <h2>
-                        Small moments.<br>
-                        <span>Big memories.</span>
-                    </h2>
-                    <p>
-                        Bukan sekadar galeri. Ini tempat kecil buat menyimpan hal-hal
-                        yang mungkin sederhana, tapi selalu punya cerita.
-                    </p>
-
+                    <h2>Small moments.<br><span>Big memories.</span></h2>
+                    <p>Bukan sekadar galeri. Ini tempat kecil buat menyimpan hal-hal yang mungkin sederhana, tapi selalu punya cerita.</p>
                     <div class="hero-actions">
-                        <button class="primary-btn" data-go="album-view" type="button">
-                            Lihat kenangan <span>↗</span>
-                        </button>
+                        <button class="primary-btn" data-go="album-view" type="button">Lihat kenangan <span>↗</span></button>
                         <span class="scroll-note">scroll untuk menjelajah ↓</span>
                     </div>
-                </div>
-
-                <div class="hero-visual reveal">
-                    <div class="orbit orbit-one"></div>
-                    <div class="orbit orbit-two"></div>
-                    <div class="floating-chip chip-one">✦ GOOD VIBES</div>
-                    <div class="floating-chip chip-two">DORAEMON ✦</div>
-                    <div id="dora-stage" class="dora-stage" aria-label="Doraemon interaktif"></div>
                 </div>
             </div>
         </section>
@@ -397,55 +254,31 @@
                 <h2>Little moments,<br><span>kept forever.</span></h2>
                 <p>Geser untuk melihat kenangan.</p>
             </div>
-
             <div class="slider-wrap">
                 <button id="prev-card" class="slider-arrow" type="button">←</button>
                 <div id="card-slider" class="card-slider">
-                    <article class="memory-card">
-                        <span class="card-number">01</span>
-                        <img src="IMG_20260731_204858.jpg" alt="Kenangan 1">
-                        <div class="card-info"><span>MOMENT</span><h3>One frame.</h3><p>Satu foto, satu cerita kecil.</p></div>
-                    </article>
-                    <article class="memory-card">
-                        <span class="card-number">02</span>
-                        <img src="IMG_20260731_204858.jpg" alt="Kenangan 2">
-                        <div class="card-info"><span>MEMORY</span><h3>Good vibes.</h3><p>Hal sederhana yang layak diingat.</p></div>
-                    </article>
-                    <article class="memory-card">
-                        <span class="card-number">03</span>
-                        <img src="IMG_20260731_204858.jpg" alt="Kenangan 3">
-                        <div class="card-info"><span>STORY</span><h3>Keep it close.</h3><p>Momen kecil yang tetap punya arti.</p></div>
-                    </article>
+                    <article class="memory-card"><span class="card-number">01</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 1"><div class="card-info"><span>MOMENT</span><h3>One frame.</h3><p>Satu foto, satu cerita kecil.</p></div></article>
+                    <article class="memory-card"><span class="card-number">02</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 2"><div class="card-info"><span>MEMORY</span><h3>Good vibes.</h3><p>Hal sederhana yang layak diingat.</p></div></article>
+                    <article class="memory-card"><span class="card-number">03</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 3"><div class="card-info"><span>STORY</span><h3>Keep it close.</h3><p>Momen kecil yang tetap punya arti.</p></div></article>
                 </div>
                 <button id="next-card" class="slider-arrow" type="button">→</button>
             </div>
-
-            <div class="slider-progress">
-                <span id="slider-count">01</span>
-                <div><i id="slider-bar"></i></div>
-                <span>03</span>
-            </div>
+            <div class="slider-progress"><span id="slider-count">01</span><div><i id="slider-bar"></i></div><span>03</span></div>
         </section>
 
         <section id="story-view" class="view-page">
-            <div class="page-heading">
-                <span class="eyebrow">A LITTLE NOTE</span>
-                <h2>For the moments<br><span>that matter.</span></h2>
-            </div>
-            <article class="note-card">
-                <span>NOTE</span>
-                <h3>Keep the good ones.</h3>
-                <p>Semoga setiap halaman di sini selalu mengingatkan bahwa momen kecil juga bisa menjadi kenangan yang besar.</p>
-                <div class="signature">— Nezza 💙</div>
-            </article>
+            <div class="page-heading"><span class="eyebrow">A LITTLE NOTE</span><h2>For the moments<br><span>that matter.</span></h2></div>
+            <article class="note-card"><span>NOTE</span><h3>Keep the good ones.</h3><p>Semoga setiap halaman di sini selalu mengingatkan bahwa momen kecil juga bisa menjadi kenangan yang besar.</p><div class="signature">— Nezza 💙</div></article>
         </section>
     </main>
 
     <nav class="liquid-nav" aria-label="Navigasi utama">
         <span id="liquid-indicator" class="liquid-indicator"></span>
-        <button class="nav-item active" data-target="home-view" type="button">⌂ <small>Home</small></button>
-        <button class="nav-item" data-target="album-view" type="button">◈ <small>Album</small></button>
-        <button class="nav-item" data-target="story-view" type="button">✦ <small>Note</small></button>
+        <button class="nav-item active" data-target="home-view" type="button" aria-label="Home">⌂<small>Home</small></button>
+        <button class="nav-item" data-target="album-view" type="button" aria-label="Album">▣<small>Album</small></button>
+        <button class="nav-item" data-target="story-view" type="button" aria-label="Note">✦<small>Note</small></button>
+        <button id="nav-music" class="nav-item" data-action="music" type="button" aria-label="Musik">♪<small>Music</small></button>
+        <button class="nav-item" data-action="top" type="button" aria-label="Kembali ke atas">↑<small>Top</small></button>
     </nav>
 
     <audio id="bg-music" loop preload="metadata">
