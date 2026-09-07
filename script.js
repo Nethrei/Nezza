@@ -1,88 +1,39 @@
 /*
- * NEZZA — Interactions + Procedural Three.js Doraemon
- * ---------------------------------------------------
- * Main website interactions, background particles, memory slider,
- * music controls, navigation, and the interactive 3D Doraemon.
+ * NEZZA — Main interactions
+ * Clean homepage controller + reliable procedural Three.js character.
  */
 
 (() => {
     'use strict';
 
-    /* ================================================================
-       DOM HELPERS & COMMON ELEMENTS
-       ================================================================ */
-
     const $ = (selector, parent = document) => parent.querySelector(selector);
-    const $$ = (selector, parent = document) => [
-        ...parent.querySelectorAll(selector),
-    ];
+    const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
 
     const landing = $('#landing-page');
     const content = $('#content-area');
     const enterButton = $('#enter-btn');
     const music = $('#bg-music');
     const musicButton = $('#music-toggle-btn');
-
     const pages = $$('.view-page');
     const navItems = $$('.nav-item');
     const indicator = $('#liquid-indicator');
-    const sidebar = $('#liquid-sidebar');
-    const sidebarToggle = $('#sidebar-toggle');
+    const slider = $('#card-slider');
+    const cards = $$('.memory-card', slider || document);
 
-    /* ================================================================
-       SMALL STYLE OVERRIDES
-       ================================================================ */
-
-    const styleOverride = document.createElement('style');
-
-    styleOverride.textContent = `
-        .main-photo-card {
-            display: none !important;
-        }
-
-        .dora-stage {
-            overflow: visible !important;
-            position: relative !important;
-            display: block !important;
-            perspective: 1000px !important;
-            transform-style: preserve-3d !important;
-        }
-
-        .dora-3d-wrap {
-            position: absolute !important;
-            inset: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-            overflow: visible !important;
-        }
-
-        .dora-3d-wrap canvas {
-            touch-action: none !important;
-        }
-
-        .dora-stage .dora-bubble {
-            z-index: 30 !important;
-        }
-    `;
-
-    document.head.appendChild(styleOverride);
-
-    /* ================================================================
-       LIQUID NAVIGATION
-       ================================================================ */
+    /* ---------------------------------------------------------------
+       Navigation
+       --------------------------------------------------------------- */
 
     function moveIndicator(item) {
         if (!indicator || !item) return;
 
         const nav = item.closest('.liquid-nav');
-        const navRect = nav?.getBoundingClientRect();
+        if (!nav) return;
+
+        const navRect = nav.getBoundingClientRect();
         const itemRect = item.getBoundingClientRect();
-
-        if (!navRect) return;
-
-        const size = window.innerWidth <= 480 ? 52 : 56;
-        const left =
-            itemRect.left - navRect.left + itemRect.width / 2 - size / 2;
+        const size = window.innerWidth <= 480 ? 50 : 56;
+        const left = itemRect.left - navRect.left + itemRect.width / 2 - size / 2;
 
         indicator.style.width = `${size}px`;
         indicator.style.height = `${size}px`;
@@ -91,286 +42,179 @@
 
     function showView(id, updateHash = true) {
         const page = document.getElementById(id);
-
         if (!page) return;
 
-        pages.forEach((item) => {
-            item.classList.toggle('active', item === page);
-        });
-
-        navItems.forEach((item) => {
-            item.classList.toggle('active', item.dataset.target === id);
-        });
-
-        $$('.sidebar-link').forEach((item) => {
-            item.classList.toggle('active', item.dataset.target === id);
-        });
-
+        pages.forEach((item) => item.classList.toggle('active', item === page));
+        navItems.forEach((item) => item.classList.toggle('active', item.dataset.target === id));
         moveIndicator(navItems.find((item) => item.dataset.target === id));
 
         if (updateHash) {
-            history.replaceState(
-                null,
-                '',
-                `#${id.replace('-view', '')}`,
-            );
+            history.replaceState(null, '', `#${id.replace('-view', '')}`);
         }
 
-        $$('.reveal', page).forEach((element, index) => {
-            element.style.setProperty(
-                '--reveal-delay',
-                `${Math.min(index * 70, 350)}ms`,
-            );
-            element.classList.add('revealed');
-        });
+        if (page) {
+            $$('.reveal', page).forEach((element, index) => {
+                element.style.setProperty('--reveal-delay', `${Math.min(index * 70, 350)}ms`);
+                element.classList.add('revealed');
+            });
+        }
 
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
-
-        sidebar?.classList.remove('open');
-        sidebarToggle?.classList.remove('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     navItems.forEach((item) => {
-        item.addEventListener('click', () => {
-            showView(item.dataset.target);
-        });
+        item.addEventListener('click', () => showView(item.dataset.target));
     });
 
     $$('[data-go]').forEach((button) => {
-        button.addEventListener('click', () => {
-            showView(button.dataset.go);
-        });
+        button.addEventListener('click', () => showView(button.dataset.go));
     });
 
-    $$('.sidebar-link[data-target]').forEach((item) => {
-        item.addEventListener('click', () => {
-            showView(item.dataset.target);
-        });
-    });
-
-    sidebarToggle?.addEventListener('click', () => {
-        sidebar?.classList.toggle('open');
-        sidebarToggle?.classList.toggle('active');
-    });
-
-    /* ================================================================
-       MUSIC CONTROLS
-       ================================================================ */
-
-    $('#sidebar-music')?.addEventListener('click', () => {
-        if (!music) return;
-
-        music.paused ? music.play() : music.pause();
-    });
+    /* ---------------------------------------------------------------
+       Landing + music
+       --------------------------------------------------------------- */
 
     enterButton?.addEventListener('click', async () => {
         try {
             await music?.play();
         } catch {
-            // Browser autoplay restrictions are ignored intentionally.
+            // Audio requires a user gesture; the page still opens normally.
         }
 
         landing?.classList.add('hide');
 
         setTimeout(() => {
-            if (landing) {
-                landing.style.display = 'none';
-            }
-
+            if (landing) landing.style.display = 'none';
             content?.classList.add('active');
             moveIndicator($('.nav-item.active'));
-        }, 800);
+        }, 700);
     });
 
     musicButton?.addEventListener('click', () => {
         if (!music) return;
-
         music.muted = !music.muted;
         musicButton.textContent = music.muted ? '🔇' : '♪';
     });
 
-    /* ================================================================
-       MEMORY SLIDER
-       ================================================================ */
+    /* ---------------------------------------------------------------
+       Memory slider
+       --------------------------------------------------------------- */
 
-    const slider = $('#card-slider');
-    const cards = $$('.memory-card', slider || document);
     const previousButton = $('#prev-card');
     const nextButton = $('#next-card');
     const sliderCount = $('#slider-count');
     const sliderBar = $('#slider-bar');
 
-    function getSliderStep() {
-        const firstCard = cards[0];
-
-        if (!firstCard) return 0;
-
+    function sliderStep() {
+        if (!slider || !cards.length) return 0;
         const gap = parseFloat(getComputedStyle(slider).gap) || 0;
-        return firstCard.getBoundingClientRect().width + gap;
+        return cards[0].getBoundingClientRect().width + gap;
     }
 
-    function updateSliderState() {
+    function updateSlider() {
         if (!slider || !cards.length) return;
 
-        const step = getSliderStep();
-        const index = Math.max(
-            0,
-            Math.min(
-                cards.length - 1,
-                Math.round(slider.scrollLeft / step),
-            ),
-        );
+        const step = sliderStep();
+        const index = step ? Math.round(slider.scrollLeft / step) : 0;
+        const safeIndex = Math.max(0, Math.min(cards.length - 1, index));
 
-        if (sliderCount) {
-            sliderCount.textContent = String(index + 1).padStart(2, '0');
-        }
-
-        if (sliderBar) {
-            sliderBar.style.width = `${((index + 1) / cards.length) * 100}%`;
-        }
-
-        if (previousButton) {
-            previousButton.disabled = index === 0;
-        }
-
-        if (nextButton) {
-            nextButton.disabled = index === cards.length - 1;
-        }
+        if (sliderCount) sliderCount.textContent = String(safeIndex + 1).padStart(2, '0');
+        if (sliderBar) sliderBar.style.width = `${((safeIndex + 1) / cards.length) * 100}%`;
+        if (previousButton) previousButton.disabled = safeIndex === 0;
+        if (nextButton) nextButton.disabled = safeIndex === cards.length - 1;
     }
 
     previousButton?.addEventListener('click', () => {
-        slider?.scrollBy({
-            left: -getSliderStep(),
-            behavior: 'smooth',
-        });
+        slider?.scrollBy({ left: -sliderStep(), behavior: 'smooth' });
     });
 
     nextButton?.addEventListener('click', () => {
-        slider?.scrollBy({
-            left: getSliderStep(),
-            behavior: 'smooth',
-        });
+        slider?.scrollBy({ left: sliderStep(), behavior: 'smooth' });
     });
 
-    slider?.addEventListener('scroll', updateSliderState, {
-        passive: true,
-    });
+    slider?.addEventListener('scroll', updateSlider, { passive: true });
 
-    /* ================================================================
-       BACKGROUND STAR PARTICLES
-       ================================================================ */
+    /* ---------------------------------------------------------------
+       Animated background particles
+       --------------------------------------------------------------- */
 
     const spaceCanvas = $('#space-canvas');
     const spaceContext = spaceCanvas?.getContext('2d');
-
     let particles = [];
-    let particleAnimationFrame;
 
-    function resizeStars() {
+    function resizeBackground() {
         if (!spaceCanvas || !spaceContext) return;
 
         const ratio = Math.min(window.devicePixelRatio || 1, 2);
-
         spaceCanvas.width = window.innerWidth * ratio;
         spaceCanvas.height = window.innerHeight * ratio;
         spaceCanvas.style.width = `${window.innerWidth}px`;
         spaceCanvas.style.height = `${window.innerHeight}px`;
-
         spaceContext.setTransform(ratio, 0, 0, ratio, 0, 0);
 
-        const amount = Math.min(
-            110,
-            Math.max(45, Math.floor(window.innerWidth / 14)),
-        );
+        const amount = Math.min(100, Math.max(45, Math.floor(window.innerWidth / 15)));
 
         particles = Array.from({ length: amount }, () => ({
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
-            radius: Math.random() * 1.5 + 0.35,
-            speedX: (Math.random() - 0.5) * 0.18,
-            speedY: Math.random() * 0.18 + 0.03,
-            alpha: Math.random() * 0.45 + 0.1,
+            radius: Math.random() * 1.7 + .35,
+            speedX: (Math.random() - .5) * .22,
+            speedY: Math.random() * .20 + .03,
+            alpha: Math.random() * .45 + .12,
             phase: Math.random() * Math.PI * 2,
         }));
     }
 
-    function animateStars() {
+    function animateBackground() {
         if (!spaceContext) return;
 
-        spaceContext.clearRect(
-            0,
-            0,
-            window.innerWidth,
-            window.innerHeight,
-        );
+        spaceContext.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
         particles.forEach((particle) => {
             particle.x += particle.speedX;
             particle.y -= particle.speedY;
-            particle.phase += 0.012;
+            particle.phase += .012;
 
             if (particle.x < -10) particle.x = window.innerWidth + 10;
             if (particle.x > window.innerWidth + 10) particle.x = -10;
             if (particle.y < -10) particle.y = window.innerHeight + 10;
 
+            const alpha = particle.alpha + (Math.sin(particle.phase) + 1) * .12;
             spaceContext.beginPath();
-            spaceContext.arc(
-                particle.x,
-                particle.y,
-                particle.radius,
-                0,
-                Math.PI * 2,
-            );
-
-            const alpha =
-                particle.alpha +
-                (Math.sin(particle.phase) + 1) * 0.12;
-
-            spaceContext.fillStyle = `rgba(120, 215, 255, ${alpha})`;
+            spaceContext.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+            spaceContext.fillStyle = `rgba(190, 240, 255, ${alpha})`;
             spaceContext.fill();
         });
 
-        particleAnimationFrame = requestAnimationFrame(animateStars);
+        requestAnimationFrame(animateBackground);
     }
 
-    resizeStars();
-    animateStars();
+    resizeBackground();
+    animateBackground();
 
-    window.addEventListener('resize', () => {
-        resizeStars();
-        moveIndicator($('.nav-item.active'));
-        updateSliderState();
-    });
+    /* ---------------------------------------------------------------
+       Reliable Three.js loader
+       --------------------------------------------------------------- */
 
-    const currentHash = location.hash.replace('#', '');
+    async function loadThree() {
+        try {
+            return await import('https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js');
+        } catch (firstError) {
+            console.warn('jsDelivr Three.js failed, trying unpkg.', firstError);
+            return await import('https://unpkg.com/three@0.186.0/build/three.module.js');
+        }
+    }
 
-    showView(
-        currentHash === 'album'
-            ? 'album-view'
-            : currentHash === 'story'
-                ? 'story-view'
-                : 'home-view',
-        false,
-    );
+    /* ---------------------------------------------------------------
+       Procedural 3D character
+       --------------------------------------------------------------- */
 
-    updateSliderState();
-
-    /* ================================================================
-       PROCEDURAL THREE.JS DORAEMON
-       ================================================================ */
-
-    (async () => {
+    async function createDoraemon() {
         const stage = $('#dora-stage');
-
         if (!stage) return;
 
         try {
-            const THREE = await import(
-                'https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js'
-            );
+            const THREE = await loadThree();
 
             stage.innerHTML = '';
 
@@ -378,21 +222,10 @@
             wrapper.className = 'dora-3d-wrap';
             stage.appendChild(wrapper);
 
-            /* --------------------------------------------------------
-               Scene, camera & renderer
-               -------------------------------------------------------- */
-
             const scene = new THREE.Scene();
-
-            const camera = new THREE.PerspectiveCamera(
-                27,
-                1,
-                0.1,
-                100,
-            );
-
-            camera.position.set(0, 1.05, 7.6);
-            camera.lookAt(0, 0.82, 0);
+            const camera = new THREE.PerspectiveCamera(30, 1, .1, 100);
+            camera.position.set(0, 1.0, 7.2);
+            camera.lookAt(0, .8, 0);
 
             const renderer = new THREE.WebGLRenderer({
                 alpha: true,
@@ -400,654 +233,252 @@
                 powerPreference: 'high-performance',
             });
 
-            renderer.setPixelRatio(
-                Math.min(window.devicePixelRatio || 1, 2),
-            );
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
             renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.setClearColor(0, 0);
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            renderer.setClearColor(0, 0);
-
-            Object.assign(renderer.domElement.style, {
-                width: '100%',
-                height: '100%',
-                display: 'block',
-            });
-
+            renderer.domElement.style.width = '100%';
+            renderer.domElement.style.height = '100%';
+            renderer.domElement.style.display = 'block';
+            renderer.domElement.style.touchAction = 'none';
             wrapper.appendChild(renderer.domElement);
 
-            /* --------------------------------------------------------
-               Lighting
-               -------------------------------------------------------- */
+            scene.add(new THREE.HemisphereLight(0xdff7ff, 0x061630, 2.5));
 
-            scene.add(
-                new THREE.HemisphereLight(
-                    0xb9e9ff,
-                    0x08162d,
-                    2.2,
-                ),
-            );
+            const key = new THREE.DirectionalLight(0xffffff, 4);
+            key.position.set(-3, 5, 6);
+            key.castShadow = true;
+            scene.add(key);
 
-            const keyLight = new THREE.DirectionalLight(
-                0xffffff,
-                3.6,
-            );
+            const blueFill = new THREE.PointLight(0x42baff, 2.5, 12);
+            blueFill.position.set(3, 1.5, 4);
+            scene.add(blueFill);
 
-            keyLight.position.set(-3.5, 5.5, 5.5);
-            keyLight.castShadow = true;
-            scene.add(keyLight);
-
-            const fillLight = new THREE.PointLight(
-                0x55b9ff,
-                2.3,
-                12,
-            );
-
-            fillLight.position.set(3, 1.5, 4);
-            scene.add(fillLight);
-
-            const warmLight = new THREE.PointLight(
-                0xffe2a2,
-                1.1,
-                8,
-            );
-
-            warmLight.position.set(-2, -0.5, 3);
-            scene.add(warmLight);
-
-            /* --------------------------------------------------------
-               Materials & reusable geometry
-               -------------------------------------------------------- */
+            const warmFill = new THREE.PointLight(0xffffff, 1.2, 8);
+            warmFill.position.set(-2, 0, 3);
+            scene.add(warmFill);
 
             const root = new THREE.Group();
-            root.position.y = -0.25;
+            root.position.y = -.25;
             scene.add(root);
 
-            const blueMaterial = new THREE.MeshStandardMaterial({
-                color: 0x0798ed,
-                roughness: 0.3,
-                metalness: 0.02,
-            });
+            const blue = new THREE.MeshStandardMaterial({ color: 0x0799ed, roughness: .32 });
+            const white = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .26 });
+            const dark = new THREE.MeshStandardMaterial({ color: 0x111827, roughness: .22 });
+            const red = new THREE.MeshStandardMaterial({ color: 0xe12645, roughness: .3 });
+            const yellow = new THREE.MeshStandardMaterial({ color: 0xffd23f, roughness: .2, metalness: .08 });
+            const blueDark = new THREE.MeshStandardMaterial({ color: 0x045a98, roughness: .34 });
+            const sphere = new THREE.SphereGeometry(1, 48, 32);
 
-            const blueDarkMaterial = new THREE.MeshStandardMaterial({
-                color: 0x045b9b,
-                roughness: 0.34,
-            });
-
-            const whiteMaterial = new THREE.MeshStandardMaterial({
-                color: 0xf7fafc,
-                roughness: 0.28,
-            });
-
-            const darkMaterial = new THREE.MeshStandardMaterial({
-                color: 0x0b1420,
-                roughness: 0.2,
-            });
-
-            const redMaterial = new THREE.MeshStandardMaterial({
-                color: 0xd61f3b,
-                roughness: 0.3,
-            });
-
-            const yellowMaterial = new THREE.MeshStandardMaterial({
-                color: 0xffca28,
-                roughness: 0.22,
-                metalness: 0.15,
-            });
-
-            const blackMaterial = new THREE.MeshStandardMaterial({
-                color: 0x15191e,
-                roughness: 0.25,
-            });
-
-            const sphereGeometry = new THREE.SphereGeometry(
-                1,
-                56,
-                40,
-            );
-
-            function addMesh(
-                geometry,
-                material,
-                position,
-                scale,
-                parent = root,
-            ) {
-                const mesh = new THREE.Mesh(geometry, material);
-
-                mesh.position.set(...position);
-
-                if (scale) {
-                    mesh.scale.set(...scale);
-                }
-
-                mesh.castShadow = true;
-                mesh.receiveShadow = true;
-                parent.add(mesh);
-
-                return mesh;
+            function mesh(geometry, material, position, scale, parent = root) {
+                const item = new THREE.Mesh(geometry, material);
+                item.position.set(...position);
+                if (scale) item.scale.set(...scale);
+                item.castShadow = true;
+                item.receiveShadow = true;
+                parent.add(item);
+                return item;
             }
 
-            /* --------------------------------------------------------
-               Body
-               -------------------------------------------------------- */
+            /* Body */
+            mesh(sphere, blue, [0, .1, 0], [1.02, 1.16, .82]);
+            mesh(sphere, blueDark, [0, .1, -.35], [.78, .88, .38]);
+            mesh(sphere, white, [0, .32, .72], [.63, .72, .18]);
 
-            addMesh(
-                sphereGeometry,
-                blueMaterial,
-                [0, 0.15, 0],
-                [1.03, 1.18, 0.84],
-            );
+            /* Head */
+            mesh(sphere, blue, [0, 1.58, 0], [1.38, 1.38, 1.25]);
+            mesh(sphere, white, [0, 1.45, 1.03], [1.05, .91, .34]);
 
-            addMesh(
-                sphereGeometry,
-                blueDarkMaterial,
-                [0, 0.10, -0.34],
-                [0.78, 0.92, 0.42],
-            );
-
-            addMesh(
-                sphereGeometry,
-                whiteMaterial,
-                [0, 0.34, 0.72],
-                [0.64, 0.74, 0.20],
-            );
-
-            /* --------------------------------------------------------
-               Head & face
-               -------------------------------------------------------- */
-
-            addMesh(
-                sphereGeometry,
-                blueMaterial,
-                [0, 1.62, 0],
-                [1.39, 1.39, 1.27],
-            );
-
-            addMesh(
-                sphereGeometry,
-                blueDarkMaterial,
-                [0, 1.57, -0.28],
-                [1.27, 1.29, 0.95],
-            );
-
-            addMesh(
-                sphereGeometry,
-                whiteMaterial,
-                [0, 1.48, 1.04],
-                [1.04, 0.90, 0.34],
-            );
-
-            [-0.34, 0.34].forEach((x) => {
-                addMesh(
-                    sphereGeometry,
-                    whiteMaterial,
-                    [x, 1.80, 1.38],
-                    [0.275, 0.365, 0.19],
-                );
-
-                addMesh(
-                    sphereGeometry,
-                    darkMaterial,
-                    [x, 1.80, 1.555],
-                    [0.105, 0.15, 0.055],
-                );
+            [-.34, .34].forEach((x) => {
+                mesh(sphere, white, [x, 1.78, 1.38], [.28, .36, .19]);
+                mesh(sphere, dark, [x, 1.78, 1.55], [.105, .15, .055]);
             });
 
-            addMesh(
-                sphereGeometry,
-                redMaterial,
-                [0, 1.45, 1.535],
-                [0.145, 0.145, 0.125],
-            );
+            mesh(sphere, red, [0, 1.44, 1.55], [.145, .145, .125]);
+            mesh(sphere, red, [0, 1.45, 1.66], [.045, .045, .035]);
 
-            addMesh(
-                sphereGeometry,
-                redMaterial,
-                [0, 1.455, 1.64],
-                [0.048, 0.048, 0.035],
-            );
-
-            /* --------------------------------------------------------
-               Mouth & whiskers
-               -------------------------------------------------------- */
-
-            function createCurve(points, material, radius) {
+            /* Face */
+            function tube(points, material, radius) {
                 const curve = new THREE.CatmullRomCurve3(points);
-                const geometry = new THREE.TubeGeometry(
-                    curve,
-                    28,
-                    radius,
-                    10,
-                    false,
-                );
-
-                return new THREE.Mesh(geometry, material);
+                const geometry = new THREE.TubeGeometry(curve, 24, radius, 8, false);
+                const item = new THREE.Mesh(geometry, material);
+                item.castShadow = true;
+                return item;
             }
 
-            const mouth = createCurve(
-                [
-                    new THREE.Vector3(-0.29, 1.23, 1.37),
-                    new THREE.Vector3(-0.16, 1.12, 1.47),
-                    new THREE.Vector3(0, 1.09, 1.49),
-                    new THREE.Vector3(0.16, 1.12, 1.47),
-                    new THREE.Vector3(0.29, 1.23, 1.37),
-                ],
-                darkMaterial,
-                0.026,
-            );
-
-            mouth.castShadow = true;
-            root.add(mouth);
+            root.add(tube([
+                new THREE.Vector3(-.28, 1.22, 1.37),
+                new THREE.Vector3(-.14, 1.12, 1.48),
+                new THREE.Vector3(0, 1.09, 1.49),
+                new THREE.Vector3(.14, 1.12, 1.48),
+                new THREE.Vector3(.28, 1.22, 1.37),
+            ], dark, .025));
 
             [-1, 1].forEach((side) => {
-                [
-                    { y: 1.48, endX: 1.10, endY: 1.43 },
-                    { y: 1.57, endX: 1.11, endY: 1.61 },
-                    { y: 1.38, endX: 1.09, endY: 1.28 },
-                ].forEach((line) => {
-                    const whisker = createCurve(
-                        [
-                            new THREE.Vector3(
-                                side * 0.57,
-                                line.y,
-                                1.28,
-                            ),
-                            new THREE.Vector3(
-                                side * 0.84,
-                                (line.y + line.endY) / 2,
-                                1.28,
-                            ),
-                            new THREE.Vector3(
-                                side * line.endX,
-                                line.endY,
-                                1.24,
-                            ),
-                        ],
-                        darkMaterial,
-                        0.016,
-                    );
-
-                    root.add(whisker);
+                [[1.48, 1.43], [1.57, 1.61], [1.38, 1.28]].forEach(([startY, endY]) => {
+                    root.add(tube([
+                        new THREE.Vector3(side * .56, startY, 1.27),
+                        new THREE.Vector3(side * .83, (startY + endY) / 2, 1.27),
+                        new THREE.Vector3(side * 1.1, endY, 1.23),
+                    ], dark, .015));
                 });
             });
 
-            /* --------------------------------------------------------
-               Collar & bell
-               -------------------------------------------------------- */
-
-            const collar = addMesh(
-                new THREE.TorusGeometry(0.86, 0.105, 20, 72),
-                redMaterial,
-                [0, 1.00, 0],
-            );
-
+            /* Collar and bell */
+            const collar = mesh(new THREE.TorusGeometry(.86, .105, 18, 64), red, [0, .98, 0]);
             collar.rotation.x = Math.PI / 2;
+            mesh(sphere, yellow, [0, .82, .87], [.21, .21, .15]);
+            mesh(new THREE.CylinderGeometry(.025, .025, .14, 16), dark, [0, .74, 1.0]).rotation.z = Math.PI / 2;
 
-            addMesh(
-                sphereGeometry,
-                yellowMaterial,
-                [0, 0.84, 0.86],
-                [0.205, 0.205, 0.15],
-            );
-
-            const bellHole = addMesh(
-                new THREE.CylinderGeometry(0.026, 0.026, 0.15, 16),
-                blackMaterial,
-                [0, 0.74, 1.00],
-            );
-
-            bellHole.rotation.z = Math.PI / 2;
-
-            /* --------------------------------------------------------
-               3D pocket
-               -------------------------------------------------------- */
-
+            /* Pocket */
             const pocketShape = new THREE.Shape();
-
-            pocketShape.moveTo(-0.55, 0.28);
-            pocketShape.lineTo(0.55, 0.28);
-            pocketShape.lineTo(0.55, -0.04);
-            pocketShape.bezierCurveTo(
-                0.55,
-                -0.40,
-                0.28,
-                -0.58,
-                0,
-                -0.58,
-            );
-            pocketShape.bezierCurveTo(
-                -0.28,
-                -0.58,
-                -0.55,
-                -0.40,
-                -0.55,
-                -0.04,
-            );
+            pocketShape.moveTo(-.55, .28);
+            pocketShape.lineTo(.55, .28);
+            pocketShape.lineTo(.55, -.02);
+            pocketShape.bezierCurveTo(.55, -.38, .28, -.58, 0, -.58);
+            pocketShape.bezierCurveTo(-.28, -.58, -.55, -.38, -.55, -.02);
             pocketShape.closePath();
 
-            const pocketGeometry = new THREE.ExtrudeGeometry(
-                pocketShape,
-                {
-                    depth: 0.18,
-                    bevelEnabled: true,
-                    bevelSegments: 3,
-                    steps: 2,
-                    bevelSize: 0.045,
-                    bevelThickness: 0.035,
-                },
-            );
-
+            const pocketGeometry = new THREE.ExtrudeGeometry(pocketShape, {
+                depth: .18,
+                bevelEnabled: true,
+                bevelSegments: 3,
+                bevelSize: .04,
+                bevelThickness: .03,
+                steps: 2,
+            });
             pocketGeometry.center();
-
-            const pocket = new THREE.Mesh(
-                pocketGeometry,
-                whiteMaterial,
-            );
-
-            pocket.position.set(0, 0.38, 0.91);
-            pocket.scale.set(0.78, 0.70, 1);
+            const pocket = new THREE.Mesh(pocketGeometry, white);
+            pocket.position.set(0, .36, .91);
+            pocket.scale.set(.78, .7, 1);
             pocket.castShadow = true;
-            pocket.receiveShadow = true;
             root.add(pocket);
 
-            /* --------------------------------------------------------
-               Arms & feet
-               -------------------------------------------------------- */
+            /* Arms and feet */
+            const leftArm = mesh(sphere, blue, [-1.02, .12, .02], [.4, .53, .4]);
+            const rightArm = mesh(sphere, blue, [1.02, .12, .02], [.4, .53, .4]);
+            leftArm.rotation.z = -.35;
+            rightArm.rotation.z = .35;
+            mesh(sphere, white, [-1.18, -.02, .38], [.28, .3, .28]);
+            mesh(sphere, white, [1.18, -.02, .38], [.28, .3, .28]);
+            mesh(sphere, blue, [-.48, -.82, .03], [.58, .38, .64]);
+            mesh(sphere, blue, [.48, -.82, .03], [.58, .38, .64]);
+            mesh(sphere, white, [-.55, -.91, .53], [.54, .27, .32]);
+            mesh(sphere, white, [.55, -.91, .53], [.54, .27, .32]);
 
-            const leftArm = addMesh(
-                sphereGeometry,
-                blueMaterial,
-                [-1.03, 0.15, 0.02],
-                [0.40, 0.54, 0.42],
-            );
-
-            leftArm.rotation.z = -0.35;
-
-            const rightArm = addMesh(
-                sphereGeometry,
-                blueMaterial,
-                [1.03, 0.15, 0.02],
-                [0.40, 0.54, 0.42],
-            );
-
-            rightArm.rotation.z = 0.35;
-
-            addMesh(
-                sphereGeometry,
-                whiteMaterial,
-                [-1.18, -0.02, 0.37],
-                [0.28, 0.30, 0.28],
-            );
-
-            addMesh(
-                sphereGeometry,
-                whiteMaterial,
-                [1.18, -0.02, 0.37],
-                [0.28, 0.30, 0.28],
-            );
-
-            addMesh(
-                sphereGeometry,
-                blueMaterial,
-                [-0.48, -0.83, 0.03],
-                [0.58, 0.38, 0.65],
-            );
-
-            addMesh(
-                sphereGeometry,
-                blueMaterial,
-                [0.48, -0.83, 0.03],
-                [0.58, 0.38, 0.65],
-            );
-
-            addMesh(
-                sphereGeometry,
-                whiteMaterial,
-                [-0.55, -0.92, 0.54],
-                [0.54, 0.27, 0.32],
-            );
-
-            addMesh(
-                sphereGeometry,
-                whiteMaterial,
-                [0.55, -0.92, 0.54],
-                [0.54, 0.27, 0.32],
-            );
-
-            /* --------------------------------------------------------
-               Propeller
-               -------------------------------------------------------- */
-
+            /* Propeller — horizontal and centered */
             const propeller = new THREE.Group();
-            propeller.position.set(0, 3.05, 0.02);
+            propeller.position.set(0, 3.02, .02);
             root.add(propeller);
 
-            const propellerShaft = new THREE.Mesh(
-                new THREE.CylinderGeometry(0.075, 0.075, 0.42, 24),
-                yellowMaterial,
-            );
+            const shaft = new THREE.Mesh(new THREE.CylinderGeometry(.07, .07, .42, 20), yellow);
+            shaft.castShadow = true;
+            propeller.add(shaft);
 
-            propellerShaft.castShadow = true;
-            propeller.add(propellerShaft);
+            const cap = new THREE.Mesh(new THREE.SphereGeometry(.12, 24, 16), yellow);
+            cap.position.y = .22;
+            propeller.add(cap);
 
-            const propellerCap = new THREE.Mesh(
-                new THREE.SphereGeometry(0.12, 28, 18),
-                yellowMaterial,
-            );
-
-            propellerCap.position.y = 0.22;
-            propellerCap.castShadow = true;
-            propeller.add(propellerCap);
-
-            const bladeGeometry = new THREE.CapsuleGeometry(
-                0.14,
-                0.66,
-                10,
-                20,
-            );
-
-            const leftBlade = new THREE.Mesh(
-                bladeGeometry,
-                yellowMaterial,
-            );
-
-            leftBlade.rotation.z = Math.PI / 2;
-            leftBlade.scale.set(0.72, 0.23, 0.16);
-            leftBlade.position.set(-0.38, 0.26, 0);
-            leftBlade.castShadow = true;
-            propeller.add(leftBlade);
-
-            const rightBlade = new THREE.Mesh(
-                bladeGeometry,
-                yellowMaterial,
-            );
-
-            rightBlade.rotation.z = Math.PI / 2;
-            rightBlade.scale.set(0.72, 0.23, 0.16);
-            rightBlade.position.set(0.38, 0.26, 0);
-            rightBlade.castShadow = true;
-            propeller.add(rightBlade);
-
-            /* --------------------------------------------------------
-               Ground shadow
-               -------------------------------------------------------- */
-
-            const shadowMaterial = new THREE.MeshBasicMaterial({
-                color: 0x0a1d35,
-                transparent: true,
-                opacity: 0.16,
-                depthWrite: false,
+            const blade = new THREE.CapsuleGeometry(.13, .66, 8, 16);
+            [-.38, .38].forEach((x) => {
+                const item = new THREE.Mesh(blade, yellow);
+                item.rotation.z = Math.PI / 2;
+                item.scale.set(.72, .22, .15);
+                item.position.set(x, .26, 0);
+                item.castShadow = true;
+                propeller.add(item);
             });
 
-            const ground = new THREE.Mesh(
-                new THREE.CircleGeometry(1.18, 48),
-                shadowMaterial,
+            /* Soft ground shadow */
+            const shadow = new THREE.Mesh(
+                new THREE.CircleGeometry(1.2, 48),
+                new THREE.MeshBasicMaterial({ color: 0x041b3c, transparent: true, opacity: .18, depthWrite: false }),
             );
-
-            ground.rotation.x = -Math.PI / 2;
-            ground.position.set(0, -1.22, 0.05);
-            ground.scale.set(1.45, 0.62, 1);
-            scene.add(ground);
-
-            /* --------------------------------------------------------
-               Interaction & voice
-               -------------------------------------------------------- */
+            shadow.rotation.x = -Math.PI / 2;
+            shadow.position.set(0, -1.2, .05);
+            shadow.scale.set(1.45, .62, 1);
+            scene.add(shadow);
 
             let targetX = 0;
             let targetY = 0;
-            let rotationX = 0;
-            let rotationY = 0;
+            let currentX = 0;
+            let currentY = 0;
             let bounce = 0;
-            let clickSpin = 0;
 
-            const bubble = $('#dora-bubble');
-
-            const sounds = [
-                'Wah!',
-                'Hehehe!',
-                'Waaah!',
-                'Ayo!',
-                'Asyik!',
-                'Hore!',
-            ];
-
-            function getIndonesianVoice() {
-                if (!('speechSynthesis' in window)) return null;
-
-                const voices = speechSynthesis.getVoices();
-
-                return (
-                    voices.find((voice) =>
-                        /^id(-|_)/i.test(voice.lang),
-                    ) ||
-                    voices.find((voice) =>
-                        /indonesian|bahasa/i.test(voice.name),
-                    ) ||
-                    null
-                );
-            }
-
-            function speak(text) {
-                if (!('speechSynthesis' in window)) return;
-
-                speechSynthesis.cancel();
-
-                const utterance = new SpeechSynthesisUtterance(text);
-                const voice = getIndonesianVoice();
-
-                if (voice) {
-                    utterance.voice = voice;
-                }
-
-                utterance.lang = voice?.lang || 'id-ID';
-                utterance.rate = 0.78;
-                utterance.pitch = 1.65;
-                utterance.volume = 1;
-
-                speechSynthesis.speak(utterance);
-            }
-
-            function react() {
-                const text =
-                    sounds[Math.floor(Math.random() * sounds.length)];
-
-                if (bubble) {
-                    bubble.textContent = '✦';
-                }
-
-                bounce = 1;
-                clickSpin = 1;
-                speak(text);
-
-                setTimeout(() => {
-                    if (bubble) {
-                        bubble.textContent = '✦';
-                    }
-                }, 450);
-            }
-
-            wrapper.addEventListener(
-                'pointermove',
-                (event) => {
-                    const rect = wrapper.getBoundingClientRect();
-                    const x = event.clientX / rect.width -
-                        rect.left / rect.width - 0.5;
-                    const y = event.clientY / rect.height -
-                        rect.top / rect.height - 0.5;
-
-                    targetY = Math.max(-1, Math.min(1, x)) * 0.18;
-                    targetX = Math.max(-1, Math.min(1, y)) * 0.10;
-                },
-                { passive: true },
-            );
+            wrapper.addEventListener('pointermove', (event) => {
+                const rect = wrapper.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width - .5) * 2;
+                const y = ((event.clientY - rect.top) / rect.height - .5) * 2;
+                targetY = Math.max(-1, Math.min(1, x)) * .2;
+                targetX = Math.max(-1, Math.min(1, y)) * .1;
+            });
 
             wrapper.addEventListener('pointerleave', () => {
                 targetX = 0;
                 targetY = 0;
             });
 
-            wrapper.addEventListener('click', react);
+            wrapper.addEventListener('click', () => {
+                bounce = 1;
+                if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel();
+                    const voice = new SpeechSynthesisUtterance('Wah! Hehehe! Ayo!');
+                    voice.lang = 'id-ID';
+                    voice.rate = .8;
+                    voice.pitch = 1.55;
+                    speechSynthesis.speak(voice);
+                }
+            });
 
-            /* --------------------------------------------------------
-               Responsive renderer
-               -------------------------------------------------------- */
-
-            function fitRenderer() {
+            function resizeRenderer() {
                 const rect = wrapper.getBoundingClientRect();
                 const width = Math.max(1, rect.width);
                 const height = Math.max(1, rect.height);
-
                 renderer.setSize(width, height, false);
                 camera.aspect = width / height;
                 camera.updateProjectionMatrix();
             }
 
-            fitRenderer();
-            window.addEventListener('resize', fitRenderer);
-
-            /* --------------------------------------------------------
-               Animation loop
-               -------------------------------------------------------- */
+            resizeRenderer();
+            window.addEventListener('resize', resizeRenderer);
 
             const clock = new THREE.Clock();
 
             function animate() {
                 requestAnimationFrame(animate);
-
                 const time = clock.getElapsedTime();
 
-                propeller.rotation.z = Math.sin(time * 1.7) * 0.035;
-                propeller.rotation.y = time * 7.5;
-
-                if (clickSpin) {
-                    propeller.rotation.y += clickSpin * 1.2;
-                    clickSpin *= 0.90;
-
-                    if (clickSpin < 0.01) {
-                        clickSpin = 0;
-                    }
-                }
-
-                bounce += (0 - bounce) * 0.065;
-
-                const floating = Math.sin(time * 1.7) * 0.035;
-
-                root.position.y =
-                    -0.25 + floating + bounce * 0.20;
-
-                rotationX += (targetX - rotationX) * 0.06;
-                rotationY += (targetY - rotationY) * 0.06;
-
-                root.rotation.x = rotationX;
-                root.rotation.y = rotationY;
+                propeller.rotation.y = time * 8;
+                bounce += (0 - bounce) * .08;
+                root.position.y = -.25 + Math.sin(time * 1.8) * .035 + bounce * .18;
+                currentX += (targetX - currentX) * .06;
+                currentY += (targetY - currentY) * .06;
+                root.rotation.x = currentX;
+                root.rotation.y = currentY;
 
                 renderer.render(scene, camera);
             }
 
             animate();
         } catch (error) {
-            console.warn('Three.js Doraemon failed:', error);
+            console.error('Three.js failed:', error);
+            stage.innerHTML = '<div style="display:grid;place-items:center;height:100%;color:rgba(255,255,255,.7);font-size:12px;letter-spacing:.12em">3D sedang dimuat…</div>';
         }
-    })();
+    }
+
+    /* ---------------------------------------------------------------
+       Initial state
+       --------------------------------------------------------------- */
+
+    const hash = location.hash.replace('#', '');
+    showView(hash === 'album' ? 'album-view' : hash === 'story' ? 'story-view' : 'home-view', false);
+    updateSlider();
+    window.addEventListener('resize', () => {
+        resizeBackground();
+        moveIndicator($('.nav-item.active'));
+        updateSlider();
+    });
+
+    createDoraemon();
 })();
