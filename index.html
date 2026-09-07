@@ -2,218 +2,73 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0a6cff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#050711">
     <title>Our Little Universe 💙</title>
     <link rel="stylesheet" href="style.css">
 
     <style>
-        :root {
-            --blue-main: #168cff;
-            --blue-light: #6fd7ff;
-            --blue-deep: #061a3d;
-            --white: #fff;
+        :root { --blue-main:#168cff; --blue-light:#6fd7ff; --blue-deep:#061a3d; --white:#fff; }
+        body { overflow-x:hidden; background:linear-gradient(180deg,#06142f 0%,#0b3d82 52%,#63d5ff 100%); }
+        .ambient,#space-canvas,.dora-stage,.dora-3d-wrap,.orbit,.floating-chip,.liquid-sidebar,#liquid-sidebar,.sidebar-toggle,.sidebar-panel { display:none!important; }
+        .app-shell { width:100%; min-height:100vh; }
+        .welcome-ticker { position:relative!important; width:min(1120px,calc(100% - 40px))!important; margin:18px auto 0!important; height:42px!important; overflow:hidden!important; border:1px solid rgba(255,255,255,.16)!important; border-radius:999px!important; background:rgba(5,13,32,.35)!important; }
+        .welcome-ticker-track { width:max-content!important; height:100%!important; display:flex!important; align-items:center!important; gap:90px!important; animation:tickerMove 18s linear infinite!important; }
+        .welcome-ticker-track span { flex:0 0 auto!important; white-space:nowrap!important; color:#fff!important; font-weight:700!important; letter-spacing:.12em!important; }
+        @keyframes tickerMove { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+        .hero-grid { min-height:calc(100vh - 90px)!important; padding:50px 5vw 125px!important; grid-template-columns:1fr!important; gap:0!important; align-items:center!important; }
+        .hero-copy { text-align:center!important; max-width:900px!important; margin:auto!important; }
+        .hero-copy .eyebrow { color:#7be0ff!important; }
+        .hero-copy h2 { color:#fff!important; font-size:clamp(48px,7vw,86px)!important; line-height:.94!important; letter-spacing:-.055em!important; }
+        .hero-copy h2 span { color:#73d8ff!important; }
+        .hero-copy>p { max-width:650px!important; margin-inline:auto!important; color:rgba(240,250,255,.82)!important; }
+        .hero-actions { justify-content:center!important; }
+        .primary-btn { background:#fff!important; color:#075dc9!important; }
+
+        /* MOBILE LIQUID NAV — compact closed pill, expands to the left */
+        .liquid-nav { position:fixed!important; right:12px!important; left:auto!important; bottom:max(12px,env(safe-area-inset-bottom))!important; transform:none!important; width:58px!important; height:58px!important; padding:4px!important; display:flex!important; align-items:center!important; justify-content:flex-start!important; gap:4px!important; border:1px solid rgba(255,255,255,.12)!important; border-radius:999px!important; background:#050711!important; box-shadow:0 14px 38px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.06)!important; z-index:3000!important; overflow:visible!important; transition:width .45s cubic-bezier(.2,.85,.2,1),background .35s ease,box-shadow .35s ease!important; }
+        .liquid-nav.open { width:min(350px,calc(100vw - 24px))!important; background:#070b18!important; box-shadow:0 18px 50px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.07)!important; }
+        .nav-items { display:flex!important; align-items:center!important; flex:1!important; min-width:0!important; height:100%!important; gap:2px!important; opacity:0!important; transform:translateX(16px)!important; pointer-events:none!important; transition:opacity .2s ease .05s,transform .4s cubic-bezier(.2,.85,.2,1)!important; }
+        .liquid-nav.open .nav-items { opacity:1!important; transform:none!important; pointer-events:auto!important; }
+        .nav-item { position:relative!important; flex:1 1 0!important; min-width:0!important; width:auto!important; height:48px!important; display:flex!important; flex-direction:column!important; align-items:center!important; justify-content:center!important; gap:2px!important; padding:5px 2px!important; border:0!important; border-radius:16px!important; background:transparent!important; color:#77839b!important; font-size:19px!important; line-height:1!important; cursor:pointer!important; transition:background .25s ease,color .25s ease,transform .25s ease!important; }
+        .nav-item small { display:block!important; font-size:7px!important; line-height:1!important; font-weight:800!important; letter-spacing:.04em!important; color:inherit!important; }
+        .nav-item.active { color:#06101f!important; background:linear-gradient(145deg,#fff,#8fe6ff)!important; box-shadow:0 5px 18px rgba(70,207,255,.28)!important; transform:translateY(-1px)!important; }
+        .nav-item:active { transform:scale(.92)!important; }
+        .nav-toggle { flex:0 0 48px!important; width:48px!important; height:48px!important; display:grid!important; place-items:center!important; border:1px solid rgba(255,255,255,.08)!important; border-radius:50%!important; background:#10172a!important; color:#dce7f7!important; font-size:22px!important; line-height:1!important; cursor:pointer!important; box-shadow:0 5px 16px rgba(0,0,0,.3)!important; transition:background .3s ease,color .3s ease,transform .35s ease!important; }
+        .nav-toggle.open { background:#fff!important; color:#07101e!important; transform:rotate(90deg)!important; }
+        .nav-toggle:active { transform:scale(.9)!important; }
+        .liquid-indicator { display:none!important; }
+        .nav-item.music-playing { color:#9eeaff!important; }
+        .nav-item.music-playing.active { color:#06101f!important; }
+
+        @media(max-width:760px) {
+            body { background:linear-gradient(180deg,#061a3d 0%,#0b4e9b 52%,#7bdcff 100%); }
+            .hero-grid { display:block!important; min-height:auto!important; padding:28px 16px 115px!important; }
+            .hero-visual { display:none!important; }
+            .hero-copy { display:block!important; width:100%!important; max-width:720px!important; margin:0 auto!important; text-align:center!important; }
+            .hero-copy h2 { margin:12px auto 16px!important; font-size:clamp(42px,12vw,62px)!important; line-height:.94!important; }
+            .hero-copy>p { max-width:520px!important; margin:0 auto!important; font-size:13px!important; line-height:1.65!important; }
+            .hero-actions { margin-top:22px!important; display:flex!important; flex-wrap:wrap!important; justify-content:center!important; gap:12px!important; }
+            .scroll-note { width:100%!important; text-align:center!important; }
+            .liquid-nav { backdrop-filter:none!important; -webkit-backdrop-filter:none!important; }
+            .welcome-ticker { backdrop-filter:none!important; -webkit-backdrop-filter:none!important; }
         }
-
-        body {
-            overflow-x: hidden;
-            background: linear-gradient(160deg, #06142f 0%, #0b3d82 48%, #63d5ff 100%);
+        @media(max-width:480px) {
+            .welcome-ticker { width:calc(100% - 20px)!important; height:38px!important; margin-top:10px!important; }
+            .welcome-ticker-track { gap:55px!important; animation-duration:22s!important; }
+            .welcome-ticker-track span { font-size:11px!important; }
+            .hero-grid { padding:30px 14px 108px!important; }
+            .hero-copy h2 { font-size:clamp(40px,12.5vw,54px)!important; }
+            .liquid-nav { right:10px!important; bottom:max(9px,env(safe-area-inset-bottom))!important; width:56px!important; height:56px!important; }
+            .liquid-nav.open { width:calc(100vw - 20px)!important; }
+            .nav-toggle { flex-basis:46px!important; width:46px!important; height:46px!important; }
+            .nav-item { height:46px!important; border-radius:14px!important; font-size:17px!important; }
+            .nav-item small { font-size:7px!important; }
         }
-
-        /* Hide old heavy visual leftovers. */
-        .ambient,
-        #space-canvas,
-        .dora-stage,
-        .dora-3d-wrap,
-        .orbit,
-        .floating-chip { display: none !important; }
-
-        .liquid-sidebar,
-        #liquid-sidebar,
-        .sidebar-toggle,
-        .sidebar-panel { display: none !important; }
-
-        .app-shell { width: 100%; min-height: 100vh; }
-
-        .welcome-ticker {
-            position: relative !important;
-            width: min(1120px, calc(100% - 40px)) !important;
-            margin: 18px auto 0 !important;
-            height: 42px !important;
-            overflow: hidden !important;
-            border: 1px solid rgba(255,255,255,.2) !important;
-            border-radius: 999px !important;
-            background: rgba(255,255,255,.08) !important;
-            mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-            -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-        }
-
-        .welcome-ticker-track {
-            width: max-content !important;
-            height: 100% !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 90px !important;
-            animation: tickerLeftToRight 18s linear infinite !important;
-        }
-
-        .welcome-ticker-track span {
-            flex: 0 0 auto !important;
-            white-space: nowrap !important;
-            color: #fff !important;
-            font-weight: 700 !important;
-            letter-spacing: .12em !important;
-        }
-
-        @keyframes tickerLeftToRight {
-            from { transform: translateX(-50%); }
-            to { transform: translateX(0); }
-        }
-
-        .hero-grid {
-            min-height: calc(100vh - 90px) !important;
-            padding: 50px 5vw 125px !important;
-            grid-template-columns: 1fr !important;
-            gap: 0 !important;
-            align-items: center !important;
-        }
-
-        .hero-copy {
-            order: 1 !important;
-            text-align: center !important;
-            max-width: 900px !important;
-            margin: auto !important;
-        }
-
-        .hero-copy .eyebrow { color: #7be0ff !important; }
-        .hero-copy h2 {
-            color: #fff !important;
-            font-size: clamp(48px, 7vw, 86px) !important;
-            line-height: .94 !important;
-            letter-spacing: -.055em !important;
-        }
-        .hero-copy h2 span { color: #73d8ff !important; }
-        .hero-copy > p {
-            max-width: 650px !important;
-            margin-inline: auto !important;
-            color: rgba(240,250,255,.82) !important;
-        }
-        .hero-actions { justify-content: center !important; }
-        .primary-btn {
-            background: #fff !important;
-            color: #075dc9 !important;
-            box-shadow: 0 12px 30px rgba(0,80,190,.2) !important;
-        }
-
-        /* 5-button bottom navigation */
-        .liquid-nav {
-            position: fixed !important;
-            left: 50% !important;
-            bottom: max(14px, env(safe-area-inset-bottom)) !important;
-            transform: translateX(-50%) !important;
-            width: min(620px, calc(100vw - 24px)) !important;
-            height: 68px !important;
-            padding: 6px !important;
-            display: grid !important;
-            grid-template-columns: repeat(5, 1fr) !important;
-            align-items: center !important;
-            border: 1px solid rgba(255,255,255,.32) !important;
-            border-radius: 999px !important;
-            background: rgba(104,190,255,.24) !important;
-            box-shadow: 0 12px 40px rgba(0,30,100,.28), inset 0 1px 0 rgba(255,255,255,.3) !important;
-            backdrop-filter: blur(14px) !important;
-            -webkit-backdrop-filter: blur(14px) !important;
-            z-index: 1000 !important;
-        }
-
-        .liquid-indicator {
-            position: absolute !important;
-            left: 6px !important;
-            top: 6px !important;
-            width: 20% !important;
-            height: 56px !important;
-            border-radius: 999px !important;
-            background: #fff !important;
-            box-shadow: 0 7px 20px rgba(0,94,255,.2) !important;
-            transition: transform .25s ease, width .25s ease !important;
-            z-index: 1 !important;
-        }
-
-        .nav-item {
-            position: relative !important;
-            z-index: 2 !important;
-            width: 100% !important;
-            height: 56px !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            gap: 2px !important;
-            padding: 0 !important;
-            border: 0 !important;
-            background: transparent !important;
-            color: rgba(255,255,255,.9) !important;
-            font-size: 19px !important;
-            line-height: 1 !important;
-            cursor: pointer !important;
-        }
-
-        .nav-item small {
-            font-size: 9px !important;
-            font-weight: 700 !important;
-            letter-spacing: .04em !important;
-            color: inherit !important;
-        }
-
-        .nav-item.active { color: #075dc9 !important; }
-        .nav-item:active { transform: scale(.94); }
-
-        .nav-item.music-playing { color: #fff !important; }
-        .nav-item.music-playing small { color: #dff7ff !important; }
-
-        @media (max-width: 600px) {
-            .welcome-ticker {
-                width: calc(100% - 20px) !important;
-                margin-top: 12px !important;
-                height: 38px !important;
-            }
-
-            .hero-grid {
-                min-height: calc(100svh - 105px) !important;
-                padding: 30px 18px 115px !important;
-            }
-
-            .hero-copy h2 { font-size: clamp(43px, 13vw, 58px) !important; }
-            .hero-copy > p { font-size: 13px !important; line-height: 1.6 !important; }
-            .scroll-note { display: none !important; }
-
-            .liquid-nav {
-                width: calc(100vw - 18px) !important;
-                height: 64px !important;
-                padding: 5px !important;
-                bottom: max(8px, env(safe-area-inset-bottom)) !important;
-                background: rgba(66,164,235,.3) !important;
-                backdrop-filter: blur(10px) !important;
-                -webkit-backdrop-filter: blur(10px) !important;
-            }
-
-            .liquid-indicator {
-                left: 5px !important;
-                top: 5px !important;
-                height: 54px !important;
-            }
-
-            .nav-item { height: 54px !important; font-size: 17px !important; }
-            .nav-item small { font-size: 8px !important; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .welcome-ticker-track { animation: none !important; }
-            .liquid-indicator { transition: none !important; }
-        }
+        @media(max-width:360px) { .liquid-nav.open{width:calc(100vw - 14px)!important;right:7px!important}.nav-item{font-size:16px!important}.nav-item small{font-size:6.5px!important} }
+        @media(prefers-reduced-motion:reduce) { .welcome-ticker-track{animation:none!important}.liquid-nav,.nav-items,.nav-item,.nav-toggle{transition:none!important} }
     </style>
 </head>
-
 <body>
     <div id="landing-page" class="landing">
         <div class="landing-content">
@@ -225,66 +80,29 @@
     </div>
 
     <main id="content-area" class="app-shell">
-        <div class="welcome-ticker" aria-hidden="true">
-            <div class="welcome-ticker-track">
-                <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
-                <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
-                <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
-                <span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span>
-            </div>
-        </div>
+        <div class="welcome-ticker" aria-hidden="true"><div class="welcome-ticker-track"><span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span><span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span><span>✦ SELAMAT DATANG DI CERITA KECIL INI · WELCOME TO OUR LITTLE UNIVERSE · ✦</span></div></div>
 
         <section id="home-view" class="view-page active">
-            <div class="hero-grid">
-                <div class="hero-copy reveal">
-                    <span class="eyebrow">WELCOME TO OUR WORLD</span>
-                    <h2>Small moments.<br><span>Big memories.</span></h2>
-                    <p>Bukan sekadar galeri. Ini tempat kecil buat menyimpan hal-hal yang mungkin sederhana, tapi selalu punya cerita.</p>
-                    <div class="hero-actions">
-                        <button class="primary-btn" data-go="album-view" type="button">Lihat kenangan <span>↗</span></button>
-                        <span class="scroll-note">scroll untuk menjelajah ↓</span>
-                    </div>
-                </div>
-            </div>
+            <div class="hero-grid"><div class="hero-copy reveal"><span class="eyebrow">WELCOME TO OUR WORLD</span><h2>Small moments.<br><span>Big memories.</span></h2><p>Bukan sekadar galeri. Ini tempat kecil buat menyimpan hal-hal yang mungkin sederhana, tapi selalu punya cerita.</p><div class="hero-actions"><button class="primary-btn" data-go="album-view" type="button">Lihat kenangan <span>↗</span></button><span class="scroll-note">scroll untuk menjelajah ↓</span></div></div></div>
         </section>
 
-        <section id="album-view" class="view-page">
-            <div class="page-heading">
-                <span class="eyebrow">MEMORY ALBUM</span>
-                <h2>Little moments,<br><span>kept forever.</span></h2>
-                <p>Geser untuk melihat kenangan.</p>
-            </div>
-            <div class="slider-wrap">
-                <button id="prev-card" class="slider-arrow" type="button">←</button>
-                <div id="card-slider" class="card-slider">
-                    <article class="memory-card"><span class="card-number">01</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 1"><div class="card-info"><span>MOMENT</span><h3>One frame.</h3><p>Satu foto, satu cerita kecil.</p></div></article>
-                    <article class="memory-card"><span class="card-number">02</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 2"><div class="card-info"><span>MEMORY</span><h3>Good vibes.</h3><p>Hal sederhana yang layak diingat.</p></div></article>
-                    <article class="memory-card"><span class="card-number">03</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 3"><div class="card-info"><span>STORY</span><h3>Keep it close.</h3><p>Momen kecil yang tetap punya arti.</p></div></article>
-                </div>
-                <button id="next-card" class="slider-arrow" type="button">→</button>
-            </div>
-            <div class="slider-progress"><span id="slider-count">01</span><div><i id="slider-bar"></i></div><span>03</span></div>
-        </section>
+        <section id="album-view" class="view-page"><div class="page-heading"><span class="eyebrow">MEMORY ALBUM</span><h2>Little moments,<br><span>kept forever.</span></h2><p>Geser untuk melihat kenangan.</p></div><div class="slider-wrap"><button id="prev-card" class="slider-arrow" type="button">←</button><div id="card-slider" class="card-slider"><article class="memory-card"><span class="card-number">01</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 1"><div class="card-info"><span>MOMENT</span><h3>One frame.</h3><p>Satu foto, satu cerita kecil.</p></div></article><article class="memory-card"><span class="card-number">02</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 2"><div class="card-info"><span>MEMORY</span><h3>Good vibes.</h3><p>Hal sederhana yang layak diingat.</p></div></article><article class="memory-card"><span class="card-number">03</span><img src="IMG_20260731_204858.jpg" alt="Kenangan 3"><div class="card-info"><span>STORY</span><h3>Keep it close.</h3><p>Momen kecil yang tetap punya arti.</p></div></article></div><button id="next-card" class="slider-arrow" type="button">→</button></div><div class="slider-progress"><span id="slider-count">01</span><div><i id="slider-bar"></i></div><span>03</span></div></section>
 
-        <section id="story-view" class="view-page">
-            <div class="page-heading"><span class="eyebrow">A LITTLE NOTE</span><h2>For the moments<br><span>that matter.</span></h2></div>
-            <article class="note-card"><span>NOTE</span><h3>Keep the good ones.</h3><p>Semoga setiap halaman di sini selalu mengingatkan bahwa momen kecil juga bisa menjadi kenangan yang besar.</p><div class="signature">— Nezza 💙</div></article>
-        </section>
+        <section id="story-view" class="view-page"><div class="page-heading"><span class="eyebrow">A LITTLE NOTE</span><h2>For the moments<br><span>that matter.</span></h2></div><article class="note-card"><span>NOTE</span><h3>Keep the good ones.</h3><p>Semoga setiap halaman di sini selalu mengingatkan bahwa momen kecil juga bisa menjadi kenangan yang besar.</p><div class="signature">— Nezza 💙</div></article></section>
     </main>
 
-    <nav class="liquid-nav" aria-label="Navigasi utama">
-        <span id="liquid-indicator" class="liquid-indicator"></span>
-        <button class="nav-item active" data-target="home-view" type="button" aria-label="Home">⌂<small>Home</small></button>
-        <button class="nav-item" data-target="album-view" type="button" aria-label="Album">▣<small>Album</small></button>
-        <button class="nav-item" data-target="story-view" type="button" aria-label="Note">✦<small>Note</small></button>
-        <button id="nav-music" class="nav-item" data-action="music" type="button" aria-label="Musik">♪<small>Music</small></button>
-        <button class="nav-item" data-action="top" type="button" aria-label="Kembali ke atas">↑<small>Top</small></button>
+    <nav id="liquid-nav" class="liquid-nav" aria-label="Navigasi utama">
+        <div class="nav-items">
+            <button class="nav-item active" data-target="home-view" type="button" aria-label="Home">⌂<small>Home</small></button>
+            <button class="nav-item" data-target="album-view" type="button" aria-label="Album">▣<small>Album</small></button>
+            <button class="nav-item" data-target="story-view" type="button" aria-label="Note">✦<small>Note</small></button>
+            <button id="nav-music" class="nav-item" data-action="music" type="button" aria-label="Musik">♪<small>Music</small></button>
+            <button class="nav-item" data-action="top" type="button" aria-label="Kembali ke atas">↑<small>Top</small></button>
+        </div>
+        <button id="nav-toggle" class="nav-toggle" type="button" aria-label="Buka navigasi" aria-expanded="false">＋</button>
     </nav>
 
-    <audio id="bg-music" loop preload="metadata">
-        <source src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3" type="audio/mpeg">
-    </audio>
-
+    <audio id="bg-music" loop preload="metadata"><source src="Backstreet Boys - Shape of My Heart (Lyrics) - FirePlay (128k).mp3" type="audio/mpeg"></audio>
     <script src="script.js"></script>
 </body>
 </html>
