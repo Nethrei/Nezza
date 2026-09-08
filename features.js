@@ -35,6 +35,7 @@
   const area = $("#gameArea");
   const start = $("#gameStart");
   const scoreText = $("#gameScore");
+  const rankText = $("#gameRank");
   const bestText = $("#gameBest");
   const result = $("#gameResult");
   const player = $("#runnerPlayer");
@@ -42,6 +43,40 @@
   const startHint = $("#runnerStartHint");
   const gameOver = $("#runnerGameOver");
   const finalScore = $("#runnerFinalScore");
+
+  /* Score milestones. 1000 = Master, then every 1000 points unlocks a new rank. */
+  const ranks = [
+    { min: 0, name: "Rookie", badge: "🌱", title: "Awal yang bagus!", message: "Pemanasan selesai. Terus latihan dan kejar Master!" },
+    { min: 1000, name: "Master", badge: "🏆", title: "MASTER UNLOCKED!", message: "Gila, kamu sudah menembus 1000 poin. Refleksmu mulai nggak main-main!" },
+    { min: 2000, name: "Grand Master", badge: "👑", title: "GRAND MASTER!", message: "2000 poin! Kamu sudah masuk kelas pemain yang serius." },
+    { min: 3000, name: "Legend", badge: "⚡", title: "LEGENDARY RUN!", message: "3000 poin! Lari sejauh ini bukan kebetulan. Kamu jago banget." },
+    { min: 4000, name: "Mythic", badge: "💎", title: "MYTHIC!", message: "4000 poin! Ini sudah level yang susah dipercaya." },
+    { min: 5000, name: "Immortal", badge: "🔥", title: "IMMORTAL!", message: "5000 poin! Kamu benar-benar bertahan sejauh ini." },
+    { min: 6000, name: "Supreme", badge: "🌟", title: "SUPREME RUNNER!", message: "6000 poin! Rank tertinggi tercapai. Respect!" }
+  ];
+
+  function getRank(value) {
+    let current = ranks[0];
+    for (const rank of ranks) {
+      if (value >= rank.min) current = rank;
+      else break;
+    }
+    return current;
+  }
+
+  function getNextRank(value) {
+    return ranks.find((rank) => rank.min > value) || null;
+  }
+
+  const achievementModal = $("#achievementModal");
+  const achievementClose = $("#achievementClose");
+  const achievementRestart = $("#achievementRestart");
+  const achievementBadge = $("#achievementBadge");
+  const achievementTitle = $("#achievementTitle");
+  const achievementRank = $("#achievementRank");
+  const achievementScore = $("#achievementScore");
+  const achievementMessage = $("#achievementMessage");
+  const achievementNext = $("#achievementNext");
 
   let running = false;
   let animation = 0;
@@ -52,10 +87,9 @@
   let velocity = 0;
   let obstacleX = 0;
   let obstacleSpeed = 230;
-  let spawnTimer = 0;
-  let nextSpawn = 1000;
 
   if (bestText) bestText.textContent = best;
+  if (rankText) rankText.textContent = getRank(best).name;
 
   function setVisuals() {
     if (!area) return;
@@ -68,11 +102,10 @@
     playerY = 0;
     velocity = 0;
     obstacleSpeed = 230;
-    spawnTimer = 0;
-    nextSpawn = 1000 + Math.random() * 700;
     obstacleX = area.clientWidth + 70;
     setVisuals();
     if (scoreText) scoreText.textContent = "0";
+    if (rankText) rankText.textContent = "Rookie";
   }
 
   function jump() {
@@ -94,23 +127,53 @@
     return horizontal && vertical;
   }
 
+  function showAchievement(value) {
+    const current = getRank(value);
+    const next = getNextRank(value);
+
+    if (achievementBadge) achievementBadge.textContent = current.badge;
+    if (achievementTitle) achievementTitle.textContent = current.title;
+    if (achievementRank) achievementRank.textContent = current.name;
+    if (achievementScore) achievementScore.textContent = value;
+    if (achievementMessage) achievementMessage.textContent = current.message;
+    if (achievementNext) {
+      achievementNext.textContent = next ? `${next.name} · ${next.min}` : "MAX RANK · Supreme";
+    }
+    if (achievementModal) {
+      achievementModal.classList.add("show");
+      achievementModal.setAttribute("aria-hidden", "false");
+    }
+  }
+
+  function hideAchievement() {
+    if (!achievementModal) return;
+    achievementModal.classList.remove("show");
+    achievementModal.setAttribute("aria-hidden", "true");
+  }
+
   function endGame() {
     running = false;
     cancelAnimationFrame(animation);
     const value = Math.floor(score);
+    const current = getRank(value);
     if (finalScore) finalScore.textContent = value;
+    if (rankText) rankText.textContent = current.name;
+
     if (value > best) {
       best = value;
       localStorage.setItem("birthdayRunnerBest", String(best));
       if (bestText) bestText.textContent = best;
     }
+
     if (gameOver) gameOver.hidden = false;
     if (startHint) startHint.hidden = true;
     if (start) {
       start.disabled = false;
       start.textContent = "Main lagi ↻";
     }
-    if (result) result.textContent = `Kalah! Score ${value}. Tekan Main lagi untuk mencoba lagi. 🔥`;
+    if (result) result.textContent = `Kalah! Score ${value} · Rank ${current.name}. Lihat pencapaianmu di bawah. 🏆`;
+
+    showAchievement(value);
   }
 
   function frame(now) {
@@ -126,18 +189,16 @@
     }
 
     score += dt * 10;
-    /* The longer you survive, the faster the gifts move. */
     obstacleSpeed = Math.min(520, 230 + score * 3.1);
 
-    /* One gift stays in the lane and keeps moving left. It is only reset
-       after it has completely left the screen, never just because it was jumped. */
+    /* One gift keeps moving left and only resets after leaving the screen. */
     obstacleX -= obstacleSpeed * dt;
-    if (obstacleX < -75) {
-      obstacleX = area.clientWidth + 50;
-    }
+    if (obstacleX < -75) obstacleX = area.clientWidth + 50;
 
+    const current = getRank(score);
     setVisuals();
     if (scoreText) scoreText.textContent = String(Math.floor(score));
+    if (rankText) rankText.textContent = current.name;
 
     if (hitTest()) {
       endGame();
@@ -148,6 +209,7 @@
 
   function startRunner() {
     if (!area) return;
+    hideAchievement();
     cancelAnimationFrame(animation);
     resetRunner();
     running = true;
@@ -164,6 +226,12 @@
   }
 
   start?.addEventListener("click", startRunner);
+  achievementRestart?.addEventListener("click", startRunner);
+  achievementClose?.addEventListener("click", hideAchievement);
+  achievementModal?.addEventListener("click", (event) => {
+    if (event.target === achievementModal) hideAchievement();
+  });
+
   area?.addEventListener("pointerdown", (event) => {
     event.preventDefault();
     if (running) jump();
