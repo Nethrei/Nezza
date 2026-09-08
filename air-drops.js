@@ -3,7 +3,9 @@
   const area = document.querySelector('#airGameArea');
   const enemies = document.querySelector('#airEnemies');
   const medkits = document.querySelector('#airMedkits');
-  if (!area || !enemies || !medkits) return;
+  const player = document.querySelector('#airPlayer');
+  const hpText = document.querySelector('#airHp');
+  if (!area || !enemies || !medkits || !player || !hpText) return;
 
   const style = document.createElement('style');
   style.textContent = `
@@ -21,30 +23,22 @@
       animation:hpRegenPulse .8s ease-in-out infinite alternate;
     }
     .air-medkit.hp-regen-drop::after{
-      content:'HP Regen';
-      position:absolute;
-      top:35px;left:50%;transform:translateX(-50%);
-      font:700 8px/1 Arial,sans-serif;
-      letter-spacing:.4px;white-space:nowrap;
+      content:'HP Regen';position:absolute;top:35px;left:50%;transform:translateX(-50%);
+      font:700 8px/1 Arial,sans-serif;letter-spacing:.4px;white-space:nowrap;
       color:#72ffad;text-shadow:0 0 7px rgba(40,255,130,.9);
     }
     @keyframes hpRegenPulse{from{scale:.94;opacity:.82}to{scale:1.06;opacity:1}}
   `;
   document.head.appendChild(style);
 
-  // Remove the old timer-based medkits. HP Regen now comes only from defeated enemies.
+  // Disable the old timer-based health drops. HP Regen now comes from defeated enemies only.
   const oldDrops = new MutationObserver(mutations => {
-    for (const mutation of mutations) {
-      mutation.addedNodes.forEach(node => {
-        if (node.nodeType === 1 && node.classList.contains('air-medkit') && !node.classList.contains('hp-regen-drop')) {
-          node.remove();
-        }
-      });
-    }
+    for (const mutation of mutations) mutation.addedNodes.forEach(node => {
+      if (node.nodeType === 1 && node.classList.contains('air-medkit') && !node.classList.contains('hp-regen-drop')) node.remove();
+    });
   });
   oldDrops.observe(medkits, { childList: true });
 
-  // Keep a lightweight snapshot of enemy positions so we can tell a defeat from an enemy leaving the screen.
   const positions = new Map();
   setInterval(() => {
     enemies.querySelectorAll('.air-enemy').forEach(el => {
@@ -52,6 +46,19 @@
       if (match) positions.set(el, { x: Number(match[1]), y: Number(match[2]) });
     });
   }, 40);
+
+  function playerBox() {
+    const x = parseFloat(player.style.left) || 0;
+    return { x, y: area.clientHeight - 65, w: 48, h: 48 };
+  }
+  function touching(x, y) {
+    const p = playerBox();
+    return x < p.x + p.w && x + 34 > p.x && y < p.y + p.h && y + 34 > p.y;
+  }
+  function heal() {
+    const hp = Math.min(5, (Number(hpText.textContent) || 0) + 1);
+    hpText.textContent = String(hp);
+  }
 
   function spawnRegen(x, y) {
     const drop = document.createElement('div');
@@ -61,33 +68,28 @@
     drop.style.transform = `translate3d(${x}px,${y}px,0)`;
     medkits.appendChild(drop);
 
-    // Make the pickup behave like the existing falling health item.
-    let py = y;
-    const started = performance.now();
+    let py = y, last = performance.now();
     const tick = now => {
       if (!drop.isConnected) return;
-      py += 55 * Math.min((now - (tick.last || now)) / 1000, .032);
-      tick.last = now;
+      const dt = Math.min((now - last) / 1000, .032); last = now;
+      py += 55 * dt;
       drop.style.transform = `translate3d(${x}px,${py}px,0)`;
-      if (py > area.clientHeight + 35 || now - started > 8000) { drop.remove(); return; }
+      if (touching(x, py)) { heal(); drop.remove(); return; }
+      if (py > area.clientHeight + 35) { drop.remove(); return; }
       requestAnimationFrame(tick);
     };
     requestAnimationFrame(tick);
   }
 
   const enemyWatcher = new MutationObserver(mutations => {
-    for (const mutation of mutations) {
-      mutation.removedNodes.forEach(node => {
-        if (node.nodeType !== 1 || !node.classList.contains('air-enemy')) return;
-        const p = positions.get(node);
-        positions.delete(node);
-        if (!p) return;
-        // Enemy collisions happen near the player's bottom area; ignore those.
-        if (p.y > area.clientHeight - 105) return;
-        // Random drop: not every defeated enemy drops HP Regen.
-        if (Math.random() < 0.18) spawnRegen(p.x, p.y);
-      });
-    }
+    for (const mutation of mutations) mutation.removedNodes.forEach(node => {
+      if (node.nodeType !== 1 || !node.classList.contains('air-enemy')) return;
+      const p = positions.get(node); positions.delete(node);
+      if (!p) return;
+      // Ignore enemies that reached/collided near the player. Only mid-screen defeats can drop HP Regen.
+      if (p.y > area.clientHeight - 105) return;
+      if (Math.random() < 0.18) spawnRegen(p.x, p.y);
+    });
   });
   enemyWatcher.observe(enemies, { childList: true });
 })();
