@@ -20,17 +20,13 @@
     opening.classList.add("show");
   }
 
-  const unlockBtn = $("#unlockBtn");
-  const loginForm = $("#loginForm");
-  unlockBtn?.addEventListener("click", () => setTimeout(showOpening, 20));
-  loginForm?.addEventListener("submit", () => setTimeout(showOpening, 20));
+  $("#unlockBtn")?.addEventListener("click", () => setTimeout(showOpening, 20));
+  $("#loginForm")?.addEventListener("submit", () => setTimeout(showOpening, 20));
 
-  /* Stacked photo deck: exactly 3 photos */
+  /* Keep the album at exactly 3 photos. */
   const deck = $("#deck");
-  const albumIndex = $("#albumIndex");
   if (deck) {
     [...deck.querySelectorAll(".deck-card")].slice(3).forEach((card) => card.remove());
-    if (albumIndex) albumIndex.textContent = "01";
     const albumCount = document.querySelector(".album-count");
     if (albumCount) albumCount.innerHTML = '<span id="albumIndex">01</span> / 03';
   }
@@ -57,50 +53,64 @@
   let obstacleX = 0;
   let obstacleSpeed = 230;
   let spawnTimer = 0;
-  let nextSpawn = 1100;
+  let nextSpawn = 1000;
 
   if (bestText) bestText.textContent = best;
 
-  function resetPositions() {
+  function setVisuals() {
+    if (!area) return;
+    if (player) player.style.transform = `translate3d(0, ${-playerY}px, 0)`;
+    if (obstacle) obstacle.style.transform = `translate3d(${obstacleX}px, 0, 0)`;
+  }
+
+  function resetRunner() {
+    score = 0;
     playerY = 0;
     velocity = 0;
-    obstacleX = area ? area.clientWidth + 45 : 400;
     obstacleSpeed = 230;
     spawnTimer = 0;
-    nextSpawn = 900 + Math.random() * 700;
-    if (player) player.style.transform = "translateY(0px)";
-    if (obstacle) obstacle.style.transform = `translateX(${obstacleX}px)`;
+    nextSpawn = 1000 + Math.random() * 700;
+    obstacleX = area.clientWidth + 70;
+    setVisuals();
+    if (scoreText) scoreText.textContent = "0";
   }
 
   function jump() {
-    if (!running) return;
-    if (playerY <= 1) velocity = 620;
+    if (running && playerY <= 2) velocity = 620;
   }
 
   function hitTest() {
-    const px = 42;
-    const pw = 38;
-    const py = area.clientHeight - 48 - playerY;
-    const ox = obstacleX;
-    const ow = 38;
-    const oy = area.clientHeight - 48;
-    return ox < px + pw && ox + ow > px + 5 && py < oy + 34 && py + 40 > oy + 4;
+    const ground = area.clientHeight - 32;
+    const playerLeft = 42;
+    const playerRight = playerLeft + 34;
+    const playerBottom = ground - playerY;
+    const playerTop = playerBottom - 38;
+    const obstacleLeft = obstacleX + 7;
+    const obstacleRight = obstacleLeft + 30;
+    const obstacleBottom = ground;
+    const obstacleTop = obstacleBottom - 35;
+    const horizontal = obstacleLeft < playerRight && obstacleRight > playerLeft;
+    const vertical = playerBottom > obstacleTop + 5 && playerTop < obstacleBottom - 2;
+    return horizontal && vertical;
   }
 
   function endGame() {
     running = false;
     cancelAnimationFrame(animation);
-    if (finalScore) finalScore.textContent = Math.floor(score);
-    if (score > best) {
-      best = Math.floor(score);
+    const value = Math.floor(score);
+    if (finalScore) finalScore.textContent = value;
+    if (value > best) {
+      best = value;
       localStorage.setItem("birthdayRunnerBest", String(best));
       if (bestText) bestText.textContent = best;
     }
     if (gameOver) gameOver.hidden = false;
     if (startHint) startHint.hidden = true;
-    if (start) start.disabled = false;
-    if (start) start.textContent = "Main lagi ↻";
-    if (result) result.textContent = `Kalah! Score kamu ${Math.floor(score)}. Coba pecahkan best score. 🔥`;
+    if (start) {
+      start.disabled = false;
+      start.textContent = "Main lagi ↻";
+    }
+    if (result) result.textContent = `Kalah! Score ${value}. Tekan Main lagi untuk mencoba lagi. 🔥`;
   }
 
   function frame(now) {
@@ -116,39 +126,38 @@
     }
 
     score += dt * 10;
-    obstacleSpeed = Math.min(430, 230 + score * 2.2);
+    obstacleSpeed = Math.min(440, 230 + score * 2.15);
     spawnTimer += dt * 1000;
 
-    if (spawnTimer >= nextSpawn) {
-      obstacleX = area.clientWidth + 35;
+    obstacleX -= obstacleSpeed * dt;
+    if (obstacleX < -70) {
+      obstacleX = area.clientWidth + 50;
       spawnTimer = 0;
-      nextSpawn = Math.max(650, 1200 - score * 2) + Math.random() * 650;
-    } else {
-      obstacleX -= obstacleSpeed * dt;
+      nextSpawn = Math.max(650, 1250 - score * 2) + Math.random() * 650;
     }
 
-    if (obstacleX < -55) obstacleX = area.clientWidth + 35;
+    if (spawnTimer >= nextSpawn && obstacleX > area.clientWidth - 20) {
+      obstacleX = area.clientWidth + 50;
+      spawnTimer = 0;
+      nextSpawn = Math.max(650, 1100 - score * 2) + Math.random() * 600;
+    }
 
-    if (player) player.style.transform = `translateY(${-playerY}px)`;
-    if (obstacle) obstacle.style.transform = `translateX(${obstacleX}px)`;
+    setVisuals();
     if (scoreText) scoreText.textContent = String(Math.floor(score));
 
     if (hitTest()) {
       endGame();
       return;
     }
-
     animation = requestAnimationFrame(frame);
   }
 
   function startRunner() {
     if (!area) return;
     cancelAnimationFrame(animation);
+    resetRunner();
     running = true;
-    score = 0;
     last = performance.now();
-    resetPositions();
-    obstacleX = area.clientWidth + 35;
     if (gameOver) gameOver.hidden = true;
     if (startHint) startHint.hidden = true;
     if (start) {
@@ -168,7 +177,7 @@
   });
   document.addEventListener("keydown", (event) => {
     if (event.code !== "Space") return;
-    if (!area || !area.matches(":focus") && !running) return;
+    if (!running && document.activeElement !== area) return;
     event.preventDefault();
     if (running) jump();
   });
@@ -179,7 +188,7 @@
     }
   });
 
-  resetPositions();
+  resetRunner();
 
   /* Secret letter */
   const letterBtn = $("#letterBtn");
