@@ -237,7 +237,6 @@ function moveAlbum(direction) {
   renderDeck();
 }
 
-/* Tap/click the front photo to bring the photo behind it to the front. */
 deck?.addEventListener("click", () => moveAlbum(1));
 
 $(".prev")?.addEventListener("click", (event) => {
@@ -261,82 +260,9 @@ deck?.addEventListener("touchend", (event) => {
 
 renderDeck();
 
-/* =========================
-   MINI GAME
-========================= */
-
-const gameArea = $("#gameArea");
-const gameStart = $("#gameStart");
-const gameScore = $("#gameScore");
-const gameResult = $("#gameResult");
-let score = 0;
-let gameTimer = null;
-
-function spawnHeart() {
-  if (!gameArea) return;
-  const heart = document.createElement("button");
-  heart.type = "button";
-  heart.className = "game-heart";
-  heart.textContent = "💗";
-  heart.setAttribute("aria-label", "Ambil hati");
-  const maxX = Math.max(0, gameArea.clientWidth - 48);
-  const maxY = Math.max(0, gameArea.clientHeight - 48);
-  heart.style.left = `${Math.random() * maxX}px`;
-  heart.style.top = `${Math.random() * maxY}px`;
-  heart.addEventListener("click", () => {
-    score += 1;
-    gameScore.textContent = String(score);
-    heart.remove();
-    if (score >= 10) {
-      clearInterval(gameTimer);
-      gameResult.textContent = "🎉 Berhasil! Kamu nemuin semua 10 hati. 💗";
-      gameStart.disabled = false;
-      gameStart.textContent = "Main lagi →";
-      return;
-    }
-    spawnHeart();
-  }, { once: true });
-  gameArea.appendChild(heart);
-}
-
-gameStart?.addEventListener("click", () => {
-  clearInterval(gameTimer);
-  score = 0;
-  gameScore.textContent = "0";
-  gameResult.textContent = "";
-  gameStart.disabled = true;
-  gameStart.textContent = "Cari semua hati...";
-  gameArea.innerHTML = "";
-  spawnHeart();
-  gameTimer = setInterval(() => {
-    if (gameArea && gameArea.children.length === 0 && score < 10) spawnHeart();
-  }, 900);
-});
-
-/* =========================
-   SECRET LETTER
-========================= */
-
-const letterBtn = $("#letterBtn");
-const letterContent = $("#letterContent");
-letterBtn?.addEventListener("click", () => {
-  const open = letterContent.classList.toggle("open");
-  letterBtn.setAttribute("aria-expanded", String(open));
-  letterContent.setAttribute("aria-hidden", String(!open));
-  letterBtn.querySelector("small").textContent = open ? "Tap to close" : "Tap to open";
-});
-
-/* =========================
-   FINAL SURPRISE
-========================= */
-
-const finalBtn = $("#finalBtn");
-const finalMessage = $("#finalMessage");
-finalBtn?.addEventListener("click", () => {
-  finalMessage.classList.toggle("show");
-  finalMessage.setAttribute("aria-hidden", String(!finalMessage.classList.contains("show")));
-  finalBtn.textContent = finalMessage.classList.contains("show") ? "✨ Surprise opened" : "Open the last surprise 🎁";
-});
+/* The Birthday Runner lives entirely in features.js.
+   Do not attach the old heart-game handlers here: both games used #gameArea,
+   which caused the runner's objects to be cleared/replaced unexpectedly. */
 
 /* =========================
    STARTUP
