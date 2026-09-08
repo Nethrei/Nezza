@@ -24,7 +24,7 @@
   function frame(now){if(!running)return;const dt=Math.min((now-last)/1000,.032);last=now;
     velocity-=1650*dt;playerY+=velocity*dt;if(playerY<0){playerY=0;velocity=0;}
     score+=dt*10;
-    /* Speed follows score in clear stages. 5000-6000 is intentionally brutal. */
+    /* Speed follows score. 5000-6000 is intentionally near-impossible. */
     if(score<1000) obstacleSpeed=210+(score/1000)*20;
     else if(score<2000) obstacleSpeed=230+((score-1000)/1000)*35;
     else if(score<3000) obstacleSpeed=265+((score-2000)/1000)*45;
@@ -33,10 +33,10 @@
     else if(score<6000) obstacleSpeed=400+((score-5000)/1000)*260;
     else obstacleSpeed=660;
     obstacleX-=obstacleSpeed*dt;if(obstacleX<-75)obstacleX=area.clientWidth+100;
-    /* Bird joins later and also accelerates with the score, but stays airborne. */
-    if(score>=500){const birdSpeed=Math.min(600,170+score*.065);birdX-=birdSpeed*dt;birdY=55+Math.sin(now/220)*8;if(birdX<-70)birdX=area.clientWidth+330+Math.random()*180;}else{birdX=area.clientWidth+380;birdY=55;}
+    /* Bird appears at 1000 points and gets faster with the score. */
+    if(score>=1000){const birdSpeed=Math.min(600,185+(score-1000)*.075);birdX-=birdSpeed*dt;birdY=55+Math.sin(now/220)*8;if(birdX<-70)birdX=area.clientWidth+330+Math.random()*180;}else{birdX=area.clientWidth+380;birdY=55;}
     const c=getRank(score);setVisuals();if(scoreText)scoreText.textContent=String(Math.floor(score));if(rankText)rankText.textContent=c.name;if(hitTest()){endGame();return;}animation=requestAnimationFrame(frame);}
-  function startRunner(){if(!area)return;hideAchievement();cancelAnimationFrame(animation);resetRunner();running=true;last=performance.now();if(gameOver)gameOver.hidden=true;if(startHint)startHint.hidden=true;if(start){start.disabled=true;start.textContent="Runner berjalan...";}if(result)result.textContent="Lompatin 🎁 dan perhatikan 🐦! Semakin tinggi poin, semakin cepat.";area.focus({preventScroll:true});animation=requestAnimationFrame(frame);}
+  function startRunner(){if(!area)return;hideAchievement();cancelAnimationFrame(animation);resetRunner();running=true;last=performance.now();if(gameOver)gameOver.hidden=true;if(startHint)startHint.hidden=true;if(start){start.disabled=true;start.textContent="Runner berjalan...";}if(result)result.textContent="Lompatin 🎁 dan perhatikan 🐦! Burung muncul mulai 1000 poin.";area.focus({preventScroll:true});animation=requestAnimationFrame(frame);}
   start?.addEventListener("click",startRunner);achievementRestart?.addEventListener("click",startRunner);achievementClose?.addEventListener("click",hideAchievement);achievementModal?.addEventListener("click",e=>{if(e.target===achievementModal)hideAchievement();});
   area?.addEventListener("pointerdown",e=>{e.preventDefault();if(running)jump();else if(start&&!start.disabled)startRunner();});
   document.addEventListener("keydown",e=>{if(e.code!=="Space")return;if(!running&&document.activeElement!==area)return;e.preventDefault();if(running)jump();});
