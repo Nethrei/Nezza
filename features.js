@@ -126,20 +126,14 @@
     }
 
     score += dt * 10;
-    obstacleSpeed = Math.min(440, 230 + score * 2.15);
-    spawnTimer += dt * 1000;
+    /* The longer you survive, the faster the gifts move. */
+    obstacleSpeed = Math.min(520, 230 + score * 3.1);
 
+    /* One gift stays in the lane and keeps moving left. It is only reset
+       after it has completely left the screen, never just because it was jumped. */
     obstacleX -= obstacleSpeed * dt;
-    if (obstacleX < -70) {
+    if (obstacleX < -75) {
       obstacleX = area.clientWidth + 50;
-      spawnTimer = 0;
-      nextSpawn = Math.max(650, 1250 - score * 2) + Math.random() * 650;
-    }
-
-    if (spawnTimer >= nextSpawn && obstacleX > area.clientWidth - 20) {
-      obstacleX = area.clientWidth + 50;
-      spawnTimer = 0;
-      nextSpawn = Math.max(650, 1100 - score * 2) + Math.random() * 600;
     }
 
     setVisuals();
