@@ -1,4 +1,7 @@
-/* NEZZA — Lightweight interactions */
+/*
+ * NEZZA — Lightweight interactions
+ */
+
 (() => {
     'use strict';
 
@@ -9,8 +12,8 @@
 
     // Remove visual systems from the old version that may still exist in the DOM.
     function cleanOldVisuals() {
-        ['#space-canvas', '#dora-stage', '.ambient', '.orbit'].forEach(selector => {
-            $$(selector).forEach(element => element.remove());
+        ['#space-canvas', '#dora-stage', '.ambient', '.orbit'].forEach((selector) => {
+            $$(selector).forEach((element) => element.remove());
         });
     }
 
@@ -24,7 +27,7 @@
     const toggle = $('#nav-toggle');
 
     function setActive(item) {
-        navItems.forEach(button => {
+        navItems.forEach((button) => {
             button.classList.toggle('active', button === item);
         });
     }
@@ -56,12 +59,12 @@
         const page = document.getElementById(id);
         if (!page) return;
 
-        pages.forEach(item => {
+        pages.forEach((item) => {
             item.classList.toggle('active', item === page);
         });
 
         const selectedItem = activeItem || navItems.find(
-            item => item.dataset.target === id
+            (item) => item.dataset.target === id
         );
 
         setActive(selectedItem);
@@ -77,7 +80,7 @@
     // Navigation.
     toggle?.addEventListener('click', toggleNav);
 
-    navItems.forEach(item => {
+    navItems.forEach((item) => {
         item.addEventListener('click', async () => {
             const action = item.dataset.action;
 
@@ -96,7 +99,9 @@
 
                 item.classList.toggle('music-playing', !music.paused);
                 const label = $('small', item);
-                if (label) label.textContent = music.paused ? 'Music' : 'Playing';
+                if (label) {
+                    label.textContent = music.paused ? 'Music' : 'Playing';
+                }
 
                 closeNav();
                 return;
@@ -104,7 +109,7 @@
 
             if (action === 'top') {
                 const home = navItems.find(
-                    button => button.dataset.target === 'home-view'
+                    (button) => button.dataset.target === 'home-view'
                 );
                 showView('home-view', true, home);
                 return;
@@ -117,7 +122,7 @@
     });
 
     // Buttons inside page content.
-    $$('[data-go]').forEach(button => {
+    $$('[data-go]').forEach((button) => {
         button.addEventListener('click', () => {
             showView(button.dataset.go);
         });
@@ -136,7 +141,9 @@
         window.setTimeout(() => {
             if (landing) landing.style.display = 'none';
             content?.classList.add('active');
-            setActive(navItems.find(item => item.dataset.target === 'home-view'));
+            setActive(navItems.find(
+                (item) => item.dataset.target === 'home-view'
+            ));
         }, 700);
     });
 
@@ -192,6 +199,7 @@
 
     function moveAlbum(direction) {
         if (!cards.length) return;
+
         albumIndex = (albumIndex + direction + cards.length) % cards.length;
         renderAlbumDeck();
     }
