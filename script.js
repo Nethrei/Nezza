@@ -217,6 +217,7 @@ navToggle?.addEventListener("click", () => {
    MEMORY ALBUM — 3 PHOTO STACK
 ========================= */
 
+const deck = $("#deck");
 const cards = [...$$(".deck-card")].slice(0, 3);
 let current = 0;
 
@@ -263,6 +264,12 @@ renderDeck();
 /* The Birthday Runner lives entirely in features.js.
    Do not attach the old heart-game handlers here: both games used #gameArea,
    which caused the runner's objects to be cleared/replaced unexpectedly. */
+
+/* Load the Sky Battle HP Regen drop layer after the main game logic. */
+const airDropsScript = document.createElement("script");
+airDropsScript.src = "air-drops.js?v=1";
+airDropsScript.defer = true;
+document.head.appendChild(airDropsScript);
 
 /* =========================
    STARTUP
