@@ -2,20 +2,169 @@ const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 
 /* =========================
-   TIME LOCK & MUSIC
+   ENTRY GATE
 ========================= */
 
 const unlockAt = new Date("2026-09-08T10:00:00+07:00").getTime();
-const audio = $("#birthdayAudio");
-const musicBtn = $("#musicBtn");
+const loginCode = "1010";
+
 const lock = $("#timeLock");
 const countdown = $("#lockCountdown");
+const lockTitle = $("#lockTitle");
+const lockMessage = $("#lockMessage");
+const unlockBtn = $("#unlockBtn");
+const loginOpenBtn = $("#loginOpenBtn");
+
+const loginModal = $("#loginModal");
+const loginForm = $("#loginForm");
+const loginCloseBtn = $("#loginCloseBtn");
+const loginName = $("#loginName");
+const loginCodeInput = $("#loginCode");
+const loginError = $("#loginError");
+
+const audio = $("#birthdayAudio");
+const musicBtn = $("#musicBtn");
 
 let musicStarted = false;
+let gateOpened = false;
 
 function isUnlocked() {
   return Date.now() >= unlockAt;
 }
+
+function openSite() {
+  if (!isUnlocked()) return;
+
+  gateOpened = true;
+  lock?.classList.add("gate-hidden");
+  document.body.style.overflow = "";
+  startBirthdayMusic();
+}
+
+function setUnlockState(unlocked) {
+  if (!unlockBtn || !loginOpenBtn) return;
+
+  unlockBtn.disabled = !unlocked;
+  loginOpenBtn.disabled = !unlocked;
+
+  if (unlocked) {
+    lockTitle.textContent = "Waktunya tiba! 🎉";
+    lockMessage.textContent = "Gerbang sudah terbuka. Pilih Unlock untuk masuk atau Login jika ingin memakai akses khusus.";
+    unlockBtn.textContent = "🔓 Unlock & masuk";
+    loginOpenBtn.textContent = "🔐 Login";
+  } else {
+    lockTitle.textContent = "Belum waktunya ✨";
+    lockMessage.textContent = "Web ini masih terkunci. Tunggu sampai waktu yang sudah ditentukan.";
+    unlockBtn.textContent = "🔒 Menunggu waktu...";
+    loginOpenBtn.textContent = "🔐 Login tersedia setelah unlock";
+  }
+}
+
+function updateLock() {
+  if (!lock || !countdown) return;
+
+  const difference = unlockAt - Date.now();
+
+  if (difference > 0) {
+    if (!gateOpened) {
+      lock.classList.remove("gate-hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    setUnlockState(false);
+
+    const totalSeconds = Math.floor(difference / 1000);
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const dayText = days ? `${String(days).padStart(2, "0")}:` : "";
+
+    countdown.textContent =
+      `${dayText}${String(hours).padStart(2, "0")}:` +
+      `${String(minutes).padStart(2, "0")}:` +
+      `${String(seconds).padStart(2, "0")}`;
+
+    if (audio && !audio.paused) {
+      audio.pause();
+      audio.currentTime = 0;
+      musicStarted = false;
+      setMusicButton(false);
+    }
+
+    return;
+  }
+
+  setUnlockState(true);
+
+  if (!gateOpened) {
+    lock.classList.remove("gate-hidden");
+    document.body.style.overflow = "hidden";
+  }
+
+  countdown.textContent = "00:00:00";
+}
+
+unlockBtn?.addEventListener("click", openSite);
+
+/* =========================
+   LOGIN MODAL
+========================= */
+
+function openLogin() {
+  if (!isUnlocked()) return;
+
+  loginModal?.classList.add("show");
+  loginModal?.setAttribute("aria-hidden", "false");
+  loginError.textContent = "";
+  setTimeout(() => loginName?.focus(), 50);
+}
+
+function closeLogin() {
+  loginModal?.classList.remove("show");
+  loginModal?.setAttribute("aria-hidden", "true");
+}
+
+loginOpenBtn?.addEventListener("click", openLogin);
+loginCloseBtn?.addEventListener("click", closeLogin);
+
+loginModal?.addEventListener("click", (event) => {
+  if (event.target === loginModal) {
+    closeLogin();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeLogin();
+  }
+});
+
+loginForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (!isUnlocked()) {
+    loginError.textContent = "Web masih terkunci.";
+    return;
+  }
+
+  const name = loginName.value.trim();
+  const code = loginCodeInput.value.trim();
+
+  if (!name || code !== loginCode) {
+    loginError.textContent = "Nama atau kode akses salah.";
+    return;
+  }
+
+  localStorage.setItem("birthdayLoginName", name);
+  closeLogin();
+  openSite();
+});
+
+/* =========================
+   MUSIC
+========================= */
 
 function setMusicButton(playing) {
   if (!musicBtn) return;
@@ -41,55 +190,10 @@ async function startBirthdayMusic() {
   }
 }
 
-function updateLock() {
-  if (!lock || !countdown) return;
-
-  const difference = unlockAt - Date.now();
-
-  if (difference > 0) {
-    lock.style.display = "grid";
-    document.body.style.overflow = "hidden";
-
-    const totalSeconds = Math.floor(difference / 1000);
-    const days = Math.floor(totalSeconds / 86400);
-    const hours = Math.floor((totalSeconds % 86400) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-
-    const dayText = days
-      ? `${String(days).padStart(2, "0")}:`
-      : "";
-
-    countdown.textContent =
-      `${dayText}${String(hours).padStart(2, "0")}:` +
-      `${String(minutes).padStart(2, "0")}:` +
-      `${String(seconds).padStart(2, "0")}`;
-
-    /* Never allow music to continue while the site is locked. */
-    if (audio && !audio.paused) {
-      audio.pause();
-      audio.currentTime = 0;
-      musicStarted = false;
-      setMusicButton(false);
-    }
-
-    return;
-  }
-
-  lock.style.display = "none";
-  document.body.style.overflow = "";
-  startBirthdayMusic();
-}
-
-updateLock();
-setInterval(updateLock, 1000);
-
-/* =========================
-   AUTOPLAY FALLBACK
-========================= */
-
 window.addEventListener("load", () => {
-  if (isUnlocked()) {
+  updateLock();
+
+  if (isUnlocked() && gateOpened) {
     startBirthdayMusic();
   }
 });
@@ -97,12 +201,33 @@ window.addEventListener("load", () => {
 document.addEventListener(
   "pointerdown",
   () => {
-    if (isUnlocked()) {
+    if (isUnlocked() && gateOpened) {
       startBirthdayMusic();
     }
   },
   { passive: true }
 );
+
+musicBtn?.addEventListener("click", async () => {
+  if (!audio || !isUnlocked() || !gateOpened) return;
+
+  if (audio.paused) {
+    await startBirthdayMusic();
+    return;
+  }
+
+  audio.pause();
+  musicStarted = false;
+  setMusicButton(false);
+});
+
+audio?.addEventListener("ended", () => {
+  musicStarted = false;
+  setMusicButton(false);
+});
+
+updateLock();
+setInterval(updateLock, 1000);
 
 /* =========================
    SMOOTH SCROLL
@@ -110,6 +235,8 @@ document.addEventListener(
 
 $$('[data-scroll]').forEach((button) => {
   button.addEventListener("click", () => {
+    if (!gateOpened) return;
+
     const target = $(`#${button.dataset.scroll}`);
 
     target?.scrollIntoView({
@@ -117,9 +244,7 @@ $$('[data-scroll]').forEach((button) => {
       block: "start"
     });
 
-    if (isUnlocked()) {
-      startBirthdayMusic();
-    }
+    startBirthdayMusic();
   });
 });
 
@@ -192,25 +317,3 @@ deck?.addEventListener(
   },
   { passive: true }
 );
-
-/* =========================
-   MUSIC BUTTON
-========================= */
-
-musicBtn?.addEventListener("click", async () => {
-  if (!audio || !isUnlocked()) return;
-
-  if (audio.paused) {
-    await startBirthdayMusic();
-    return;
-  }
-
-  audio.pause();
-  musicStarted = false;
-  setMusicButton(false);
-});
-
-audio?.addEventListener("ended", () => {
-  musicStarted = false;
-  setMusicButton(false);
-});
