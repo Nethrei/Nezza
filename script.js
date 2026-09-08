@@ -1,4 +1,5 @@
 const TARGET = new Date('2026-10-10T00:00:00+07:00').getTime();
+const LOCK_AGAIN = new Date('2026-10-17T00:00:00+07:00').getTime();
 const START = new Date('2026-09-08T00:00:00+07:00').getTime();
 
 const lockedScreen = document.getElementById('lockedScreen');
@@ -14,6 +15,18 @@ function pad(value) {
   return String(value).padStart(2, '0');
 }
 
+function lockAgain() {
+  birthdayScreen.classList.add('hidden');
+  lockedScreen.classList.remove('hidden');
+  document.title = 'Birthday Surprise 🔒';
+  statusEl.textContent = '🔒 This surprise has ended';
+  daysEl.textContent = '00';
+  hoursEl.textContent = '00';
+  minutesEl.textContent = '00';
+  secondsEl.textContent = '00';
+  progressEl.style.width = '100%';
+}
+
 function unlock() {
   lockedScreen.classList.add('hidden');
   birthdayScreen.classList.remove('hidden');
@@ -24,13 +37,18 @@ function unlock() {
 
 function updateCountdown() {
   const now = Date.now();
-  const distance = TARGET - now;
 
-  if (distance <= 0) {
+  if (now >= LOCK_AGAIN) {
+    lockAgain();
+    return;
+  }
+
+  if (now >= TARGET) {
     unlock();
     return;
   }
 
+  const distance = TARGET - now;
   const totalSeconds = Math.floor(distance / 1000);
   const days = Math.floor(totalSeconds / 86400);
   const hours = Math.floor((totalSeconds % 86400) / 3600);
@@ -48,7 +66,7 @@ function updateCountdown() {
 
   statusEl.textContent = days === 0
     ? '♡ Almost there...'
-    : '🔒 Locked until the right moment';
+    : '🔒 Locked until October 10';
 }
 
 updateCountdown();
@@ -58,9 +76,8 @@ document.getElementById('memoryBtn').addEventListener('click', () => {
   document.getElementById('memories').scrollIntoView({ behavior: 'smooth' });
 });
 
-// Tiny parallax effect on desktop.
 const photo = document.getElementById('heroPhoto');
-if (window.matchMedia('(pointer:fine)').matches) {
+if (photo && window.matchMedia('(pointer:fine)').matches) {
   window.addEventListener('mousemove', (event) => {
     const x = (event.clientX / window.innerWidth - 0.5) * 8;
     const y = (event.clientY / window.innerHeight - 0.5) * 8;
