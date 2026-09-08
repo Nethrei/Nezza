@@ -25,6 +25,16 @@
   unlockBtn?.addEventListener("click", () => setTimeout(showOpening, 20));
   loginForm?.addEventListener("submit", () => setTimeout(showOpening, 20));
 
+  /* Stacked photo deck: exactly 3 photos */
+  const deck = $("#deck");
+  const albumIndex = $("#albumIndex");
+  if (deck) {
+    [...deck.querySelectorAll(".deck-card")].slice(3).forEach((card) => card.remove());
+    if (albumIndex) albumIndex.textContent = "01";
+    const albumCount = document.querySelector(".album-count");
+    if (albumCount) albumCount.innerHTML = '<span id="albumIndex">01</span> / 03';
+  }
+
   /* Secret letter */
   const letterBtn = $("#letterBtn");
   const letterContent = $("#letterContent");
