@@ -176,3 +176,103 @@
     font-size: 29px;
   }
 }
+
+/* =========================
+   NEZURO SOCIAL FOOTER FIX
+========================= */
+
+/* Remove the old footer so the copyright is not duplicated. */
+main > footer {
+  display: none;
+}
+
+.site-footer {
+  width: 100%;
+  padding: 30px 18px 100px;
+  box-sizing: border-box;
+  text-align: center;
+  background: #f8f9ff;
+  color: #7d8298;
+}
+
+.site-footer .footer-copy {
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+
+.site-footer .footer-copy strong {
+  color: #5f6482;
+  font-weight: 800;
+}
+
+.site-footer .footer-socials {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.site-footer .footer-socials a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 7px 12px;
+  box-sizing: border-box;
+  border-radius: 13px;
+  border: 1px solid #e0e3ef;
+  background: rgba(255,255,255,.9);
+  color: #626780;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.site-footer .footer-socials a:active {
+  transform: scale(.96);
+}
+
+.site-footer .footer-socials img {
+  width: 25px;
+  height: 25px;
+  flex: 0 0 25px;
+  display: block;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+/* Use the exact uploaded logo files. */
+.site-footer .footer-socials a:first-child img {
+  content: url("de84ece92c36f184e873fa090c9e7624.jpg");
+}
+
+.site-footer .footer-socials a:nth-child(2) img {
+  content: url("5d63c857404bab94c94a3f5b719628f2.jpg");
+}
+
+.site-footer .footer-socials strong {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .site-footer {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .site-footer .footer-copy {
+    font-size: 15px;
+  }
+
+  .site-footer .footer-socials {
+    gap: 8px;
+  }
+
+  .site-footer .footer-socials a {
+    padding: 7px 10px;
+  }
+}
