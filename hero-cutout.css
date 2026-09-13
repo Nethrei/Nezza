@@ -44,6 +44,22 @@
   z-index: 4;
 }
 
+/* Hero birthday title */
+.hero-copy > h2 {
+  font-size: 0;
+  line-height: 1.1;
+  margin: 12px 0 18px;
+}
+
+.hero-copy > h2::after {
+  content: "SELAMATTT ULANG TAHUN, PRINCESS 👑";
+  display: block;
+  font-size: clamp(2rem, 7vw, 3.4rem);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
 @media (max-width: 760px) {
   .hero-visual {
     width: 100%;
@@ -72,5 +88,9 @@
 
   .hero-visual .balloon {
     font-size: 34px;
+  }
+
+  .hero-copy > h2::after {
+    font-size: clamp(1.9rem, 8vw, 2.7rem);
   }
 }
