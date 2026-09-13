@@ -16,34 +16,9 @@
   justify-content: center;
 }
 
+/* Sticker-style outline: follows the transparent PNG silhouette instead of making a box. */
 .hero-portrait-frame {
-  position: absolute;
-  inset: 34px 22px 10px;
-  border: 3px solid var(--blue);
-  border-radius: 28px;
-  transform: rotate(2deg);
-  opacity: .9;
-  pointer-events: none;
-}
-
-.hero-portrait-frame::before,
-.hero-portrait-frame::after {
-  content: "";
-  position: absolute;
-  width: 42px;
-  height: 3px;
-  background: var(--pink);
-  border-radius: 99px;
-}
-
-.hero-portrait-frame::before {
-  top: -3px;
-  left: 34px;
-}
-
-.hero-portrait-frame::after {
-  right: 34px;
-  bottom: -3px;
+  display: none;
 }
 
 .hero-portrait {
@@ -54,7 +29,14 @@
   object-fit: contain;
   object-position: center bottom;
   display: block;
-  filter: drop-shadow(0 22px 35px rgba(12, 23, 72, .18));
+  filter:
+    drop-shadow(2px 0 0 var(--blue))
+    drop-shadow(-2px 0 0 var(--blue))
+    drop-shadow(0 2px 0 var(--blue))
+    drop-shadow(0 -2px 0 var(--blue))
+    drop-shadow(3px 3px 0 var(--blue))
+    drop-shadow(-3px -3px 0 var(--blue))
+    drop-shadow(0 22px 35px rgba(12, 23, 72, .18));
 }
 
 .hero-visual .balloon {
@@ -73,15 +55,17 @@
     height: 430px;
   }
 
-  .hero-portrait-frame {
-    inset: 24px 14px 8px;
-    border-width: 2px;
-    border-radius: 22px;
-  }
-
   .hero-portrait {
     width: min(315px, 82vw);
     max-height: 420px;
+    filter:
+      drop-shadow(2px 0 0 var(--blue))
+      drop-shadow(-2px 0 0 var(--blue))
+      drop-shadow(0 2px 0 var(--blue))
+      drop-shadow(0 -2px 0 var(--blue))
+      drop-shadow(3px 3px 0 var(--blue))
+      drop-shadow(-3px -3px 0 var(--blue))
+      drop-shadow(0 16px 25px rgba(12, 23, 72, .16));
   }
 
   .hero-visual .balloon {
