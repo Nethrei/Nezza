@@ -16,9 +16,9 @@
   justify-content: center;
 }
 
-/* Sticker-style outline: follows the transparent PNG silhouette instead of making a box. */
+/* No box/frame. The blue border follows the transparent PNG silhouette like a sticker. */
 .hero-portrait-frame {
-  display: none;
+  display: none !important;
 }
 
 .hero-portrait {
@@ -30,6 +30,7 @@
   object-position: center bottom;
   display: block;
   filter:
+    drop-shadow(0 0 1px var(--blue))
     drop-shadow(2px 0 0 var(--blue))
     drop-shadow(-2px 0 0 var(--blue))
     drop-shadow(0 2px 0 var(--blue))
@@ -59,6 +60,7 @@
     width: min(315px, 82vw);
     max-height: 420px;
     filter:
+      drop-shadow(0 0 1px var(--blue))
       drop-shadow(2px 0 0 var(--blue))
       drop-shadow(-2px 0 0 var(--blue))
       drop-shadow(0 2px 0 var(--blue))
