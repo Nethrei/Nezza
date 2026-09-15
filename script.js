@@ -272,9 +272,43 @@ airDropsScript.defer = true;
 document.head.appendChild(airDropsScript);
 
 /* =========================
+   REMOVE UNUSED BIRTHDAY ASSISTANT
+========================= */
+
+function removeBirthdayHelper() {
+  const helperTexts = ["LITTLE HELPER", "Birthday assistant", "Tulis sesuatu..."];
+  const elements = document.querySelectorAll("body *");
+
+  elements.forEach((element) => {
+    const text = element.textContent?.trim();
+    if (!text || element.children.length > 6) return;
+
+    const matches = helperTexts.some((value) => text.includes(value));
+    if (!matches) return;
+
+    let target = element;
+    for (let i = 0; i < 4 && target.parentElement; i += 1) {
+      const parentText = target.parentElement.textContent?.trim() || "";
+      if (helperTexts.some((value) => parentText.includes(value)) && parentText.length < 500) {
+        target = target.parentElement;
+      } else {
+        break;
+      }
+    }
+
+    target.remove();
+  });
+}
+
+removeBirthdayHelper();
+
+/* =========================
    STARTUP
 ========================= */
 
 updateLock();
 setInterval(updateLock, 1000);
-window.addEventListener("load", updateLock);
+window.addEventListener("load", () => {
+  updateLock();
+  removeBirthdayHelper();
+});
